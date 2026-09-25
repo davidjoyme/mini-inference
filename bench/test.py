@@ -1,12 +1,12 @@
 """
-test.py - test bench: send many requests to the server at the same time.
+bench/test.py - server load test: send many requests to the server at the same time.
 
 Defaults come from config.py; any of them can be overridden on the command line:
-    python test.py                          # use the settings in config.py
-    python test.py -n 1 -c 1                # single request (baseline)
-    python test.py -n 10 -c 10              # 10 requests, all at once
-    python test.py --no-stream              # use /generate (no TTFT/TPOT)
-    python test.py --out results_c8.json    # save to a different file
+    python bench/test.py                          # use the settings in config.py
+    python bench/test.py -n 1 -c 1                # single request (baseline)
+    python bench/test.py -n 10 -c 10              # 10 requests, all at once
+    python bench/test.py --no-stream              # use /generate (no TTFT/TPOT)
+    python bench/test.py --out results_c8.json    # save to a different file
 
 Streaming mode (default) measures:
     TTFT - time to first token (includes queue time + prefill)
@@ -20,7 +20,13 @@ import time
 
 import httpx
 
-import config
+import os
+import sys
+
+# Make the project root importable when run as `python bench/test.py`
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import config  # noqa: E402
 
 
 # ---------------- One non-streaming request ----------------
