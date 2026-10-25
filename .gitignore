@@ -5,3 +5,4 @@ models/
 *.pth
 *.ckpt
 models/
+profiles/*.json

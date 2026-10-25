@@ -4,7 +4,7 @@ LLM serving and inferencing is a big challenge. In this demo project , we will b
 
 # Motivation
 
-Why do we need vLLM or SGLang ? The conventional LLM models are not built for inference.When heavy workloads come in often it results in a lot of GPU capabilties idle.
+Why do we need vLLM or SGLang ? The conventional LLM models are not built for inference.When heavy workloads come in often it results in a lot of GPU capabilties being idle.
 
 # The Setup
 

@@ -1,42 +1,57 @@
 """
-engine/engine.py - the inference engine.
+engine/hf_engine.py - the baseline engine: the transformers pipeline, one request at a time.
 
-Everything that touches the model lives here, so the rest of the code (server,
-benchmarks, profiling) only talks to the Engine class. For now it uses the
-transformers pipeline internally; later this is where the custom prefill/decode
-loop, KV cache strategies and decoding strategies plug in.
+Requests take turns behind a lock, and generation is transformers' own generate() - an
+independent reference that the custom engine (engine/custom_engine.py) is benchmarked and
+correctness-tested against. Implements the interface in engine/base.py.
 """
 import threading
 import time
 
 import torch
 from transformers import TextIteratorStreamer
+from transformers.generation.streamers import BaseStreamer
 
 import config
+from engine.base import Engine
 from engine.model_loader import load_model
 from profiling.nvtx import nvtx_range
 
 
-class Engine:
+class TokenTimer(BaseStreamer):
+    """Called by generate() once with the prompt, then once per new token.
+    Records exact per-token timestamps without needing a second thread."""
+
     def __init__(self):
-        self.generator = load_model()
+        self.tokens, self.times = [], []
+        self._prompt_seen = False
+
+    def put(self, value):
+        if not self._prompt_seen:      # first call carries the prompt
+            self._prompt_seen = True
+            return
+        ids = value.reshape(-1).tolist()   # .tolist() waits for the GPU, so the time is real
+        self.times.append(time.perf_counter())
+        self.tokens.extend(ids)
+
+    def end(self):
+        pass
+
+
+class HFEngine(Engine):
+    def __init__(self):
+        self.generator, self.load_info = load_model()
         self.tokenizer = self.generator.tokenizer
         # The pipeline isn't safe to call from several threads at once.
         self.lock = threading.Lock()
 
     # ---------------- helpers ----------------
-    def info(self) -> dict:
-        return {
-            "model": config.MODEL_NAME,
-            "is_chat_model": config.IS_CHAT_MODEL,
-            "dtype": str(self.generator.model.dtype),
-            "device": str(self.generator.model.device),
-            "cuda_available": torch.cuda.is_available(),
-            "do_sample": config.DO_SAMPLE,
-        }
+    @property
+    def model(self):
+        return self.generator.model
 
-    def count_tokens(self, text: str) -> int:
-        return len(self.tokenizer(text, add_special_tokens=False)["input_ids"])
+    def engine_config(self) -> dict:
+        return {"engine": "hf"}
 
     def _gen_kwargs(self, max_new_tokens=None, temperature=None) -> dict:
         kwargs = {
@@ -82,6 +97,31 @@ class Engine:
             "queue_time_s": round(started - arrived, 3),
             "generation_time_s": round(gen_time, 3),
             "tokens_per_s": round(tokens / gen_time, 2) if gen_time > 0 else None,
+        }
+
+    # ---------------- timed run on the calling thread (benchmarks, profiling) ----------------
+    def generate_timed(self, prompt: str, max_new_tokens=None, temperature=None) -> dict:
+        """Runs generation on this thread (so profilers see every op) and returns exact
+        per-token timings: TTFT, TPOT and the gaps between tokens (ITL)."""
+        gen_kwargs = self._gen_kwargs(max_new_tokens, temperature)
+        timer = TokenTimer()
+        start = time.perf_counter()          # arrival: time waiting for the lock counts too
+        with self.lock:
+            started = time.perf_counter()
+            self._run_model(prompt, gen_kwargs, streamer=timer)
+            end = time.perf_counter()
+
+        t, n = timer.times, len(timer.tokens)
+        itl = [b - a for a, b in zip(t, t[1:])]
+        return {
+            "output": self.tokenizer.decode(timer.tokens, skip_special_tokens=True),
+            "generated_tokens": n,
+            "queue_time_s": round(started - start, 4),
+            "latency_s": round(end - start, 4),
+            "ttft_s": round(t[0] - start, 4) if t else None,
+            "tpot_ms": round((t[-1] - t[0]) / (n - 1) * 1000, 3) if n > 1 else None,
+            "itl_ms": [round(x * 1000, 3) for x in itl],
+            "tokens_per_s": round(n / (end - start), 2) if end > start else None,
         }
 
     # ---------------- streamed reply ----------------

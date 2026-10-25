@@ -1,0 +1,93 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "int4_wo",
+        "group_size": 128,
+        "targets": [
+          "experts",
+          "linear"
+        ],
+        "experts": 16,
+        "linear": 64,
+        "lm_head": 0,
+        "quantized_params": 6710886400,
+        "load_source": "cache",
+        "load_time_s": 1.1
+      },
+      "weight_memory": {
+        "weights_total_mb": 3797.3,
+        "weights_quantized_layers_mb": 3400.0,
+        "weights_other_mb": 397.3
+      },
+      "load_time_s": 1.7
+    },
+    "quantization": "int4_wo",
+    "weights_total_mb": 3797.3,
+    "avg_latency_s": 2.031,
+    "avg_ttft_s": 0.132,
+    "avg_tpot_ms": 30.129,
+    "avg_tokens_per_s": 31.522,
+    "gpu_peak_allocated_mb": 3868.4,
+    "gpu_allocated_before_mb": 3829.3,
+    "process_rss_mb": 2309.2
+  },
+  "runs": [
+    {
+      "output": "A short fact about space:\n\nThe temperature of space itself (the vacuum of interstellar space) is generally around 2.7 Kelvin (-270.45 degrees Celsius or -455.27 degrees Fahrenheit), thanks to the cosmic microwave background radiation that permeates the universe. Despite this low temperature,",
+      "generated_tokens": 64,
+      "latency_s": 2.0262,
+      "ttft_s": 0.1306,
+      "tpot_ms": 30.084,
+      "tokens_per_s": 31.59,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 31.244
+    },
+    {
+      "output": "A short fact about space:\n\nThe temperature of space itself, measured away from any heat source or body, is approximately 2.7 Kelvin (-270.45 degrees Celsius or -455.27 degrees Fahrenheit). This temperature is determined by the low thermal energy of the vacuum of space and the",
+      "generated_tokens": 64,
+      "latency_s": 2.0319,
+      "ttft_s": 0.1298,
+      "tpot_ms": 30.188,
+      "tokens_per_s": 31.5,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 35.837
+    },
+    {
+      "output": "A fascinating short fact about space is that it's not a total vacuum; it contains an extremely thin gas of particles: mostly hydrogen and helium, with some heavier elements. This cosmic plasma is so rarefied that for most practical purposes, it can be considered a vacuum in Earth's context. However, even in the",
+      "generated_tokens": 64,
+      "latency_s": 2.0408,
+      "ttft_s": 0.138,
+      "tpot_ms": 30.197,
+      "tokens_per_s": 31.36,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 31.413
+    },
+    {
+      "output": "Astronauts have reported seeing \"the veil\" from space, a phenomenon where the atmosphere appears to be a transparent, glowing ribbon stretching across the entire sky. This effect is due to the Earth's magnetic field, which channels charged particles from the solar wind around the planet, creating a glowing band known as the aur",
+      "generated_tokens": 64,
+      "latency_s": 2.0269,
+      "ttft_s": 0.1302,
+      "tpot_ms": 30.102,
+      "tokens_per_s": 31.58,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 31.547
+    },
+    {
+      "output": "Astronauts have reported seeing \"the veil\" from space, a phenomenon where the atmosphere appears to be a transparent, glowing ribbon stretching across the entire sky. This effect is due to the Earth's magnetic field interacting with solar winds, creating a shimmering, neon-like appearance known as auroras.",
+      "generated_tokens": 64,
+      "latency_s": 2.0268,
+      "ttft_s": 0.1319,
+      "tpot_ms": 30.074,
+      "tokens_per_s": 31.58,
+      "prompt": "Tell me a short fact about space (request 4)",
+      "itl_ms_max": 31.952
+    }
+  ]
+}

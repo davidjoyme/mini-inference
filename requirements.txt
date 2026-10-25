@@ -1,2 +1,9 @@
-fastapi 
-pydantic
+# Install PyTorch separately with the CUDA build that matches your GPU (see README), then:
+transformers>=5.0          # OLMoE experts stored as fused 3D tensors (QuantExperts relies on it)
+accelerate
+safetensors
+fastapi
+uvicorn
+httpx
+nvidia-ml-py               # GPU utilization and power in the metrics
+matplotlib                 # bench/plot_sweep.py

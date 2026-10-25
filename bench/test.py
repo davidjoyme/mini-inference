@@ -7,6 +7,10 @@ Defaults come from config.py; any of them can be overridden on the command line:
     python bench/test.py -n 10 -c 10              # 10 requests, all at once
     python bench/test.py --no-stream              # use /generate (no TTFT/TPOT)
     python bench/test.py --out results_c8.json    # save to a different file
+    python bench/test.py --prompt-words 1000      # long prompts sharing ~1000 words of text
+    python bench/test.py --prompt-words 1000 --unique-prompts   # same length, nothing shared
+    python bench/test.py --prompt-words 2000 --long-every 4 --unique-prompts
+                                                  # mixed: every 4th request has a long prompt
 
 Streaming mode (default) measures:
     TTFT - time to first token (includes queue time + prefill)
@@ -27,11 +31,20 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import config  # noqa: E402
+from bench.prompts import build_prompt as _build_prompt  # noqa: E402
+from engine.factory import engine_label  # noqa: E402
+
+
+# ---------------- Prompts ----------------
+def build_prompt(args, request_id):
+    # --long-every K: only every K-th request gets the long prompt (a mixed workload)
+    long = not args.long_every or request_id % args.long_every == 0
+    return _build_prompt(args.prompt, request_id, args.prompt_words if long else 0, args.unique_prompts)
 
 
 # ---------------- One non-streaming request ----------------
 async def send_request(client, sem, args, request_id, test_start):
-    payload = {"prompt": f"{args.prompt} (request {request_id})", "max_new_tokens": args.max_new_tokens}
+    payload = {"prompt": build_prompt(args, request_id), "max_new_tokens": args.max_new_tokens}
 
     async with sem:
         sent_at = time.perf_counter()
@@ -55,7 +68,7 @@ async def send_request(client, sem, args, request_id, test_start):
 
 # ---------------- One streaming request ----------------
 async def send_stream_request(client, sem, args, request_id, test_start):
-    payload = {"prompt": f"{args.prompt} (request {request_id})", "max_new_tokens": args.max_new_tokens}
+    payload = {"prompt": build_prompt(args, request_id), "max_new_tokens": args.max_new_tokens}
 
     async with sem:
         sent_at = time.perf_counter()
@@ -163,6 +176,31 @@ def summarize_memory(baseline, final, timeline):
     if baseline.get("process_rss_mb") is not None and summary["process_peak_rss_mb_sampled"] is not None:
         summary["process_rss_increase_mb"] = round(
             summary["process_peak_rss_mb_sampled"] - baseline["process_rss_mb"], 1)
+    # Utilization averaged over the run (sampled; needs NVML on the server for GPU fields)
+    for key in ("gpu_util_pct", "gpu_mem_bw_util_pct", "gpu_power_w", "process_cpu_pct"):
+        values = [s[key] for s in timeline if s.get(key) is not None]
+        if values:
+            summary[f"{key}_avg"] = round(sum(values) / len(values), 1)
+            summary[f"{key}_max"] = round(max(values), 1)
+    # Custom engine state (scheduler and KV cache), sampled while requests run
+    for key in ("batch_size", "running", "waiting", "kv_used_pct", "kv_reserved_pct",
+                "kv_waste_pct", "kv_fragmentation_pct"):
+        values = [s[key] for s in timeline if s.get(key) is not None]
+        if values:
+            summary[f"{key}_avg"] = round(sum(values) / len(values), 1)
+            summary[f"{key}_max"] = round(max(values), 1)
+    for key in ("steps", "preemptions", "padding_tokens", "decode_tokens", "prefill_tokens",
+                "prefix_hit_tokens", "prefix_query_tokens", "prefix_evictions",
+                "prefill_chunks", "mixed_steps"):
+        if final.get(key) is not None and baseline.get(key) is not None:
+            summary[key] = final[key] - baseline[key]          # during this run only
+    if summary.get("padding_tokens") is not None and summary.get("decode_tokens") is not None:
+        computed = summary["padding_tokens"] + summary["decode_tokens"]
+        summary["padding_waste_pct"] = round(summary["padding_tokens"] / computed * 100, 1) if computed else 0.0
+    if final.get("max_step_tokens") is not None:
+        summary["max_step_tokens"] = final["max_step_tokens"]      # largest forward pass so far
+    if summary.get("prefix_query_tokens"):
+        summary["prefix_hit_pct"] = round(summary["prefix_hit_tokens"] / summary["prefix_query_tokens"] * 100, 1)
     summary["samples"] = len(timeline)
     return summary
 
@@ -196,6 +234,12 @@ async def main():
     parser.add_argument("-c", "--concurrency", type=int, default=config.TEST_CONCURRENCY)
     parser.add_argument("--prompt", default=config.TEST_PROMPT)
     parser.add_argument("--max-new-tokens", type=int, default=config.TEST_MAX_NEW_TOKENS)
+    parser.add_argument("--long-every", type=int, default=0,
+                        help="mixed workload: only every K-th request gets --prompt-words (0 = all do)")
+    parser.add_argument("--unique-prompts", action="store_true",
+                        help="start every prompt differently, so prompts share no prefix")
+    parser.add_argument("--prompt-words", type=int, default=0,
+                        help="prepend about this many words of filler text to each prompt (0 = off)")
     parser.add_argument("--timeout", type=float, default=config.TEST_TIMEOUT_S)
     parser.add_argument("--out", default=config.TEST_OUTPUT_FILE)
     parser.add_argument("--stream", dest="stream", action="store_true", default=config.TEST_STREAM)
@@ -218,10 +262,15 @@ async def main():
             print(f"Could not reach {health_url} ({type(e).__name__}). Is the server running?")
             return
 
-        print(f"Server model: {server_info.get('model')} on {server_info.get('device')}")
+        quant = (server_info.get("quantization") or {}).get("method", "none")
+        label = engine_label(server_info)
+        print(f"Engine: {label}")
+        print(f"Server model: {server_info.get('model')} on {server_info.get('device')} "
+              f"(quantization: {quant}, weights: "
+              f"{(server_info.get('weight_memory') or {}).get('weights_total_mb', '?')} MB)")
         print(f"Sending {args.num_requests} requests to {args.url} "
               f"(concurrency={args.concurrency}, max_new_tokens={args.max_new_tokens}, "
-              f"stream={args.stream})\n")
+              f"prompt_words={args.prompt_words}, stream={args.stream})\n")
 
         base_url = args.url.rsplit("/", 1)[0]
         mem_baseline = None
@@ -268,6 +317,9 @@ async def main():
             "num_requests": args.num_requests,
             "concurrency": args.concurrency,
             "max_new_tokens": args.max_new_tokens,
+            "prompt_words": args.prompt_words,
+            "unique_prompts": args.unique_prompts,
+            "long_every": args.long_every,
             "prompt": args.prompt,
         },
         "total_time_s": round(total_time, 3),
@@ -294,7 +346,7 @@ async def main():
         print(f"{key:>22}: {value}")
 
     if mem_summary is not None:
-        print("\n===== Memory =====")
+        print("\n===== Resources =====")
         for key, value in mem_summary.items():
             if key == "baseline":
                 continue
