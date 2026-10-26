@@ -27,6 +27,7 @@ from engine.core.sampler import sample
 from engine.core.scheduler import Scheduler
 from engine.base import Engine
 from engine.model_loader import load_model
+from profiling.nvtx import nvtx_range
 
 
 class CustomEngine(Engine):
@@ -93,13 +94,16 @@ class CustomEngine(Engine):
             with self.lock:
                 while not self.scheduler.has_work():
                     self.lock.wait()
-                chunks = self.scheduler.schedule(time.perf_counter())
+                with nvtx_range("schedule"):
+                    chunks = self.scheduler.schedule(time.perf_counter())
             if not chunks:                          # static batching waiting to fill a batch
                 time.sleep(0.002)
                 continue
             try:
                 logits = self.runner.forward(chunks)
-                tokens = sample(logits, [r.params.temperature for r, _, _ in chunks]).tolist()
+                # .tolist() waits for the GPU to finish this step, so this range includes that wait
+                with nvtx_range("sample_and_sync"):
+                    tokens = sample(logits, [r.params.temperature for r, _, _ in chunks]).tolist()
             except Exception as e:                  # e.g. out of memory: fail this batch, keep serving
                 self.last_error = f"{type(e).__name__}: {e}"
                 print(f"[engine] step failed: {self.last_error}")
@@ -109,7 +113,7 @@ class CustomEngine(Engine):
                 continue
 
             now = time.perf_counter()
-            with self.lock:
+            with self.lock, nvtx_range("deliver"):
                 for (req, _, end), tok in zip(chunks, tokens):
                     req.num_computed = end
                     if end < req.total_len:          # chunked prefill: prompt not finished yet
@@ -267,6 +271,7 @@ class CustomEngine(Engine):
             "max_num_seqs": self.scheduler.max_num_seqs,
             "max_batched_tokens": config.MAX_BATCHED_TOKENS,
             "chunked_prefill": self.scheduler.chunked_prefill,
+            "moe_kernel": self.load_info.get("moe_kernel", "default"),
         }
 
     def stats(self):

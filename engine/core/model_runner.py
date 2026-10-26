@@ -34,6 +34,7 @@ class BatchMetadata:
         ids, positions, write_slots = [], [], []
         self.prefill, self.decode_rows, decode_ctx = [], [], []
         self.last_rows = []
+        self.context_tokens = 0     # keys/values attention reads this step (for bandwidth estimates)
         offset = 0
         for req, start, end in chunks:
             n = end - start
@@ -41,6 +42,7 @@ class BatchMetadata:
             positions.append(torch.arange(start, end))
             write_slots.append(cache.slots(req, start, end))
             ctx = cache.slots(req, 0, end)
+            self.context_tokens += end
             if n == 1 and start > 0:                       # decode
                 self.decode_rows.append(offset)
                 decode_ctx.append(ctx)
@@ -85,9 +87,11 @@ class ModelRunner:
     def forward(self, chunks, all_logits=False):
         """Run one step. Returns logits [num_chunks, vocab] for the last token of each chunk,
         or [num_tokens, vocab] for every token when all_logits=True (used for perplexity)."""
-        meta = BatchMetadata(chunks, self.cache, self.device)
+        with nvtx_range("prepare_batch"):                # Python bookkeeping before the GPU work
+            meta = BatchMetadata(chunks, self.cache, self.device)
+        # profiling/analyze.py parses this label: tokens, decode rows, prefill chunks, context read
         with nvtx_range(f"forward(T={meta.num_tokens}, decode={len(meta.decode_rows)}, "
-                        f"prefill={len(meta.prefill)})"):
+                        f"prefill={len(meta.prefill)}, ctx={meta.context_tokens})"):
             x = self.embed(meta.input_ids)                                       # [T, hidden]
             cos, sin = self.rotary(x, meta.positions[None])
             cos, sin = cos[0][:, None, :], sin[0][:, None, :]                    # [T, 1, D]

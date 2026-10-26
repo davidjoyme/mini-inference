@@ -49,6 +49,17 @@ def load_model():
         load_info = {"quantization": {**method.describe(), "targets": config.QUANT_TARGETS, **stats}}
 
     from engine.quantization.loader import weight_memory
+    # Fused MoE kernels (kernels/fused_moe): swap the experts modules, sharing their weights
+    load_info["moe_kernel"] = "default"
+    if config.MOE_KERNEL == "triton":
+        from kernels.fused_moe import apply_fused_moe
+        swapped = apply_fused_moe(generator.model)
+        load_info["moe_kernel"] = "triton" if swapped else "default"
+        print(f"Fused MoE kernel: {swapped} experts modules replaced"
+              + ("" if swapped else " (none eligible, e.g. quantized experts: using the default path)"))
+    elif config.MOE_KERNEL not in ("default", "", None):
+        raise ValueError(f"Unknown MOE_KERNEL '{config.MOE_KERNEL}' (use default or triton)")
+
     load_info["memory"] = weight_memory(generator.model)
     load_info["load_time_s"] = round(time.perf_counter() - start, 1)
 
@@ -72,6 +83,7 @@ def print_diagnostics(generator, load_info):
     print("Model dtype:", generator.model.dtype)
     cfg = generator.model.config
     print("Attention implementation:", getattr(cfg, "_attn_implementation", None))
+    print("MoE kernel:", load_info.get("moe_kernel", "default"))
     print("Experts implementation:", getattr(cfg, "_experts_implementation", None),
           "(replaced by QuantExperts' per-expert loop)" if quantization_enabled() else "")
     device_map = getattr(generator.model, "hf_device_map", None)

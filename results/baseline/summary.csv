@@ -1,0 +1,5 @@
+table,file,engine,conc,quant,weights_MB,gpu_peak_MB,TTFT_s,TPOT_ms,tok/s,latency_s,throughput_tok/s,avg_batch,preempt,prefix_hit_%,max_gap_ms
+engine,custom_bs1.json,continuous/paged,1,none,13197.3,21712.7,0.023,11.388,86.67,0.915,86.73,0.99,0,,18.645
+engine,custom_bs16.json,continuous/paged,16,none,13197.3,21502.5,0.058,22.11,44.324,1.757,604.1,12.57,0,,40.467
+engine,custom_bs64.json,continuous/paged,64,none,13197.3,21400.0,0.101,28.148,34.363,2.361,1521.49,40.07,0,,76.602
+engine,hf_bs1.json,hf,1,none,13197.3,13344.4,0.024,7.068,137.269,0.613,137.34,,,,14.129

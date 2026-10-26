@@ -1,0 +1,90 @@
+{
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "default_impl": "grouped_mm",
+  "rows": [
+    {
+      "tokens": 1,
+      "default_ms": 0.3044,
+      "fused_ms": 0.1859,
+      "speedup": 1.64,
+      "kernels_default": 45,
+      "kernels_fused": 37,
+      "experts_touched": 8,
+      "fused_gbs": 541.6,
+      "fused_pct_of_peak": 30.2,
+      "rel_error": 0.00561
+    },
+    {
+      "tokens": 4,
+      "default_ms": 0.6017,
+      "fused_ms": 0.2913,
+      "speedup": 2.07,
+      "kernels_default": 81,
+      "kernels_fused": 37,
+      "experts_touched": 26,
+      "fused_gbs": 1123.3,
+      "fused_pct_of_peak": 62.7,
+      "rel_error": 0.00529
+    },
+    {
+      "tokens": 16,
+      "default_ms": 1.2899,
+      "fused_ms": 0.554,
+      "speedup": 2.33,
+      "kernels_default": 151,
+      "kernels_fused": 37,
+      "experts_touched": 61,
+      "fused_gbs": 1385.4,
+      "fused_pct_of_peak": 77.3,
+      "rel_error": 0.00536
+    },
+    {
+      "tokens": 64,
+      "default_ms": 1.585,
+      "fused_ms": 0.6012,
+      "speedup": 2.64,
+      "kernels_default": 157,
+      "kernels_fused": 37,
+      "experts_touched": 64,
+      "fused_gbs": 1339.5,
+      "fused_pct_of_peak": 74.7,
+      "rel_error": 0.00535
+    },
+    {
+      "tokens": 256,
+      "default_ms": 1.488,
+      "fused_ms": 0.6412,
+      "speedup": 2.32,
+      "kernels_default": 195,
+      "kernels_fused": 37,
+      "experts_touched": 64,
+      "fused_gbs": 1256.0,
+      "fused_pct_of_peak": 70.1,
+      "rel_error": 0.00568
+    },
+    {
+      "tokens": 1024,
+      "default_ms": 2.0956,
+      "fused_ms": 0.8296,
+      "speedup": 2.53,
+      "kernels_default": 174,
+      "kernels_fused": 54,
+      "experts_touched": 64,
+      "fused_gbs": 970.8,
+      "fused_pct_of_peak": 54.2,
+      "rel_error": 0.00538
+    },
+    {
+      "tokens": 4096,
+      "default_ms": 4.6182,
+      "fused_ms": 2.3061,
+      "speedup": 2.0,
+      "kernels_default": 174,
+      "kernels_fused": 54,
+      "experts_touched": 64,
+      "fused_gbs": 349.2,
+      "fused_pct_of_peak": 19.5,
+      "rel_error": 0.00537
+    }
+  ]
+}

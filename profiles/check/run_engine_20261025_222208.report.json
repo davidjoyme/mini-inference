@@ -1,0 +1,65 @@
+{
+  "trace": "profiles/check/run_engine_20261025_222208.json",
+  "gpu_trace": true,
+  "steps": 17,
+  "loop_wall_ms": 586.48,
+  "loop_phases_pct": {
+    "schedule": 0.0,
+    "prepare_batch": 2.2,
+    "forward": 95.5,
+    "sample_and_sync": 2.0,
+    "deliver": 0.1,
+    "idle / waiting for requests / locks": 0.2
+  },
+  "avg_step_ms": 34.499,
+  "forward_cpu_pct": {
+    "attention": 7.9,
+    "moe": 68.8,
+    "rest of the layers": 23.4
+  },
+  "gpu_busy_pct": 27.4,
+  "gpu_kernel_count": 38403,
+  "avg_kernel_us": 4.15,
+  "gpu_kernel_kinds_pct": {
+    "matmuls (GEMM)": 76.3,
+    "elementwise / other": 8.2,
+    "gather / index / copy": 7.6,
+    "dtype casts": 6.2,
+    "attention kernels": 1.7
+  },
+  "gpu_time_by_region_pct": {
+    "moe": 74.9,
+    "rest of the layers": 20.8,
+    "attention": 4.1,
+    "sampling": 0.1
+  },
+  "decode_steps": [
+    {
+      "batch": "2-4",
+      "steps": 14,
+      "avg_batch": 4.0,
+      "step_ms": 32.833,
+      "tokens_per_s": 121.8,
+      "gpu_ms": 8.442,
+      "gpu_busy_in_step_pct": 25.7,
+      "est_bandwidth_gbs": 722.9,
+      "est_bandwidth_pct_of_peak": 40.3
+    }
+  ],
+  "prefill_or_mixed_steps": 2,
+  "model": {
+    "gpu_name": "NVIDIA GeForce RTX 5090",
+    "peak_bandwidth_gbs": 1792,
+    "num_experts": 64,
+    "experts_per_token": 8,
+    "weights_read_per_step_mb_max": 13000.8
+  },
+  "hints": [
+    "GPU idle 73% of the time: CPU-side work (Python, scheduling, kernel launches) is holding it back. Look at CUDA graphs and overlapping scheduling with GPU work.",
+    "Launching the forward pass takes longer than waiting for the GPU: the step is launch-bound (too many small kernels). CUDA graphs or fused kernels help most here.",
+    "Average kernel runs only 4.15 us: many tiny kernels, so launch overhead matters. Fewer, fused kernels (e.g. a fused MoE kernel) would help.",
+    "MoE layers take 74.9% of the time: a fused/grouped MoE kernel is the biggest single target."
+  ],
+  "engine_label": "continuous/paged",
+  "throughput_tok_s": 4.16
+}

@@ -113,6 +113,12 @@ MAX_NEW_TOKENS = 100
 DO_SAMPLE = False      # False = greedy (deterministic), True = random sampling
 TEMPERATURE = 0.7      # only used when DO_SAMPLE is True
 
+# ---------------- Custom kernels ----------------
+# MOE_KERNEL: how the Mixture-of-Experts layers run (both engines)
+#   "default"  transformers' experts code (on this GPU: one small matmul per expert)
+#   "triton"   kernels/fused_moe: all experts in two Triton kernels per layer (unquantized only)
+MOE_KERNEL = os.environ.get("MOE_KERNEL", "default")
+
 # ---------------- Server ----------------
 HOST = "127.0.0.1"     # "0.0.0.0" to allow access from other machines
 PORT = int(os.environ.get("PORT", 8000))   # PORT=8100 python main.py to override

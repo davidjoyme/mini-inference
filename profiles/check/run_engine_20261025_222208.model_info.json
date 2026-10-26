@@ -1,0 +1,9 @@
+{
+  "expert_weight_bytes": 12884901888,
+  "other_weight_bytes": 747377152,
+  "num_experts": 64,
+  "experts_per_token": 8,
+  "kv_bytes_per_token": 131072,
+  "gpu_name": "NVIDIA GeForce RTX 5090",
+  "peak_bandwidth_gbs": 1792
+}

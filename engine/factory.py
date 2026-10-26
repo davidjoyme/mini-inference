@@ -21,11 +21,12 @@ def create_engine():
 
 def engine_label(info: dict) -> str:
     """Short name for result tables and charts, in the same format bench/sweep.py accepts:
-    'hf', 'continuous/paged', 'continuous/paged+prefix+kv-fp8', ..."""
+    'hf', 'hf+fused-moe', 'continuous/paged', 'continuous/paged+fused-moe+prefix+kv-fp8', ..."""
     e = info.get("engine") or {}
+    fused = "+fused-moe" if e.get("moe_kernel") == "triton" else ""
     if e.get("engine") != "custom":
-        return "hf"
-    label = f"{e.get('scheduler')}/{e.get('kv_cache')}"
+        return "hf" + fused
+    label = f"{e.get('scheduler')}/{e.get('kv_cache')}" + fused
     if e.get("prefix_caching"):
         label += "+prefix"
     if e.get("kv_cache_dtype") in ("fp8", "int8"):

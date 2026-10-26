@@ -126,7 +126,7 @@ def main():
         else:
             print(f"skipping {f}: not a recognised results file")
 
-    titles = {"engine": "Single-request (run_engine.py)", "load": "Server under load (test.py)",
+    titles = {"engine": "Direct engine runs, no HTTP (run_engine.py)", "load": "Server under load (test.py)",
               "quality": "Quality (eval_quality.py)"}
     for kind, rows in groups.items():
         print(f"\n===== {titles[kind]} =====")

@@ -1,0 +1,147 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 2.6,
+      "engine": {
+        "engine": "custom",
+        "scheduler": "continuous",
+        "kv_cache": "paged",
+        "kv_block_size": 16,
+        "kv_watermark": 0.01,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 67840,
+        "kv_cache_mb": 8480.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false
+      }
+    },
+    "engine_label": "continuous/paged",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 8,
+    "weights_total_mb": 13197.3,
+    "wall_time_s": 7.322,
+    "throughput_tok_s": 86.73,
+    "avg_latency_s": 0.915,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.023,
+    "avg_tpot_ms": 11.388,
+    "max_itl_ms": 18.645,
+    "avg_tokens_per_s": 86.67,
+    "gpu_peak_allocated_mb": 21712.7,
+    "gpu_allocated_before_mb": 21709.4,
+    "process_rss_mb": 1742.4,
+    "steps": 635,
+    "preemptions": 0,
+    "padding_tokens": 0,
+    "prefill_chunks": 0,
+    "mixed_steps": 0,
+    "avg_batch_size": 0.99
+  },
+  "runs": [
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential habitable planets is likely immense, though the exact count remains unknown and is a subject of ongoing research.",
+      "generated_tokens": 60,
+      "queue_time_s": 0.0002,
+      "latency_s": 0.6944,
+      "ttft_s": 0.0231,
+      "tpot_ms": 11.377,
+      "tokens_per_s": 86.41,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 11.707
+    },
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential habitable planets is likely immense, though the exact count remains unknown and is a subject of ongoing research in astrophysics and astrobiology.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0,
+      "latency_s": 0.7728,
+      "ttft_s": 0.0227,
+      "tpot_ms": 11.365,
+      "tokens_per_s": 86.7,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 11.632
+    },
+    {
+      "output": "A short fact about space:\n\n**The universe is expanding faster than the speed of light.**\n\nThis surprising revelation comes from observations of distant galaxies receding from us, primarily due to the effects of dark energy, which is a mysterious force driving the accelerated expansion of the universe. While nothing with mass can travel faster than the speed of light according to the theory of relativity, the expansion of space itself does not adhere to this limit. This cosmic speed limit remains intact within any given galaxy or local region of space, but the overall expansion of the universe exceeds this speed due to the influence of dark energy. This phenomenon was first",
+      "generated_tokens": 128,
+      "queue_time_s": 0.0,
+      "latency_s": 1.464,
+      "ttft_s": 0.0224,
+      "tpot_ms": 11.352,
+      "tokens_per_s": 87.43,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 11.654
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas from burps cannot rise from the stomach and instead remains trapped, leading to discomfort and potential bloating. This is because the usual force that helps burps rise and escape is absent in zero-gravity environments.",
+      "generated_tokens": 62,
+      "queue_time_s": 0.0,
+      "latency_s": 0.7256,
+      "ttft_s": 0.0225,
+      "tpot_ms": 11.526,
+      "tokens_per_s": 85.44,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 18.645
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can float inside the spacecraft, leading to potential blockages in the digestive system. If an astronaut tries to burp, the gas cannot escape upwards and might cause discomfort or pain, so they must expel gas through their mouth or nose, often resulting in a more forceful release.",
+      "generated_tokens": 84,
+      "queue_time_s": 0.0,
+      "latency_s": 0.9664,
+      "ttft_s": 0.0227,
+      "tpot_ms": 11.37,
+      "tokens_per_s": 86.92,
+      "prompt": "Tell me a short fact about space (request 4)",
+      "itl_ms_max": 11.546
+    },
+    {
+      "output": "**Short Fact about Space:**\n\n**The Speed of Light:** The speed of light in a vacuum is approximately 299,792 kilometers per second (about 186,282 miles per second). This speed is considered the universal speed limit for matter and energy, making it the ultimate boundary for how fast information or physical objects can travel within our universe.",
+      "generated_tokens": 70,
+      "queue_time_s": 0.0,
+      "latency_s": 0.8083,
+      "ttft_s": 0.0227,
+      "tpot_ms": 11.386,
+      "tokens_per_s": 86.6,
+      "prompt": "Tell me a short fact about space (request 5)",
+      "itl_ms_max": 11.678
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can float inside the spacecraft, leading to potential blockages in the digestive system. If an astronaut tries to burp, the gas cannot escape upwards and might cause discomfort or pain, so they must expel it through their mouth or nose, often resulting in a belch.",
+      "generated_tokens": 82,
+      "queue_time_s": 0.0,
+      "latency_s": 0.9436,
+      "ttft_s": 0.0227,
+      "tpot_ms": 11.37,
+      "tokens_per_s": 86.9,
+      "prompt": "Tell me a short fact about space (request 6)",
+      "itl_ms_max": 11.532
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can float inside the spacecraft, leading to potential blockages in the digestive system. If an astronaut tries to burp, the gas cannot escape upward, so it simply remains in the body until it finds its way out through the mouth, often in an undignified manner.",
+      "generated_tokens": 82,
+      "queue_time_s": 0.0,
+      "latency_s": 0.943,
+      "ttft_s": 0.0227,
+      "tpot_ms": 11.361,
+      "tokens_per_s": 86.96,
+      "prompt": "Tell me a short fact about space (request 7)",
+      "itl_ms_max": 11.56
+    }
+  ]
+}

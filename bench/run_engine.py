@@ -15,6 +15,7 @@ Run from the project root:
     python bench/run_engine.py --engine custom -n 32 -c 16 --kv-dtype fp8
     python bench/run_engine.py --engine custom -n 32 -c 16 --prompt-words 2000 --long-every 4 \
         --unique-prompts --chunked-prefill on --max-batched-tokens 512
+    python bench/run_engine.py --engine custom -n 64 -c 64 --moe-kernel triton   # fused MoE kernels
     python bench/run_engine.py --profile torch              # PyTorch profiler trace
     bash profiling/scripts/nsys.sh                          # Nsight Systems timeline
 """
@@ -59,6 +60,8 @@ def main():
                         help="start every prompt differently, so prompts share no prefix")
     parser.add_argument("--long-every", type=int, default=0,
                         help="mixed workload: only every K-th request gets --prompt-words (0 = all do)")
+    parser.add_argument("--moe-kernel", default=None, choices=["default", "triton"],
+                        help="override MOE_KERNEL: 'triton' = fused MoE kernels (both engines)")
     parser.add_argument("--chunked-prefill", default=None, choices=["on", "off"],
                         help="override CHUNKED_PREFILL (custom engine)")
     parser.add_argument("--max-batched-tokens", type=int, default=None,
@@ -68,7 +71,12 @@ def main():
     parser.add_argument("--prefix-caching", default=None, choices=["on", "off"],
                         help="override PREFIX_CACHING (custom engine, paged)")
     parser.add_argument("--profile", choices=["none", "torch"], default="none",
-                        help="'torch' wraps the measured runs in the PyTorch profiler")
+                        help="'torch' wraps the measured runs in the PyTorch profiler and prints a "
+                             "bottleneck report (profiling/analyze.py)")
+    parser.add_argument("--profile-dir", default=config.PROFILE_OUTPUT_DIR,
+                        help="where the trace and report go")
+    parser.add_argument("--profile-detail", action="store_true",
+                        help="also record tensor shapes and memory (much bigger traces)")
     parser.add_argument("--quant", default=None, choices=["none", "int8_wo", "int4_wo", "fp8"],
                         help="override QUANTIZATION from config.py")
     parser.add_argument("--engine", default=None, choices=["hf", "custom"], help="override ENGINE")
@@ -87,6 +95,8 @@ def main():
         config.PREFIX_CACHING = args.prefix_caching == "on"
     if args.chunked_prefill:
         config.CHUNKED_PREFILL = args.chunked_prefill == "on"
+    if args.moe_kernel:
+        config.MOE_KERNEL = args.moe_kernel
     if args.max_batched_tokens:
         config.MAX_BATCHED_TOKENS = args.max_batched_tokens
     if config.ENGINE == "hf" and args.concurrency > 1:
@@ -105,7 +115,8 @@ def main():
 
     if args.profile == "torch":
         from profiling.torch_profiler import torch_profile
-        profiler_ctx = torch_profile("run_engine")
+        profiler_ctx = torch_profile("run_engine", out_dir=args.profile_dir,
+                                     record_shapes=args.profile_detail, profile_memory=args.profile_detail)
     else:
         profiler_ctx = contextlib.nullcontext()
 
@@ -122,13 +133,14 @@ def main():
         return r
 
     start = time.perf_counter()
-    with profiler_ctx:
+    with profiler_ctx as profile_result:
         if args.concurrency <= 1:
             results = [task(i) for i in range(args.num_prompts)]
         else:
             with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
                 results = list(pool.map(task, range(args.num_prompts)))
-    wall = time.perf_counter() - start
+        # measured inside the profiler block, so saving the trace isn't counted as run time
+        wall = time.perf_counter() - start
 
     mem_after = metrics.memory_snapshot()
     stats_after = engine.stats()
@@ -172,6 +184,22 @@ def main():
     for key, value in summary.items():
         if key != "engine":
             print(f"{key:>24}: {value}")
+
+    if args.profile == "torch":
+        from profiling.analyze import analyze, model_profile, print_report
+        trace = profile_result["trace_path"]
+        info = model_profile(engine)
+        report = analyze(trace, info)
+        report["engine_label"] = summary["engine_label"]
+        report["throughput_tok_s"] = summary["throughput_tok_s"]
+        print_report(report, summary["engine_label"])
+        base = os.path.splitext(trace)[0]
+        with open(base + ".report.json", "w") as f:
+            json.dump(report, f, indent=2)
+        with open(base + ".model_info.json", "w") as f:
+            json.dump(info, f, indent=2)
+        print(f"\nReport saved to {base}.report.json")
+        summary["profile_report"] = base + ".report.json"
 
     if args.out:
         with open(args.out, "w") as f:
