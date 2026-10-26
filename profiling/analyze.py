@@ -23,7 +23,6 @@ import json
 import os
 import re
 import sys
-from bisect import bisect_right
 from collections import defaultdict
 
 # Peak memory bandwidth (GB/s) of common GPUs, for the bandwidth estimate.
@@ -203,41 +202,38 @@ def analyze(trace_path, model_info=None):
         report["gpu_kernel_kinds_pct"] = {k: pct(v, ktotal) for k, v in
                                           sorted(kinds.items(), key=lambda kv: -kv[1])}
 
-        # attribute each kernel to the labelled region that launched it
-        launches = {}
+        # attribute each kernel to the labelled region that launched it: one pass per thread
+        # in time order, keeping a stack of the labelled regions open at each moment
+        launches = defaultdict(list)                     # tid -> [(launch ts, correlation id)]
         for e in events:
             if e.get("cat") in ("cuda_runtime", "cuda_driver") and "args" in e:
                 corr = e["args"].get("correlation")
                 if corr is not None:
-                    launches[corr] = (e["tid"], e["ts"])
+                    launches[e["tid"]].append((e["ts"], corr))
         by_tid = defaultdict(list)
         for e in ann:
             by_tid[e["tid"]].append(e)
-        index = {}
-        for tid, lst in by_tid.items():
-            lst.sort(key=lambda e: e["ts"])
-            index[tid] = ([e["ts"] for e in lst], lst)
-
-        def regions_at(tid, ts):
-            if tid not in index:
-                return []
-            starts, lst = index[tid]
-            i = bisect_right(starts, ts)
-            found = []
-            for e in reversed(lst[max(0, i - 400):i]):        # annotations open at ts
-                if e["ts"] + e["dur"] >= ts:
-                    found.append(e)
-            return found
+        regions_of = {}                                  # correlation id -> open regions (innermost last)
+        for tid, launch_list in launches.items():
+            lst = sorted(by_tid.get(tid, []), key=lambda e: e["ts"])
+            launch_list.sort()
+            stack, i = [], 0
+            for ts, corr in launch_list:
+                while i < len(lst) and lst[i]["ts"] <= ts:
+                    stack = [r for r in stack if r["ts"] + r["dur"] > lst[i]["ts"]]   # drop ended
+                    stack.append(lst[i])
+                    i += 1
+                # regions still open at the launch (a region ending exactly now doesn't count)
+                stack = [r for r in stack if r["ts"] + r["dur"] > ts]
+                regions_of[corr] = stack
 
         region_time = defaultdict(float)
         for k in kernels:
-            corr = k.get("args", {}).get("correlation")
-            tid, ts = launches.get(corr, (None, None))
-            open_regions = regions_at(tid, ts) if tid is not None else []
-            names = [r["name"].split("(")[0] for r in open_regions]
+            open_regions = regions_of.get(k.get("args", {}).get("correlation"), [])
+            names = {r["name"].split("(")[0] for r in open_regions}
             if "attention" in names:
                 region = "attention"
-            elif "moe" in names or "experts" in names:
+            elif names & {"moe", "experts", "fused_moe"}:
                 region = "moe"
             elif "forward" in names:
                 region = "rest of the layers"
