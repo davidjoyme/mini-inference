@@ -9,7 +9,9 @@ requests apart; it reads each request's keys/values from the KV cache through sl
 
     prefill chunk (a new or recomputed prompt): causal attention over its own tokens
     decode tokens (1 new token per request): batched into ONE attention call, each request
-    attending to its own cached context (padded to the longest, with a mask)
+    attending to its own cached context. Two backends (ATTN_BACKEND):
+        sdpa    gather every request's keys/values into a padded copy, then PyTorch SDPA with a mask
+        triton  kernels/paged_attention: reads keys/values in place through the page tables
 
 This file reuses the transformers model's modules and weights (so quantized layers work
 as-is) but replaces its attention and cache handling. Written for OLMoE
@@ -29,27 +31,32 @@ def rotate_half(x):
 class BatchMetadata:
     """Everything attention needs for this step, built once and reused by every layer."""
 
-    def __init__(self, chunks, cache, device):
+    def __init__(self, chunks, cache, device, attn_backend="sdpa"):
         # chunks: list of (request, start_position, end_position) for the tokens fed this step
         ids, positions, write_slots = [], [], []
-        self.prefill, self.decode_rows, decode_ctx = [], [], []
+        self.prefill, self.decode_rows, decode_ctx, decode_entries = [], [], [], []
         self.last_rows = []
         self.context_tokens = 0     # keys/values attention reads this step (for bandwidth estimates)
+        self.decode_tables = None   # paged-kernel page tables (ATTN_BACKEND=triton)
         offset = 0
         for req, start, end in chunks:
             n = end - start
             ids.extend(req.all_ids[start:end])
             positions.append(torch.arange(start, end))
             write_slots.append(cache.slots(req, start, end))
-            ctx = cache.slots(req, 0, end)
             self.context_tokens += end
             if n == 1 and start > 0:                       # decode
                 self.decode_rows.append(offset)
-                decode_ctx.append(ctx)
+                if attn_backend == "triton":
+                    decode_entries.append((req, end))      # the kernel reads the page table itself
+                else:
+                    decode_ctx.append(cache.slots(req, 0, end))
             else:                                          # prefill (or recompute)
-                self.prefill.append((offset, n, start, ctx.to(device)))
+                self.prefill.append((offset, n, start, cache.slots(req, 0, end).to(device)))
             offset += n
             self.last_rows.append(offset - 1)
+        if decode_entries:
+            self.decode_tables = cache.decode_tables(decode_entries, device)
 
         self.num_tokens = offset
         self.input_ids = torch.tensor(ids, dtype=torch.long, device=device)
@@ -70,9 +77,15 @@ class BatchMetadata:
 
 
 class ModelRunner:
-    def __init__(self, model, cache):
+    def __init__(self, model, cache, attn_backend="sdpa"):
         self.model = model
         self.cache = cache
+        if attn_backend not in ("sdpa", "triton"):
+            raise ValueError(f"Unknown ATTN_BACKEND '{attn_backend}' (use sdpa or triton)")
+        self.attn_backend = attn_backend
+        if attn_backend == "triton":
+            from kernels.paged_attention.decode_triton import paged_decode_attention
+            self._paged_decode = paged_decode_attention
         cfg = model.config
         self.num_heads = cfg.num_attention_heads
         self.num_kv_heads = getattr(cfg, "num_key_value_heads", None) or self.num_heads
@@ -88,7 +101,7 @@ class ModelRunner:
         """Run one step. Returns logits [num_chunks, vocab] for the last token of each chunk,
         or [num_tokens, vocab] for every token when all_logits=True (used for perplexity)."""
         with nvtx_range("prepare_batch"):                # Python bookkeeping before the GPU work
-            meta = BatchMetadata(chunks, self.cache, self.device)
+            meta = BatchMetadata(chunks, self.cache, self.device, self.attn_backend)
         # profiling/analyze.py parses this label: tokens, decode rows, prefill chunks, context read
         with nvtx_range(f"forward(T={meta.num_tokens}, decode={len(meta.decode_rows)}, "
                         f"prefill={len(meta.prefill)}, ctx={meta.context_tokens})"):
@@ -137,7 +150,14 @@ class ModelRunner:
                                                        scale=attn.scaling, enable_gqa=gqa)
                 out[offset:offset + n] = o[0].transpose(0, 1)
 
-            if len(meta.decode_rows):
+            if meta.decode_tables is not None:      # paged decode kernel: reads the cache in place
+                table, lens, page, max_len = meta.decode_tables
+                c = self.cache
+                out[meta.decode_rows] = self._paged_decode(
+                    q[meta.decode_rows], c.k[layer_idx], c.v[layer_idx], table, lens, page, attn.scaling,
+                    max_len, k_scale=None if c.k_scale is None else c.k_scale[layer_idx],
+                    v_scale=None if c.v_scale is None else c.v_scale[layer_idx])
+            elif len(meta.decode_rows):
                 qd = q[meta.decode_rows][:, :, None, :]                          # [B, H, 1, D]
                 kc, vc = self.cache.gather(layer_idx, meta.decode_idx)           # [B, L, KV, D]
                 kd, vd = kc.transpose(1, 2), vc.transpose(1, 2)                  # [B, KV, L, D]

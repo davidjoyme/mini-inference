@@ -135,6 +135,8 @@ def main():
     parser.add_argument("--engine", default=None, choices=["hf", "custom"])
     parser.add_argument("--scheduler", default=None, choices=["sequential", "static", "continuous"])
     parser.add_argument("--kv-cache", default=None, choices=["contiguous", "paged"])
+    parser.add_argument("--attn-backend", default=None, choices=["sdpa", "triton"],
+                        help="override ATTN_BACKEND: 'triton' = paged decode-attention kernel (custom engine)")
     parser.add_argument("--moe-kernel", default=None, choices=["default", "triton"],
                         help="override MOE_KERNEL")
     parser.add_argument("--kv-dtype", default=None, choices=["auto", "fp8", "int8"],
@@ -154,6 +156,8 @@ def main():
         config.KV_CACHE_DTYPE = args.kv_dtype
     if args.moe_kernel:
         config.MOE_KERNEL = args.moe_kernel
+    if args.attn_backend:
+        config.ATTN_BACKEND = args.attn_backend
     config.DO_SAMPLE = False   # greedy, so runs are comparable
     engine = create_engine()
     method = engine.info()["quantization"].get("method", "none")

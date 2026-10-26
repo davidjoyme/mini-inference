@@ -14,7 +14,8 @@ Engine variants are written as "hf" (transformers, one request at a time) or
 "continuous/paged", "continuous/paged+prefix", "continuous/paged+kv-fp8+prefix".
 Options: +prefix (prefix caching, paged only), +kv-fp8 / +kv-int8 (KV cache quantization),
          +chunked (chunked prefill), +budget-N (MAX_BATCHED_TOKENS = N tokens per step),
-         +fused-moe (Triton fused MoE kernels; also works as hf+fused-moe).
+         +fused-moe (Triton fused MoE kernels; also works as hf+fused-moe),
+         +paged-attn (Triton paged decode-attention kernel).
 
 Everything is saved under sweeps/<timestamp>/:
   summary.csv            one row per run (written as it goes, so a crash keeps earlier rows)
@@ -92,7 +93,7 @@ def engine_env(spec):
                  f"[+prefix][+kv-fp8|+kv-int8]")
     env = {"ENGINE": "custom", "SCHEDULER": scheduler, "KV_CACHE": kv,
            "PREFIX_CACHING": "0", "KV_CACHE_DTYPE": "auto", "CHUNKED_PREFILL": "0",
-           "MOE_KERNEL": "default"}
+           "MOE_KERNEL": "default", "ATTN_BACKEND": "sdpa"}
     for opt in options:
         if opt == "prefix":
             if kv != "paged":
@@ -104,11 +105,13 @@ def engine_env(spec):
             env["CHUNKED_PREFILL"] = "1"
         elif opt == "fused-moe":
             env["MOE_KERNEL"] = "triton"
+        elif opt == "paged-attn":
+            env["ATTN_BACKEND"] = "triton"
         elif opt.startswith("budget-") and opt[7:].isdigit():
             env["MAX_BATCHED_TOKENS"] = opt[7:]
         else:
             sys.exit(f"Unknown option '+{opt}' in '{spec}' "
-                     f"(use +prefix, +kv-fp8, +kv-int8, +chunked, +budget-N, +fused-moe)")
+                     f"(use +prefix, +kv-fp8, +kv-int8, +chunked, +budget-N, +fused-moe, +paged-attn)")
     return env
 
 

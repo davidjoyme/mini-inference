@@ -13,9 +13,11 @@ Run from the project root:
     python bench/run_engine.py --engine custom --scheduler static -n 32 -c 16
     python bench/run_engine.py --engine custom -n 32 -c 16 --prompt-words 1000 --prefix-caching on
     python bench/run_engine.py --engine custom -n 32 -c 16 --kv-dtype fp8
+    python bench/run_engine.py --engine custom -n 32 -c 16 --kv-tokens 65536      # fixed KV pool (shared GPU)
     python bench/run_engine.py --engine custom -n 32 -c 16 --prompt-words 2000 --long-every 4 \
         --unique-prompts --chunked-prefill on --max-batched-tokens 512
     python bench/run_engine.py --engine custom -n 64 -c 64 --moe-kernel triton   # fused MoE kernels
+    python bench/run_engine.py --engine custom -n 16 -c 16 --prompt-words 2000 --attn-backend triton  # paged attention
     python bench/run_engine.py --profile torch              # PyTorch profiler trace
     bash profiling/scripts/nsys.sh                          # Nsight Systems timeline
 """
@@ -29,6 +31,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 # Make the project root importable when run as `python bench/run_engine.py`
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import torch  # noqa: E402
 
 import config  # noqa: E402
 from bench.prompts import build_prompt  # noqa: E402
@@ -60,12 +64,16 @@ def main():
                         help="start every prompt differently, so prompts share no prefix")
     parser.add_argument("--long-every", type=int, default=0,
                         help="mixed workload: only every K-th request gets --prompt-words (0 = all do)")
+    parser.add_argument("--attn-backend", default=None, choices=["sdpa", "triton"],
+                        help="override ATTN_BACKEND: 'triton' = paged decode-attention kernel (custom engine)")
     parser.add_argument("--moe-kernel", default=None, choices=["default", "triton"],
                         help="override MOE_KERNEL: 'triton' = fused MoE kernels (both engines)")
     parser.add_argument("--chunked-prefill", default=None, choices=["on", "off"],
                         help="override CHUNKED_PREFILL (custom engine)")
     parser.add_argument("--max-batched-tokens", type=int, default=None,
                         help="override MAX_BATCHED_TOKENS (per-step token budget)")
+    parser.add_argument("--kv-tokens", type=int, default=None,
+                        help="fix the KV pool size (KV_CACHE_TOKENS) so runs are comparable on a shared GPU")
     parser.add_argument("--kv-dtype", default=None, choices=["auto", "fp8", "int8"],
                         help="override KV_CACHE_DTYPE (custom engine)")
     parser.add_argument("--prefix-caching", default=None, choices=["on", "off"],
@@ -91,12 +99,21 @@ def main():
             setattr(config, name, flag)
     if args.kv_dtype:
         config.KV_CACHE_DTYPE = args.kv_dtype
+    if args.kv_tokens:
+        config.KV_CACHE_TOKENS = args.kv_tokens
+    if config.ENGINE == "custom" and not (config.KV_CACHE_TOKENS or config.KV_CACHE_MB) and torch.cuda.is_available():
+        free, total = torch.cuda.mem_get_info()
+        if (total - free) / 1024 ** 3 > 1.0:
+            print(f"Note: {(total - free) / 1024 ** 3:.1f} GB of the GPU is already in use (other processes?), "
+                  f"so the automatic KV pool will be smaller. Use --kv-tokens N for comparable runs.")
     if args.prefix_caching:
         config.PREFIX_CACHING = args.prefix_caching == "on"
     if args.chunked_prefill:
         config.CHUNKED_PREFILL = args.chunked_prefill == "on"
     if args.moe_kernel:
         config.MOE_KERNEL = args.moe_kernel
+    if args.attn_backend:
+        config.ATTN_BACKEND = args.attn_backend
     if args.max_batched_tokens:
         config.MAX_BATCHED_TOKENS = args.max_batched_tokens
     if config.ENGINE == "hf" and args.concurrency > 1:

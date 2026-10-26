@@ -430,6 +430,25 @@ class KVCache:
         v = v.to(self.model_dtype) * self.v_scale[layer][idx][..., None]
         return k, v
 
+    def decode_tables(self, entries, device):
+        """Page tables for the paged decode-attention kernel (ATTN_BACKEND=triton).
+        entries: list of (request, context_length). Returns (block_table int32 [B, pages],
+        seq_lens int32 [B], page_size, max_len). The paged cache hands over its block tables
+        as they are (PAGE = block size); a contiguous region is described token by token (PAGE = 1)."""
+        lens = [n for _, n in entries]
+        max_len = max(lens)
+        if self.mode == "paged":
+            bs = self.allocator.block_size
+            tables = [self.allocator.tables[r.id][: -(-n // bs)] for r, n in entries]
+            width = max(len(t) for t in tables)
+            table = torch.tensor([t + [0] * (width - len(t)) for t in tables], dtype=torch.int32)
+            page = bs
+        else:
+            bases = torch.tensor([self.allocator.ranges[r.id][0] for r, _ in entries], dtype=torch.int32)
+            table = bases[:, None] + torch.arange(max_len, dtype=torch.int32)[None, :]
+            page = 1
+        return table.to(device), torch.tensor(lens, dtype=torch.int32).to(device), page, max_len
+
     def memory_mb(self):
         total = sum(t.numel() * t.element_size() for t in (self.k, self.v, self.k_scale, self.v_scale)
                     if t is not None)

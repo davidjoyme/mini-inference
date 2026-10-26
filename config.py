@@ -123,6 +123,11 @@ MOE_KERNEL = os.environ.get("MOE_KERNEL", "default")
 #   "cuda"   always the CUDA kernel (error if it can't be compiled; needs nvcc and ninja)
 #   "torch"  ~35 small PyTorch ops (the original version)
 MOE_ALIGN = os.environ.get("MOE_ALIGN", "auto")
+# ATTN_BACKEND: how the custom engine runs decode attention
+#   "sdpa"    gather each request's cached keys/values into a padded copy, then PyTorch SDPA
+#   "triton"  kernels/paged_attention: one kernel reads keys/values in place through the page
+#             tables (split-KV, dequantizes FP8/INT8 caches in registers). Prefill always uses SDPA.
+ATTN_BACKEND = os.environ.get("ATTN_BACKEND", "sdpa")
 
 # ---------------- Server ----------------
 HOST = "127.0.0.1"     # "0.0.0.0" to allow access from other machines

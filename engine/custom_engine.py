@@ -13,6 +13,7 @@ benchmark work with this engine or the baseline (engine/hf_engine.py).
 
 The building blocks live in engine/core/: scheduler, KV cache, model runner, sampler, request.
 """
+import os
 import queue
 import threading
 import time
@@ -48,7 +49,13 @@ class CustomEngine(Engine):
                              self.dtype, self.device, block_size=config.KV_BLOCK_SIZE,
                              watermark=config.KV_WATERMARK, kv_dtype=config.KV_CACHE_DTYPE,
                              prefix_caching=config.PREFIX_CACHING)
-        self.runner = ModelRunner(self.model, self.cache)
+        attn_backend = config.ATTN_BACKEND
+        if attn_backend == "triton" and self.device.type != "cuda" and os.environ.get("TRITON_INTERPRET") != "1":
+            print("ATTN_BACKEND=triton needs a CUDA GPU (or TRITON_INTERPRET=1): using sdpa")
+            attn_backend = "sdpa"
+        self.runner = ModelRunner(self.model, self.cache, attn_backend)
+        print(f"Attention backend: {attn_backend}"
+              + (" (paged decode kernel; prefill uses SDPA)" if attn_backend == "triton" else ""))
         self.scheduler = Scheduler(config.SCHEDULER, self.cache, config.MAX_NUM_SEQS,
                                    config.MAX_BATCHED_TOKENS, self.max_model_len,
                                    config.STATIC_BATCH_WAIT_S, chunked_prefill=config.CHUNKED_PREFILL)
@@ -273,6 +280,7 @@ class CustomEngine(Engine):
             "chunked_prefill": self.scheduler.chunked_prefill,
             "moe_kernel": self.load_info.get("moe_kernel", "default"),
             "moe_align": self.load_info.get("moe_align"),
+            "attn_backend": self.runner.attn_backend,
         }
 
     def stats(self):

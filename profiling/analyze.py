@@ -325,7 +325,7 @@ def hints(r):
                    "biggest single target.")
     if (regions.get("attention") or 0) > 35:
         out.append(f"Attention takes {regions['attention']}%: check the gather of cached keys/values "
-                   "(a paged-attention kernel reads blocks in place instead of copying them).")
+                   "(ATTN_BACKEND=triton reads blocks in place instead of copying them).")
     kinds = r.get("gpu_kernel_kinds_pct") or {}
     if (kinds.get("gather / index / copy") or 0) > 15:
         out.append(f"{kinds['gather / index / copy']}% of GPU time is gathers/copies, not maths: "

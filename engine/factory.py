@@ -27,6 +27,8 @@ def engine_label(info: dict) -> str:
     if e.get("engine") != "custom":
         return "hf" + fused
     label = f"{e.get('scheduler')}/{e.get('kv_cache')}" + fused
+    if e.get("attn_backend") == "triton":
+        label += "+paged-attn"
     if e.get("prefix_caching"):
         label += "+prefix"
     if e.get("kv_cache_dtype") in ("fp8", "int8"):
