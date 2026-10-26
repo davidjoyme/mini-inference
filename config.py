@@ -118,6 +118,11 @@ TEMPERATURE = 0.7      # only used when DO_SAMPLE is True
 #   "default"  transformers' experts code (on this GPU: one small matmul per expert)
 #   "triton"   kernels/fused_moe: all experts in two Triton kernels per layer (unquantized only)
 MOE_KERNEL = os.environ.get("MOE_KERNEL", "default")
+# How the fused kernel groups (token, expert) pairs by expert before its matmuls:
+#   "auto"   the CUDA C++ kernel (kernels/fused_moe/csrc/moe_align.cu) if it compiles, else PyTorch
+#   "cuda"   always the CUDA kernel (error if it can't be compiled; needs nvcc and ninja)
+#   "torch"  ~35 small PyTorch ops (the original version)
+MOE_ALIGN = os.environ.get("MOE_ALIGN", "auto")
 
 # ---------------- Server ----------------
 HOST = "127.0.0.1"     # "0.0.0.0" to allow access from other machines

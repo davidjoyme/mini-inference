@@ -52,11 +52,14 @@ def load_model():
     # Fused MoE kernels (kernels/fused_moe): swap the experts modules, sharing their weights
     load_info["moe_kernel"] = "default"
     if config.MOE_KERNEL == "triton":
-        from kernels.fused_moe import apply_fused_moe
-        swapped = apply_fused_moe(generator.model)
+        from kernels.fused_moe.module import align_backend, apply_fused_moe
+        swapped = apply_fused_moe(generator.model, align=config.MOE_ALIGN)
         load_info["moe_kernel"] = "triton" if swapped else "default"
+        if swapped:
+            load_info["moe_align"] = align_backend(config.MOE_ALIGN)   # compiles the CUDA kernel now
         print(f"Fused MoE kernel: {swapped} experts modules replaced"
-              + ("" if swapped else " (none eligible, e.g. quantized experts: using the default path)"))
+              + (f", moe_align: {load_info['moe_align']}" if swapped else
+                 " (none eligible, e.g. quantized experts: using the default path)"))
     elif config.MOE_KERNEL not in ("default", "", None):
         raise ValueError(f"Unknown MOE_KERNEL '{config.MOE_KERNEL}' (use default or triton)")
 

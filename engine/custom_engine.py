@@ -272,6 +272,7 @@ class CustomEngine(Engine):
             "max_batched_tokens": config.MAX_BATCHED_TOKENS,
             "chunked_prefill": self.scheduler.chunked_prefill,
             "moe_kernel": self.load_info.get("moe_kernel", "default"),
+            "moe_align": self.load_info.get("moe_align"),
         }
 
     def stats(self):

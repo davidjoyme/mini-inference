@@ -126,10 +126,23 @@ def _tile_config(num_pairs):
     return dict(BLOCK_M=64, BLOCK_N=128, BLOCK_K=64, num_warps=8, num_stages=3)
 
 
-def fused_moe(hidden, w_gate_up, w_down, topk_weights, topk_ids, config=None):
+def _align_fn(topk_ids, align):
+    """align: 'cuda' (one CUDA C++ kernel, csrc/moe_align.cu), 'torch' (PyTorch ops above),
+    or 'auto' (CUDA when it compiled, else PyTorch)."""
+    if align in ("cuda", "auto") and topk_ids.is_cuda:
+        from kernels.fused_moe import moe_align_cuda
+        if moe_align_cuda.available():
+            return moe_align_cuda.moe_align_cuda
+        if align == "cuda":
+            raise RuntimeError("CUDA moe_align was requested but could not be compiled")
+    return moe_align
+
+
+def fused_moe(hidden, w_gate_up, w_down, topk_weights, topk_ids, config=None, align="auto"):
     """
     hidden [T, H]; w_gate_up [E, 2I, H]; w_down [E, H, I]; topk_weights / topk_ids [T, k]
     -> [T, H], same as moe_reference(...)
+    align: how pairs are grouped by expert - 'auto' / 'cuda' / 'torch' (see _align_fn)
     """
     T, H = hidden.shape
     E, two_i, _ = w_gate_up.shape
@@ -141,7 +154,7 @@ def fused_moe(hidden, w_gate_up, w_down, topk_weights, topk_ids, config=None):
 
     hidden = hidden.contiguous()
     topk_w = topk_weights.reshape(-1).contiguous()
-    sorted_ids, expert_ids, num_padded = moe_align(topk_ids, E, bm)
+    sorted_ids, expert_ids, num_padded = _align_fn(topk_ids, align)(topk_ids, E, bm)
     max_blocks = expert_ids.numel()
 
     # kernel 1: gate + up projections, silu(gate) * up  ->  [pairs, I]

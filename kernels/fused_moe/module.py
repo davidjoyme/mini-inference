@@ -23,8 +23,9 @@ def _triton_usable(t):
 
 
 class FusedExperts(nn.Module):
-    def __init__(self, experts):
+    def __init__(self, experts, align="auto"):
         super().__init__()
+        self.align = align                             # how pairs are grouped: auto / cuda / torch
         self.gate_up_proj = experts.gate_up_proj       # shared Parameters, not copies
         self.down_proj = experts.down_proj
         self.num_experts = experts.gate_up_proj.shape[0]
@@ -34,13 +35,13 @@ class FusedExperts(nn.Module):
             if _triton_usable(hidden_states):
                 from kernels.fused_moe.fused_moe_triton import fused_moe
                 return fused_moe(hidden_states, self.gate_up_proj, self.down_proj,
-                                 top_k_weights, top_k_index)
+                                 top_k_weights, top_k_index, align=self.align)
             from kernels.fused_moe.reference import moe_reference   # CPU without the interpreter
             return moe_reference(hidden_states, self.gate_up_proj, self.down_proj,
                                  top_k_weights, top_k_index)
 
     def extra_repr(self):
-        return f"num_experts={self.num_experts}, kernel=triton fused_moe"
+        return f"num_experts={self.num_experts}, kernel=triton fused_moe, align={self.align}"
 
 
 def _eligible(module):
@@ -56,12 +57,20 @@ def _eligible(module):
     return act is not None and "silu" in type(act).__name__.lower()
 
 
-def apply_fused_moe(model):
+def apply_fused_moe(model, align="auto"):
     """Swap every eligible experts module for FusedExperts. Returns how many were swapped."""
     swapped = 0
     for name, module in list(model.named_modules()):
         if name.endswith(".experts") and _eligible(module):
             parent = model.get_submodule(name.rsplit(".", 1)[0])
-            parent.experts = FusedExperts(module)
+            parent.experts = FusedExperts(module, align=align)
             swapped += 1
     return swapped
+
+
+def align_backend(align="auto"):
+    """Which moe_align will actually run on this machine: 'cuda' or 'torch'."""
+    if align == "torch" or not torch.cuda.is_available():
+        return "torch"
+    from kernels.fused_moe import moe_align_cuda
+    return "cuda" if moe_align_cuda.available() else "torch"

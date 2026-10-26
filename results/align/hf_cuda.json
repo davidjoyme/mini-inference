@@ -1,0 +1,132 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 2.7,
+      "engine": {
+        "engine": "hf",
+        "moe_kernel": "triton",
+        "moe_align": "cuda"
+      }
+    },
+    "engine_label": "hf+fused-moe",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 8,
+    "weights_total_mb": 13197.3,
+    "wall_time_s": 4.787,
+    "throughput_tok_s": 145.39,
+    "avg_latency_s": 0.598,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.011,
+    "avg_tpot_ms": 6.82,
+    "max_itl_ms": 11.554,
+    "avg_tokens_per_s": 145.347,
+    "gpu_peak_allocated_mb": 13248.9,
+    "gpu_allocated_before_mb": 13229.3,
+    "process_rss_mb": 1753.3
+  },
+  "runs": [
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential life-supporting planets is likely immense as well, though the exact number remains unknown and is a subject of ongoing research and speculation in the field of astrobiology.",
+      "generated_tokens": 73,
+      "queue_time_s": 0.0,
+      "latency_s": 0.5014,
+      "ttft_s": 0.0114,
+      "tpot_ms": 6.803,
+      "tokens_per_s": 145.58,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 7.006
+    },
+    {
+      "output": "A short fact about space: The universe is estimated to be about 13.8 billion years old, with the Big Bang occurring around 13.8 billion years ago. This event marked the beginning of the universe as we know it, expanding from an incredibly hot and dense state into the vast, cool cosmos we observe today. The age of the universe is constantly being refined as scientists make new discoveries and refine their models based on observational data from telescopes and spacecraft.",
+      "generated_tokens": 93,
+      "queue_time_s": 0.0,
+      "latency_s": 0.638,
+      "ttft_s": 0.0111,
+      "tpot_ms": 6.811,
+      "tokens_per_s": 145.77,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 7.034
+    },
+    {
+      "output": "A short fact about space:\n\n**The universe is expanding faster than the speed of light.**\n\nThis surprising revelation comes from observations of distant galaxies receding from us, primarily due to the effects of dark energy. According to the theory of general relativity, if the expansion rate, known as the Hubble constant, were faster than the speed of light, it would violate the cosmic speed limit set by Einstein's theory of special relativity. This faster-than-light expansion means that while individual galaxies are moving away from each other at speeds less than light within their local regions, the overall expansion of the universe exceeds this limit, making",
+      "generated_tokens": 128,
+      "queue_time_s": 0.0,
+      "latency_s": 0.8826,
+      "ttft_s": 0.0112,
+      "tpot_ms": 6.858,
+      "tokens_per_s": 145.03,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 11.554
+    },
+    {
+      "output": "Astronomers estimate that there are around 100 billion galaxies in the observable universe, each containing billions of stars and potentially even more planets. This vastness underscores the incredible diversity and potential for life beyond Earth.",
+      "generated_tokens": 44,
+      "queue_time_s": 0.0,
+      "latency_s": 0.3046,
+      "ttft_s": 0.0112,
+      "tpot_ms": 6.816,
+      "tokens_per_s": 144.47,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 7.212
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can float inside the spacecraft, leading to potential blockages in the digestive system. If an astronaut tries to burp, the gas cannot escape upwards and might cause discomfort or pain, so they must expel gas through their mouth or nose, often resulting in a more forceful release.",
+      "generated_tokens": 84,
+      "queue_time_s": 0.0,
+      "latency_s": 0.5766,
+      "ttft_s": 0.0112,
+      "tpot_ms": 6.809,
+      "tokens_per_s": 145.68,
+      "prompt": "Tell me a short fact about space (request 4)",
+      "itl_ms_max": 7.003
+    },
+    {
+      "output": "**Short Fact about Space:**\n\n**The Speed of Light:** The speed of light in a vacuum is approximately 299,792 kilometers per second (about 186,282 miles per second). This speed is considered the universal speed limit for matter and energy, as per Einstein's theory of relativity. It's so fast that even light from the nearest star, Proxima Centauri, takes about 4.24 years to reach Earth, despite being only about 4.24 light-years away. This speed limit ensures that causality (the way events can be ordered by time) is preserved, preventing paradoxes like time travel to the past",
+      "generated_tokens": 128,
+      "queue_time_s": 0.0,
+      "latency_s": 0.8786,
+      "ttft_s": 0.0113,
+      "tpot_ms": 6.827,
+      "tokens_per_s": 145.68,
+      "prompt": "Tell me a short fact about space (request 5)",
+      "itl_ms_max": 7.071
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can freely move around the spacecraft, leading to a buildup of gas that cannot be expelled through a burp. This can cause discomfort and potentially lead to more serious digestive issues during extended space missions.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0,
+      "latency_s": 0.4619,
+      "ttft_s": 0.0112,
+      "tpot_ms": 6.824,
+      "tokens_per_s": 145.06,
+      "prompt": "Tell me a short fact about space (request 6)",
+      "itl_ms_max": 7.01
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can float inside the spacecraft, leading to potential blockages in the digestive system. If an astronaut tries to burp, the gas cannot escape upwards and might cause discomfort or pain, so they must expel gas through their mouth, often resulting in belching.",
+      "generated_tokens": 79,
+      "queue_time_s": 0.0,
+      "latency_s": 0.5429,
+      "ttft_s": 0.0112,
+      "tpot_ms": 6.813,
+      "tokens_per_s": 145.51,
+      "prompt": "Tell me a short fact about space (request 7)",
+      "itl_ms_max": 6.923
+    }
+  ]
+}

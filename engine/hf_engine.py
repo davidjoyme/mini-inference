@@ -51,7 +51,8 @@ class HFEngine(Engine):
         return self.generator.model
 
     def engine_config(self) -> dict:
-        return {"engine": "hf", "moe_kernel": self.load_info.get("moe_kernel", "default")}
+        return {"engine": "hf", "moe_kernel": self.load_info.get("moe_kernel", "default"),
+                "moe_align": self.load_info.get("moe_align")}
 
     def _gen_kwargs(self, max_new_tokens=None, temperature=None) -> dict:
         kwargs = {

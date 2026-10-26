@@ -10,6 +10,7 @@ Run from the project root:
 """
 import os
 import sys
+
 import torch
 
 if not torch.cuda.is_available():
@@ -60,6 +61,56 @@ def test_moe_align_groups_and_pads():
         tile = tile[tile < T * k]
         assert all(flat[p] == expert_ids[b].item() for p in tile.tolist())
     assert n % bm == 0 and n <= T * k + E * (bm - 1)
+
+
+def _groups(sorted_ids, expert_ids, num_padded, num_pairs, bm):
+    """{expert: set of pair indices} and the per-tile expert list - the layout-independent content."""
+    n = int(num_padded.item())
+    rows, owners = sorted_ids[:n].cpu().tolist(), expert_ids[:n // bm].cpu().tolist()
+    groups = {}
+    for b, e in enumerate(owners):
+        real = [r for r in rows[b * bm:(b + 1) * bm] if r < num_pairs]
+        if real:
+            groups.setdefault(e, set()).update(real)
+    return n, owners, groups
+
+
+def test_cuda_align_matches_torch_align():
+    """The CUDA C++ moe_align must produce the same grouping as the PyTorch one.
+    (Pairs inside one expert's tiles can come out in a different order - atomics - which is fine:
+    the matmul treats every row independently.)"""
+    if not GPU:
+        print("  (needs a GPU: skipped)")
+        return
+    from kernels.fused_moe import moe_align_cuda
+    assert moe_align_cuda.available(), f"CUDA moe_align did not compile: {moe_align_cuda._error}"
+    torch.manual_seed(2)
+    for T, k, E, bm in ((1, 8, 64, 16), (13, 3, 8, 4), (16, 8, 64, 16), (300, 8, 64, 32), (4096, 8, 64, 64)):
+        ids = torch.stack([torch.randperm(E)[:k] for _ in range(T)]).to(DEVICE)
+        for dtype in (torch.int64, torch.int32):
+            want = _groups(*moe_align(ids.to(dtype), E, bm), T * k, bm)
+            sorted_ids, expert_ids, num_padded = moe_align_cuda.moe_align_cuda(ids.to(dtype), E, bm)
+            got = _groups(sorted_ids, expert_ids, num_padded, T * k, bm)
+            assert got == want, f"T={T} k={k} E={E} bm={bm} {dtype}"
+            n = got[0]
+            pad = sorted_ids[:n][sorted_ids[:n] >= T * k]
+            assert (pad == T * k).all(), "padding rows must point past the last pair"
+    print("  identical expert grouping, tile owners and padded size for 5 shapes x 2 index dtypes")
+
+
+def test_fused_with_cuda_align_matches_reference():
+    if not GPU:
+        print("  (needs a GPU: skipped)")
+        return
+    from kernels.fused_moe import moe_align_cuda
+    assert moe_align_cuda.available(), "CUDA moe_align did not compile (see the error above)"
+    for T in (1, 16, 256):
+        args = random_moe(T, 2048, 1024, 64, 8, seed=T)
+        want = moe_reference(*args)
+        err_cuda = rel_error(fused_moe(*args, align="cuda"), want)
+        err_torch = rel_error(fused_moe(*args, align="torch"), want)
+        print(f"  T={T:<4}: relative error cuda-align {err_cuda:.2e}, torch-align {err_torch:.2e}")
+        assert err_cuda < TOL
 
 
 # ---------------------------------------------------------------- kernels vs reference
