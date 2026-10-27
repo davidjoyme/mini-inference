@@ -296,6 +296,12 @@ class PagedAllocator(_Allocator):
         self.req_hashes.pop(req.id, None)
         self.length.pop(req.id, None)
 
+    def reserve_scratch_block(self):
+        """Take one block out of circulation for good (CUDA graphs' padding rows write here)."""
+        block = self.free_blocks.popleft()
+        self.ref[block] = 1
+        return block
+
     def slots(self, req, start, end):
         positions = torch.arange(start, end)
         table = torch.tensor(self.tables[req.id], dtype=torch.long)

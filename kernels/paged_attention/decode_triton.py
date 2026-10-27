@@ -14,9 +14,9 @@ through each request's page table, so each cached byte is read exactly once.
 
     split-KV     one program per (request, query head, context split). With few requests a single
                  program per (request, head) would leave most of the GPU idle (1 x 16 heads = 16
-                 programs on a 170-SM GPU), so long contexts are cut into splits that run in
-                 parallel, each producing a partial output and its log-sum-exp; a second small kernel
-                 merges them (the flash-decoding trick). Splits are chosen to fill the GPU.
+                 programs on a 170-SM GPU), so each request's context is cut into num_splits pieces
+                 that run in parallel, each producing a partial output and its log-sum-exp; a second
+                 small kernel merges them (the flash-decoding trick). Splits are chosen to fill the GPU.
 
     online softmax   each program walks its keys in BLOCK_N tiles, keeping a running max m,
                  running sum l and running output acc, rescaled whenever the max grows: no
@@ -35,7 +35,7 @@ import triton
 import triton.language as tl
 
 
-@triton.jit
+@triton.jit(do_not_specialize=["stride_bt", "num_splits"])   # vary per step: don't recompile for them
 def _paged_attention_decode_split(
     Q, K, V, KS, VS, BT, LENS, OUT, O_PART, LSE_PART,
     stride_qb, stride_qh,
@@ -45,7 +45,7 @@ def _paged_attention_decode_split(
     stride_outb, stride_outh,
     stride_pb, stride_ph, stride_ps,
     stride_lb, stride_lh,
-    scale, split_len,
+    scale, num_splits,
     GROUP: tl.constexpr, PAGE: tl.constexpr, D: tl.constexpr, BLOCK_D: tl.constexpr,
     BLOCK_N: tl.constexpr, HAS_SCALE: tl.constexpr, DIRECT: tl.constexpr,
 ):
@@ -55,6 +55,9 @@ def _paged_attention_decode_split(
     kvh = h // GROUP
 
     seq_len = tl.load(LENS + b)
+    # each request cuts ITS OWN context into num_splits pieces (whole BLOCK_N tiles), so the grid
+    # depends only on the batch size - what a CUDA graph needs - and short requests finish early
+    split_len = tl.cdiv(tl.cdiv(seq_len, num_splits), BLOCK_N) * BLOCK_N
     start = s * split_len
     end = tl.minimum(start + split_len, seq_len)
 
@@ -104,7 +107,7 @@ def _paged_attention_decode_split(
         tl.store(LSE_PART + b * stride_lb + h * stride_lh + s, m + tl.log(l_safe))
 
 
-@triton.jit
+@triton.jit(do_not_specialize=["num_splits"])
 def _paged_attention_decode_reduce(
     O_PART, LSE_PART, OUT,
     stride_pb, stride_ph, stride_ps,
@@ -141,13 +144,15 @@ def _sm_count(device):
 
 
 def choose_splits(batch, heads, max_len, block_n, device):
-    """Enough (request, head, split) programs to fill the GPU about twice, never more splits than tiles."""
+    """Enough (request, head, split) programs to fill the GPU about twice, never more splits than
+    the longest request has tiles. CUDA graphs pass max_len = the model's limit, so the count only
+    depends on the batch size (splits a short request can't use exit immediately)."""
     tiles = triton.cdiv(max_len, block_n)
     want = triton.cdiv(2 * _sm_count(device), batch * heads)
     return max(1, min(tiles, want, 64))
 
 
-def paged_decode_attention(q, k_cache, v_cache, block_table, seq_lens, page_size, scale, max_len,
+def paged_decode_attention(q, k_cache, v_cache, block_table, seq_lens, page_size, scale, max_len=None,
                            k_scale=None, v_scale=None, num_splits=None, block_n=64, num_warps=4):
     """
     q           [B, H, D]            one query token per request
@@ -155,7 +160,8 @@ def paged_decode_attention(q, k_cache, v_cache, block_table, seq_lens, page_size
     v_cache     [slots, KV, D]
     block_table [B, max_pages] int32 page ids per request (PAGE = page_size tokens each)
     seq_lens    [B] int32            context length per request (including the new token)
-    max_len     int                  max(seq_lens), passed from the CPU so there's no GPU->CPU sync
+    max_len     int                  max(seq_lens), from the CPU (no GPU->CPU sync); only used to
+                                     pick num_splits when it isn't given
     k_scale / v_scale [slots, KV]    per-(token, head) scales for 8-bit caches, else None
     returns     [B, H, D] in q's dtype
     """
@@ -169,8 +175,6 @@ def paged_decode_attention(q, k_cache, v_cache, block_table, seq_lens, page_size
     block_d = triton.next_power_of_2(D)
     if num_splits is None:
         num_splits = choose_splits(B, H, max_len, block_n, q.device)
-    split_len = triton.cdiv(triton.cdiv(max_len, num_splits), block_n) * block_n
-    num_splits = triton.cdiv(max_len, split_len)
     direct = num_splits == 1
 
     has_scale = k_scale is not None
@@ -196,7 +200,7 @@ def paged_decode_attention(q, k_cache, v_cache, block_table, seq_lens, page_size
         block_table.stride(0),
         out.stride(0), out.stride(1),
         *p_strides, *l_strides,
-        scale, split_len,
+        scale, num_splits,
         GROUP=H // KV, PAGE=page_size, D=D, BLOCK_D=block_d, BLOCK_N=block_n,
         HAS_SCALE=has_scale, DIRECT=direct, num_warps=num_warps,
     )

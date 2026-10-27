@@ -1,0 +1,107 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 3.0,
+      "engine": {
+        "engine": "custom",
+        "scheduler": "continuous",
+        "kv_cache": "paged",
+        "kv_block_size": 16,
+        "kv_watermark": 0.01,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 65536,
+        "kv_cache_mb": 8192.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false,
+        "moe_kernel": "triton",
+        "moe_align": "cuda",
+        "attn_backend": "triton",
+        "cuda_graphs": true
+      }
+    },
+    "engine_label": "continuous/paged+fused-moe+paged-attn+cuda-graphs",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 4,
+    "weights_total_mb": 13197.3,
+    "wall_time_s": 1.433,
+    "throughput_tok_s": 219.76,
+    "avg_latency_s": 0.358,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.017,
+    "avg_tpot_ms": 4.385,
+    "max_itl_ms": 10.126,
+    "avg_tokens_per_s": 219.627,
+    "gpu_peak_allocated_mb": 21897.9,
+    "gpu_allocated_before_mb": 21896.3,
+    "process_rss_mb": 1798.6,
+    "steps": 315,
+    "preemptions": 0,
+    "padding_tokens": 0,
+    "prefill_chunks": 0,
+    "mixed_steps": 0,
+    "avg_batch_size": 0.99
+  },
+  "runs": [
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential life-supporting planets is likely immense as well, though the exact number remains unknown and is one of the most profound mysteries in astronomy.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0002,
+      "latency_s": 0.3042,
+      "ttft_s": 0.0214,
+      "tpot_ms": 4.284,
+      "tokens_per_s": 220.27,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 10.126
+    },
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential habitable planets is likely immense, though the exact count remains unknown and is a subject of ongoing research and speculation in the field of astronomy and astrobiology.",
+      "generated_tokens": 71,
+      "queue_time_s": 0.0,
+      "latency_s": 0.3291,
+      "ttft_s": 0.0166,
+      "tpot_ms": 4.464,
+      "tokens_per_s": 215.75,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 5.768
+    },
+    {
+      "output": "A short fact about space:\n\n**The universe is expanding faster than the speed of light.**\n\nAccording to the theory of general relativity, nothing with mass can exceed the speed of light. However, when it comes to the expansion of the universe, space itself can stretch and expand faster than light. This phenomenon is due to the presence of dark energy, a mysterious force that drives the accelerated expansion of the universe. This cosmic speed limit violation at the largest scales is a cornerstone of modern cosmology, challenging our everyday understanding of physics.",
+      "generated_tokens": 110,
+      "queue_time_s": 0.0,
+      "latency_s": 0.4925,
+      "ttft_s": 0.0154,
+      "tpot_ms": 4.377,
+      "tokens_per_s": 223.33,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 7.192
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can freely move around the spacecraft, leading to a buildup of gas that cannot be expelled through a burp. This can cause discomfort and potentially lead to more serious digestive issues during extended space missions.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0,
+      "latency_s": 0.3057,
+      "ttft_s": 0.0144,
+      "tpot_ms": 4.413,
+      "tokens_per_s": 219.16,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 6.496
+    }
+  ]
+}

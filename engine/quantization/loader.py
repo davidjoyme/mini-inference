@@ -97,9 +97,18 @@ def cache_path(cache_dir, model_name, method, targets):
 def save_cache(model, path, info):
     from safetensors.torch import save_file
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-    state = {k: v.detach().to("cpu").contiguous() for k, v in model.state_dict().items()}
+    # Tied weights (e.g. Qwen3-4B's lm_head IS its embedding matrix) are one tensor under two
+    # names; safetensors refuses shared tensors, so save it once and record the other name.
+    state, aliases, seen = {}, {}, {}
+    for k, v in model.state_dict().items():
+        key = (v.data_ptr(), tuple(v.shape), v.dtype, v.device)
+        if key in seen:
+            aliases[k] = seen[key]
+            continue
+        seen[key] = k
+        state[k] = v.detach().to("cpu").contiguous()
     tmp = path + ".tmp"
-    save_file(state, tmp, metadata={"info": json.dumps(info)})
+    save_file(state, tmp, metadata={"info": json.dumps(info), "aliases": json.dumps(aliases)})
     os.replace(tmp, path)   # only appears under its real name once fully written
     del state
     _free_memory("cpu")
@@ -129,8 +138,15 @@ def load_from_cache(path, model_name, method, targets, device, dtype):
         model = AutoModelForCausalLM.from_config(cfg, dtype=dtype)
     stats = quantize_model(model, method, targets, "meta")   # puts empty quantized layers in place
 
+    from safetensors import safe_open
+    with safe_open(path, framework="pt") as f:
+        aliases = json.loads((f.metadata() or {}).get("aliases", "{}"))
     state = load_file(path, device=str(device))
     missing, unexpected = model.load_state_dict(state, strict=False, assign=True)
+    for name, source in aliases.items():                # re-tie shared weights
+        parent, _, attr = name.rpartition(".")
+        setattr(model.get_submodule(parent), attr, model.get_parameter(source))
+    missing = [m for m in missing if m not in aliases]
     if missing or unexpected:
         raise RuntimeError(f"Cache {path} doesn't match the model "
                            f"(missing {missing[:3]}, unexpected {unexpected[:3]}). Delete it and restart.")

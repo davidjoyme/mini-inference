@@ -135,6 +135,12 @@ def main():
     parser.add_argument("--engine", default=None, choices=["hf", "custom"])
     parser.add_argument("--scheduler", default=None, choices=["sequential", "static", "continuous"])
     parser.add_argument("--kv-cache", default=None, choices=["contiguous", "paged"])
+    parser.add_argument("--fused-proj", default=None, choices=["on", "off"],
+                        help="override FUSED_PROJ (custom engine): fused q/k/v and gate/up matmuls")
+    parser.add_argument("--weight-layout", default=None, choices=["auto", "normal", "transposed"],
+                        help="override WEIGHT_LAYOUT (with --fused-proj on)")
+    parser.add_argument("--cuda-graphs", default=None, choices=["on", "off"],
+                        help="override CUDA_GRAPHS (custom engine; needs --attn-backend triton)")
     parser.add_argument("--attn-backend", default=None, choices=["sdpa", "triton"],
                         help="override ATTN_BACKEND: 'triton' = paged decode-attention kernel (custom engine)")
     parser.add_argument("--moe-kernel", default=None, choices=["default", "triton"],
@@ -145,8 +151,13 @@ def main():
     parser.add_argument("--window", type=int, default=512, help="tokens per perplexity window")
     parser.add_argument("--max-new-tokens", type=int, default=64)
     parser.add_argument("--reference", default=None, help="results JSON of a reference (bf16) run")
+    parser.add_argument("--model", default=None,
+                        help="model short name from config.MODELS (olmoe, qwen3-4b) or a Hugging Face id")
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
+    if args.model:
+        config.MODEL = args.model
+        config.MODEL_NAME = config.MODELS.get(args.model, args.model)
 
     for flag, name in ((args.quant, "QUANTIZATION"), (args.engine, "ENGINE"),
                        (args.scheduler, "SCHEDULER"), (args.kv_cache, "KV_CACHE")):
@@ -158,6 +169,12 @@ def main():
         config.MOE_KERNEL = args.moe_kernel
     if args.attn_backend:
         config.ATTN_BACKEND = args.attn_backend
+    if args.cuda_graphs:
+        config.CUDA_GRAPHS = args.cuda_graphs == "on"
+    if args.fused_proj:
+        config.FUSED_PROJ = args.fused_proj == "on"
+    if args.weight_layout:
+        config.WEIGHT_LAYOUT = args.weight_layout
     config.DO_SAMPLE = False   # greedy, so runs are comparable
     engine = create_engine()
     method = engine.info()["quantization"].get("method", "none")
@@ -177,6 +194,7 @@ def main():
     result = {
         "quantization": method,
         "engine_label": engine_label(engine.info()),
+        "model": engine.info().get("model"),
         "engine": engine.info(),
         "perplexity": round(ppl, 4),
         "perplexity_tokens": n_tok,

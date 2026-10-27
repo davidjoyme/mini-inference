@@ -1,0 +1,335 @@
+{
+  "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+  "gpu": "NVIDIA GeForce RTX 5090",
+  "peak_gbs": 1792,
+  "results": {
+    "1": {
+      "shapes": {
+        "q_proj": {
+          "ms": 0.008824533224105835,
+          "ms_wt": 0.01030399998029073,
+          "gbs": 951.5290822479535,
+          "gbs_wt": 814.9068338568729,
+          "weight_bytes": 8388608,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "k_proj": {
+          "ms": 0.009145599603652955,
+          "ms_wt": 0.010758399963378906,
+          "gbs": 918.124602420396,
+          "gbs_wt": 780.487807534793,
+          "weight_bytes": 8388608,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "v_proj": {
+          "ms": 0.014173866311709086,
+          "ms_wt": 0.01153706709543864,
+          "gbs": 592.4142231441376,
+          "gbs_wt": 727.8106238386883,
+          "weight_bytes": 8388608,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "o_proj": {
+          "ms": 0.00928000013033549,
+          "ms_wt": 0.010775466759999594,
+          "gbs": 904.8275734987989,
+          "gbs_wt": 779.2516265903563,
+          "weight_bytes": 8388608,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "lm_head": {
+          "ms": 0.20879573822021485,
+          "ms_wt": 0.21442987124125162,
+          "gbs": 987.3280448980031,
+          "gbs_wt": 961.3860550616292,
+          "weight_bytes": 206045184,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 50304,
+          "inp": 2048,
+          "per_step": 1
+        },
+        "qkv (fused)": {
+          "ms": 0.019756799936294554,
+          "ms_wt": 0.022668800751368203,
+          "gbs": 1274.6096574951193,
+          "gbs_wt": 1110.8751749242886,
+          "weight_bytes": 25165824,
+          "kernel": "std::enable_if<!(false), void>::type interna..",
+          "kernel_wt": "std::enable_if<!(false), void>::type interna..",
+          "out": 6144,
+          "inp": 2048,
+          "per_step": 16
+        }
+      },
+      "step_separate_ms": 0.8715797265370687,
+      "step_fused_ms": 0.6733845392862956,
+      "step_separate_best_layout_ms": 0.8293909390767416,
+      "step_fused_best_layout_ms": 0.6733845392862956,
+      "step_weight_gb": 0.742916096,
+      "step_ideal_ms": 0.41457371428571427
+    },
+    "4": {
+      "shapes": {
+        "q_proj": {
+          "ms": 0.015727999806404113,
+          "ms_wt": 0.017092265685399375,
+          "gbs": 535.4384603038329,
+          "gbs_wt": 492.7009768631049,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "k_proj": {
+          "ms": 0.016154666741689045,
+          "ms_wt": 0.017078399658203125,
+          "gbs": 521.2967952020722,
+          "gbs_wt": 493.10100293589454,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "v_proj": {
+          "ms": 0.01530880033969879,
+          "ms_wt": 0.01681813398996989,
+          "gbs": 550.1003222415594,
+          "gbs_wt": 500.73188886605345,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "o_proj": {
+          "ms": 0.01534933348496755,
+          "ms_wt": 0.016723199685414632,
+          "gbs": 548.6476665744162,
+          "gbs_wt": 503.57444498763107,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "lm_head": {
+          "ms": 0.12718186378479004,
+          "ms_wt": 0.13545494079589843,
+          "gbs": 1623.376115555019,
+          "gbs_wt": 1524.2264238341593,
+          "weight_bytes": 206045184,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "out": 50304,
+          "inp": 2048,
+          "per_step": 1
+        },
+        "qkv (fused)": {
+          "ms": 0.019211733341217042,
+          "ms_wt": 0.0211733341217041,
+          "gbs": 1313.330741785198,
+          "gbs_wt": 1191.6573863601457,
+          "weight_bytes": 25165824,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 6144,
+          "inp": 2048,
+          "per_step": 16
+        }
+      },
+      "step_separate_ms": 1.127834669748942,
+      "step_fused_ms": 0.6801589330037435,
+      "step_separate_best_layout_ms": 1.127834669748942,
+      "step_fused_best_layout_ms": 0.6801589330037435,
+      "step_weight_gb": 0.742916096,
+      "step_ideal_ms": 0.41457371428571427
+    },
+    "16": {
+      "shapes": {
+        "q_proj": {
+          "ms": 0.01586133340994517,
+          "ms_wt": 0.01681813398996989,
+          "gbs": 537.135168891797,
+          "gbs_wt": 506.5770081913382,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "k_proj": {
+          "ms": 0.01544426679611206,
+          "ms_wt": 0.016695467631022136,
+          "gbs": 551.6403020274646,
+          "gbs_wt": 510.29897384661666,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "v_proj": {
+          "ms": 0.015386666854222615,
+          "ms_wt": 0.016773333152135212,
+          "gbs": 553.7053658675866,
+          "gbs_wt": 507.9300531817948,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "o_proj": {
+          "ms": 0.015254400173823039,
+          "ms_wt": 0.016730666160583496,
+          "gbs": 558.506391789826,
+          "gbs_wt": 509.2253899651578,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "lm_head": {
+          "ms": 0.12789119879404703,
+          "ms_wt": 0.1366879940032959,
+          "gbs": 1624.196582397418,
+          "gbs_wt": 1519.6685671968476,
+          "weight_bytes": 206045184,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "out": 50304,
+          "inp": 2048,
+          "per_step": 1
+        },
+        "qkv (fused)": {
+          "ms": 0.019092265764872232,
+          "ms_wt": 0.022405334313710532,
+          "gbs": 1331.8465347777003,
+          "gbs_wt": 1134.9068772626983,
+          "weight_bytes": 25165824,
+          "kernel": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_wmma_tensor..",
+          "out": 6144,
+          "inp": 2048,
+          "per_step": 16
+        }
+      },
+      "step_separate_ms": 1.1190378745396932,
+      "step_fused_ms": 0.6774378538131713,
+      "step_separate_best_layout_ms": 1.1190378745396932,
+      "step_fused_best_layout_ms": 0.6774378538131713,
+      "step_weight_gb": 0.742916096,
+      "step_ideal_ms": 0.41457371428571427
+    },
+    "64": {
+      "shapes": {
+        "q_proj": {
+          "ms": 0.01155946652094523,
+          "ms_wt": 0.014465066790580749,
+          "gbs": 771.0473475441306,
+          "gbs_wt": 616.1669440616638,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_s1..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "k_proj": {
+          "ms": 0.011911466717720032,
+          "ms_wt": 0.014132266243298849,
+          "gbs": 748.2618397229601,
+          "gbs_wt": 630.6770511223748,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_s1..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "v_proj": {
+          "ms": 0.011424000064531961,
+          "ms_wt": 0.01393280029296875,
+          "gbs": 780.1904717833314,
+          "gbs_wt": 639.7060040039427,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_s1..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "o_proj": {
+          "ms": 0.01195733348528544,
+          "ms_wt": 0.014437333742777506,
+          "gbs": 745.3916051574633,
+          "gbs_wt": 617.3505550814609,
+          "weight_bytes": 8388608,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_s1..",
+          "out": 2048,
+          "inp": 2048,
+          "per_step": 16
+        },
+        "lm_head": {
+          "ms": 0.2166879971822103,
+          "ms_wt": 0.2808874766031901,
+          "gbs": 981.8090654144736,
+          "gbs_wt": 757.4073524842361,
+          "weight_bytes": 206045184,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "out": 50304,
+          "inp": 2048,
+          "per_step": 1
+        },
+        "qkv (fused)": {
+          "ms": 0.020595200856526694,
+          "ms_wt": 0.018655999501546224,
+          "gbs": 1272.840220526063,
+          "gbs_wt": 1405.1458351415224,
+          "weight_bytes": 25165824,
+          "kernel": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "kernel_wt": "void cutlass::Kernel2<cutlass_80_tensorop_bf..",
+          "out": 6144,
+          "inp": 2048,
+          "per_step": 16
+        }
+      },
+      "step_separate_ms": 0.966324265797933,
+      "step_fused_ms": 0.7375285466512045,
+      "step_separate_best_layout_ms": 0.966324265797933,
+      "step_fused_best_layout_ms": 0.706501324971517,
+      "step_weight_gb": 0.742916096,
+      "step_ideal_ms": 0.41457371428571427
+    }
+  }
+}

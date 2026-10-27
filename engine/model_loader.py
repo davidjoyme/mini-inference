@@ -59,7 +59,7 @@ def load_model():
             load_info["moe_align"] = align_backend(config.MOE_ALIGN)   # compiles the CUDA kernel now
         print(f"Fused MoE kernel: {swapped} experts modules replaced"
               + (f", moe_align: {load_info['moe_align']}" if swapped else
-                 " (none eligible, e.g. quantized experts: using the default path)"))
+                 " (none eligible - a dense model, or quantized experts: using the default path)"))
     elif config.MOE_KERNEL not in ("default", "", None):
         raise ValueError(f"Unknown MOE_KERNEL '{config.MOE_KERNEL}' (use default or triton)")
 

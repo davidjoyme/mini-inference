@@ -24,6 +24,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from engine.factory import engine_label  # noqa: E402
 
 
+
+def short(model_id):
+    """'allenai/OLMoE-1B-7B-0125-Instruct' -> 'OLMoE-1B-7B-0125-Instruct' (older results: unknown)"""
+    return model_id.split("/")[-1] if model_id else None
+
 def get(d, *path):
     for p in path:
         if not isinstance(d, dict):
@@ -41,6 +46,7 @@ def row_for(path):
         ref = data.get("vs_reference", {})
         return "quality", {
             "file": name,
+            "model": short(data.get("model")),
             "engine": data.get("engine_label", "hf"),
             "quant": data.get("quantization"),
             "weights_MB": get(data, "engine", "weight_memory", "weights_total_mb"),
@@ -52,6 +58,7 @@ def row_for(path):
     if "avg_tpot_ms" in s:                                     # run_engine.py
         return "engine", {
             "file": name,
+            "model": short(s.get("model") or get(s, "engine", "model")),
             "engine": s.get("engine_label", "hf"),
             "conc": s.get("concurrency", 1),
             "quant": s.get("quantization"),
@@ -59,9 +66,9 @@ def row_for(path):
             "gpu_peak_MB": s.get("gpu_peak_allocated_mb"),
             "TTFT_s": s.get("avg_ttft_s"),
             "TPOT_ms": s.get("avg_tpot_ms"),
-            "tok/s": s.get("avg_tokens_per_s"),
+            "per_user_tok/s": s.get("avg_tokens_per_s"),
             "latency_s": s.get("avg_latency_s"),
-            "throughput_tok/s": s.get("throughput_tok_s"),
+            "total_tok/s": s.get("throughput_tok_s"),
             "avg_batch": s.get("avg_batch_size"),
             "preempt": s.get("preemptions"),
             "prefix_hit_%": s.get("prefix_hit_pct"),
@@ -71,6 +78,7 @@ def row_for(path):
         eng = get(s, "server", "engine") or {}
         return "load", {
             "file": name,
+            "model": short(get(s, "server", "model")),
             "engine": engine_label({"engine": eng}),
             "quant": get(s, "server", "quantization", "method"),
             "conc": get(s, "test_config", "concurrency"),
@@ -78,7 +86,7 @@ def row_for(path):
             "out_tok": get(s, "test_config", "max_new_tokens"),
             "in_words": get(s, "test_config", "prompt_words"),
             "failed": s.get("failed"),
-            "throughput_tok/s": s.get("overall_tokens_per_s"),
+            "total_tok/s": s.get("overall_tokens_per_s"),
             "TTFT_p50_s": get(s, "ttft_s", "p50"),
             "TTFT_p95_s": get(s, "ttft_s", "p95"),
             "TPOT_p50_ms": get(s, "tpot_ms", "p50"),

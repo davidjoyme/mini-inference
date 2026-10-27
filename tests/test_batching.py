@@ -64,10 +64,10 @@ def reference_outputs(model, tokenizer, prompts=PROMPTS):
     return refs
 
 
-def make_engine(model_dir, scheduler, kv_cache, kv_tokens=4096, max_num_seqs=64):
+def make_engine(model_dir, scheduler, kv_cache, kv_tokens=4096, max_num_seqs=64, quant="none"):
     config.MODEL_NAME = model_dir
     config.DTYPE = "float32"
-    config.QUANTIZATION = "none"
+    config.QUANTIZATION = quant
     config.IS_CHAT_MODEL = False
     config.DO_SAMPLE = False
     config.ENGINE = "custom"

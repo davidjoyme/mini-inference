@@ -89,8 +89,13 @@ def model_profile(engine):
             for t in list(module.parameters()) + list(module.buffers()):
                 expert_bytes += t.numel() * t.element_size()
                 counted.add(id(t))
+    lm_head = getattr(model, "lm_head", None)
+    lm_ids = {id(p) for p in lm_head.parameters()} if lm_head is not None else set()
     for name, t in list(model.named_parameters()) + list(model.named_buffers()):
-        if id(t) in counted or "embed_tokens" in name:     # embeddings: only a few rows are read
+        # embeddings: only a few rows are read per step - unless the matrix is tied to lm_head
+        # (Qwen3-4B), which reads all of it; named_parameters() lists a tied tensor once, by the
+        # embedding's name, so check identity rather than the name
+        if id(t) in counted or ("embed_tokens" in name and id(t) not in lm_ids):
             continue
         other_bytes += t.numel() * t.element_size()
     info = {
@@ -157,13 +162,14 @@ def analyze(trace_path, model_info=None):
             wall - sum(phases[p] for p in LOOP_PHASES), wall)
         report["avg_step_ms"] = round(wall / len(forwards) / 1000, 3)
 
-        # CPU time inside the forward pass: attention vs MoE vs the rest
+        # CPU time inside the forward pass: attention vs MLP/MoE vs the rest
+        # (the "moe" key covers dense models' "mlp" region too, so results stay comparable)
         inside = defaultdict(float)
         fwd_total = sum(e["dur"] for e in forwards)
         for e in loop_ann:
             base = e["name"].split("(")[0]
-            if base in ("attention", "moe"):
-                inside[base] += e["dur"]
+            if base in ("attention", "moe", "mlp"):
+                inside["moe" if base == "mlp" else base] += e["dur"]
         report["forward_cpu_pct"] = {
             "attention": pct(inside["attention"], fwd_total),
             "moe": pct(inside["moe"], fwd_total),
@@ -233,7 +239,7 @@ def analyze(trace_path, model_info=None):
             names = {r["name"].split("(")[0] for r in open_regions}
             if "attention" in names:
                 region = "attention"
-            elif names & {"moe", "experts", "fused_moe"}:
+            elif names & {"moe", "mlp", "experts", "fused_moe"}:
                 region = "moe"
             elif "forward" in names:
                 region = "rest of the layers"
@@ -321,8 +327,9 @@ def hints(r):
                    "matters. Fewer, fused kernels (e.g. a fused MoE kernel) would help.")
     regions = r.get("gpu_time_by_region_pct") or r.get("forward_cpu_pct") or {}
     if (regions.get("moe") or 0) > 50:
-        out.append(f"MoE layers take {regions['moe']}% of the time: a fused/grouped MoE kernel is the "
-                   "biggest single target.")
+        out.append(f"MLP / MoE layers take {regions['moe']}% of the time: for MoE models a fused/grouped "
+                   "MoE kernel (MOE_KERNEL=triton) is the biggest single target; for dense models the MLP "
+                   "matmuls are memory-bound at small batches, so weight quantization reads fewer bytes.")
     if (regions.get("attention") or 0) > 35:
         out.append(f"Attention takes {regions['attention']}%: check the gather of cached keys/values "
                    "(ATTN_BACKEND=triton reads blocks in place instead of copying them).")

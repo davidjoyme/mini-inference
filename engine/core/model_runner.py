@@ -14,8 +14,9 @@ requests apart; it reads each request's keys/values from the KV cache through sl
         triton  kernels/paged_attention: reads keys/values in place through the page tables
 
 This file reuses the transformers model's modules and weights (so quantized layers work
-as-is) but replaces its attention and cache handling. Written for OLMoE
-(q_norm/k_norm on the full projection, rotary embeddings, sparse MoE MLP).
+as-is) but replaces its attention and cache handling. It runs any architecture listed in
+engine/models.py (OLMoE, Qwen3, Qwen3-MoE, Qwen2, Llama, Mistral): the differences between them
+(how q/k are normalized, dense MLP vs MoE) are detected there when the model loads.
 """
 import torch
 import torch.nn.functional as F
@@ -55,8 +56,9 @@ class BatchMetadata:
                 self.prefill.append((offset, n, start, cache.slots(req, 0, end).to(device)))
             offset += n
             self.last_rows.append(offset - 1)
-        if decode_entries:
-            self.decode_tables = cache.decode_tables(decode_entries, device)
+        if decode_entries:      # (table, seq_lens, page, max_len, num_splits=None: chosen per step)
+            self.decode_tables = (*cache.decode_tables(decode_entries, device), None)
+        self.all_decode = not self.prefill          # every row is a decode token: no row indexing
 
         self.num_tokens = offset
         self.input_ids = torch.tensor(ids, dtype=torch.long, device=device)
@@ -77,9 +79,15 @@ class BatchMetadata:
 
 
 class ModelRunner:
-    def __init__(self, model, cache, attn_backend="sdpa"):
+    def __init__(self, model, cache, attn_backend="sdpa", arch=None):
         self.model = model
         self.cache = cache
+        if arch is None:
+            from engine.models import describe
+            arch = describe(model, getattr(model.config, "max_position_embeddings", 4096))
+        self.arch = arch
+        self.qk_norm = arch["qk_norm"]
+        self.mlp_label = "moe" if arch["moe"] else "mlp"     # profiling region name
         if attn_backend not in ("sdpa", "triton"):
             raise ValueError(f"Unknown ATTN_BACKEND '{attn_backend}' (use sdpa or triton)")
         self.attn_backend = attn_backend
@@ -92,6 +100,10 @@ class ModelRunner:
         self.head_dim = getattr(cfg, "head_dim", None) or cfg.hidden_size // self.num_heads
         self.clip_qkv = getattr(cfg, "clip_qkv", None)
         self.device = next(model.parameters()).device
+        self.graphs = None          # engine/core/cuda_graphs.py, when CUDA_GRAPHS=1
+        self.fused = None           # engine/core/fused_linear.py, when FUSED_PROJ=1
+        self.fused_head = None
+        self.layout_report = {}
         inner = model.model
         self.embed, self.layers, self.norm, self.rotary = (inner.embed_tokens, inner.layers,
                                                            inner.norm, inner.rotary_emb)
@@ -100,32 +112,63 @@ class ModelRunner:
     def forward(self, chunks, all_logits=False):
         """Run one step. Returns logits [num_chunks, vocab] for the last token of each chunk,
         or [num_tokens, vocab] for every token when all_logits=True (used for perplexity)."""
+        if self.graphs is not None and not all_logits:
+            logits = self.graphs.run(chunks)             # pure decode steps replay a CUDA graph
+            if logits is not None:
+                return logits
         with nvtx_range("prepare_batch"):                # Python bookkeeping before the GPU work
             meta = BatchMetadata(chunks, self.cache, self.device, self.attn_backend)
         # profiling/analyze.py parses this label: tokens, decode rows, prefill chunks, context read
         with nvtx_range(f"forward(T={meta.num_tokens}, decode={len(meta.decode_rows)}, "
                         f"prefill={len(meta.prefill)}, ctx={meta.context_tokens})"):
-            x = self.embed(meta.input_ids)                                       # [T, hidden]
-            cos, sin = self.rotary(x, meta.positions[None])
-            cos, sin = cos[0][:, None, :], sin[0][:, None, :]                    # [T, 1, D]
+            return self.forward_meta(meta, all_logits)
 
-            for i, layer in enumerate(self.layers):
-                x = x + self._attention(i, layer.self_attn, layer.input_layernorm(x), cos, sin, meta)
-                h = layer.post_attention_layernorm(x)
-                with nvtx_range("moe"):
-                    x = x + layer.mlp(h[None])[0]
+    def fuse_projections(self, layout="auto", cache_file=None):
+        """FUSED_PROJ=1: one matmul for q/k/v and one for gate/up, each weight in its fastest layout.
+        Must run before CUDA graphs are captured (graphs record whichever path is active)."""
+        from engine.core.fused_linear import fuse_model
+        self.fused, self.fused_head, self.layout_report = fuse_model(self.model, layout, cache_file)
+        return self.layout_report
 
-            x = self.norm(x if all_logits else x[meta.last_rows])
-            return self.model.lm_head(x).float()
+    def forward_meta(self, meta, all_logits=False):
+        """The forward pass itself, from prepared metadata. CUDA graphs capture this function with
+        metadata that points at fixed buffers (meta.last_rows = None: every row is an output)."""
+        x = self.embed(meta.input_ids)                                       # [T, hidden]
+        cos, sin = self.rotary(x, meta.positions[None])
+        cos, sin = cos[0][:, None, :], sin[0][:, None, :]                    # [T, 1, D]
+
+        for i, layer in enumerate(self.layers):
+            x = x + self._attention(i, layer.self_attn, layer.input_layernorm(x), cos, sin, meta)
+            h = layer.post_attention_layernorm(x)
+            f = self.fused[i] if self.fused is not None else {}
+            with nvtx_range(self.mlp_label):
+                if "gate_up" in f:                      # fused dense MLP: down(act(gate) * up)
+                    gate, up = f["gate_up"].split(f["gate_up"](h))
+                    x = x + f["down"](f["act"](gate) * up)
+                    continue
+                out = layer.mlp(h[None])                # dense MLP or MoE block, [1, T, hidden]
+                if isinstance(out, tuple):              # some MoE blocks also return router logits
+                    out = out[0]
+                x = x + out[0]
+
+        x = self.norm(x if all_logits or meta.last_rows is None else x[meta.last_rows])
+        head = self.fused_head if self.fused_head is not None else self.model.lm_head
+        return head(x).float()
 
     def _attention(self, layer_idx, attn, h, cos, sin, meta):
         T, H, KV, D = meta.num_tokens, self.num_heads, self.num_kv_heads, self.head_dim
-        q = attn.q_norm(attn.q_proj(h))
-        k = attn.k_norm(attn.k_proj(h))
-        v = attn.v_proj(h)
+        f = self.fused[layer_idx] if self.fused is not None else {}
+        if "qkv" in f:                                 # one matmul, split into views
+            q, k, v = f["qkv"].split(f["qkv"](h))
+        else:
+            q, k, v = attn.q_proj(h), attn.k_proj(h), attn.v_proj(h)   # biases (Qwen2) come along
+        if self.qk_norm == "full":                     # OLMoE: norm over the whole projection
+            q, k = attn.q_norm(q), attn.k_norm(k)
         if self.clip_qkv is not None:
             q, k, v = (t.clamp(-self.clip_qkv, self.clip_qkv) for t in (q, k, v))
         q, k, v = q.view(T, H, D), k.view(T, KV, D), v.view(T, KV, D)
+        if self.qk_norm == "per_head":                 # Qwen3: norm over each head's head_dim
+            q, k = attn.q_norm(q), attn.k_norm(k)
         q = q * cos + rotate_half(q) * sin
         k = k * cos + rotate_half(k) * sin
 
@@ -151,12 +194,17 @@ class ModelRunner:
                 out[offset:offset + n] = o[0].transpose(0, 1)
 
             if meta.decode_tables is not None:      # paged decode kernel: reads the cache in place
-                table, lens, page, max_len = meta.decode_tables
+                table, lens, page, max_len, splits = meta.decode_tables
                 c = self.cache
-                out[meta.decode_rows] = self._paged_decode(
-                    q[meta.decode_rows], c.k[layer_idx], c.v[layer_idx], table, lens, page, attn.scaling,
-                    max_len, k_scale=None if c.k_scale is None else c.k_scale[layer_idx],
-                    v_scale=None if c.v_scale is None else c.v_scale[layer_idx])
+                o = self._paged_decode(
+                    q if meta.all_decode else q[meta.decode_rows], c.k[layer_idx], c.v[layer_idx],
+                    table, lens, page, attn.scaling, max_len,
+                    k_scale=None if c.k_scale is None else c.k_scale[layer_idx],
+                    v_scale=None if c.v_scale is None else c.v_scale[layer_idx], num_splits=splits)
+                if meta.all_decode:
+                    out = o
+                else:
+                    out[meta.decode_rows] = o
             elif len(meta.decode_rows):
                 qd = q[meta.decode_rows][:, :, None, :]                          # [B, H, 1, D]
                 kc, vc = self.cache.gather(layer_idx, meta.decode_idx)           # [B, L, KV, D]
@@ -165,4 +213,5 @@ class ModelRunner:
                                                    scale=attn.scaling, enable_gqa=gqa)
                 out[meta.decode_rows] = o[:, :, 0, :]
 
-        return attn.o_proj(out.reshape(T, H * D))
+        out = out.reshape(T, H * D)
+        return f["o"](out) if "o" in f else attn.o_proj(out)

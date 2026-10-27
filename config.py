@@ -6,9 +6,21 @@ The server (main.py), the engine, the profiling tools and the benchmarks all rea
 import os
 
 # ---------------- Model ----------------
-# OLMoE: Mixture-of-Experts, ~7B total parameters, ~1B active per token.
-# All 7B must fit in memory (~14 GB in bfloat16), even though only ~1B are used per token.
-MODEL_NAME = "allenai/OLMoE-1B-7B-0125-Instruct"
+# Pick a model by short name or any Hugging Face id:  MODEL=qwen3-4b python main.py
+# The custom engine runs the architectures listed in engine/models.py (OLMoE, Qwen3, Qwen3-MoE,
+# Qwen2, Llama, Mistral without sliding window); ENGINE=hf runs anything transformers can load.
+MODELS = {
+    # Mixture-of-Experts: ~7B parameters (~14 GB in bf16), ~1B active per token, 64 experts top-8
+    "olmoe": "allenai/OLMoE-1B-7B-0125-Instruct",
+    # dense: ~4B parameters (~8 GB in bf16), GQA with 32 query / 8 kv heads
+    "qwen3-4b": "Qwen/Qwen3-4B-Instruct-2507",
+}
+MODEL = os.environ.get("MODEL", "olmoe")
+MODEL_NAME = MODELS.get(MODEL, MODEL)
+
+# Longest context (prompt + output) the custom engine accepts: the model's own limit, capped here.
+# Qwen3 supports 262k tokens, far more than the KV cache can hold; OLMoE's own limit is 4096.
+MAX_MODEL_LEN = int(os.environ.get("MAX_MODEL_LEN", 32768))
 
 # True for chat/instruct models (they take a list of messages), False for base models.
 IS_CHAT_MODEL = True
@@ -17,7 +29,7 @@ IS_CHAT_MODEL = True
 # If it doesn't fit on the GPU, layers get offloaded to CPU and generation becomes very slow.
 DEVICE_MAP = "auto"
 
-# OLMoE was trained in bfloat16; float32 would double memory to ~28 GB.
+# Both models were trained in bfloat16; float32 would double their memory.
 DTYPE = "bfloat16"
 
 # Hide transformers warnings (only real errors are printed)
@@ -33,9 +45,10 @@ QUIET_TRANSFORMERS = False
 # Override without editing this file:  QUANT=int4_wo python main.py
 QUANTIZATION = os.environ.get("QUANT", "none")
 
-# Which weights to quantize. In OLMoE:
-#   "experts" - the 64 experts in every layer (~93% of all weights)
-#   "linear"  - the other linear layers inside decoder layers (attention q/k/v/o projections)
+# Which weights to quantize:
+#   "experts" - MoE experts (OLMoE: the 64 experts in every layer, ~93% of all weights)
+#   "linear"  - the other linear layers inside decoder layers: attention q/k/v/o projections,
+#               and for dense models (Qwen3-4B) the MLP too, so nearly all weights
 #   "lm_head" - the output head (sensitive; usually left in bf16)
 # The router (which picks experts) and the embeddings are never quantized.
 QUANT_TARGETS = ["experts", "linear"]
@@ -128,6 +141,20 @@ MOE_ALIGN = os.environ.get("MOE_ALIGN", "auto")
 #   "triton"  kernels/paged_attention: one kernel reads keys/values in place through the page
 #             tables (split-KV, dequantizes FP8/INT8 caches in registers). Prefill always uses SDPA.
 ATTN_BACKEND = os.environ.get("ATTN_BACKEND", "sdpa")
+# CUDA_GRAPHS=1 (custom engine): record each pure-decode step once per batch-size bucket and replay
+# it as one launch, removing per-kernel launch overhead. Needs KV_CACHE=paged and
+# ATTN_BACKEND=triton; MOE_KERNEL=triton recommended. Batches up to MAX_NUM_SEQS are captured.
+CUDA_GRAPHS = os.environ.get("CUDA_GRAPHS", "0") == "1"
+# FUSED_PROJ=1 (custom engine): one matmul for q/k/v and (dense models) one for gate/up, like vLLM,
+# with the original weights becoming views (no extra memory). Quantized layers are left alone.
+FUSED_PROJ = os.environ.get("FUSED_PROJ", "0") == "1"
+# How fused weights are stored, with FUSED_PROJ=1:
+#   "auto"        time [out, in] vs [in, out] for each weight shape at startup, keep the faster
+#   "normal"      PyTorch's [out, in]      "transposed"  [in, out]
+WEIGHT_LAYOUT = os.environ.get("WEIGHT_LAYOUT", "auto")
+# Where WEIGHT_LAYOUT=auto saves its measurements (per GPU, PyTorch version and weight shape), so
+# later runs reuse them and stay comparable. Delete the file to re-measure; empty = don't save.
+TUNING_CACHE = os.environ.get("TUNING_CACHE", "tuning/weight_layouts.json")
 
 # ---------------- Server ----------------
 HOST = "127.0.0.1"     # "0.0.0.0" to allow access from other machines

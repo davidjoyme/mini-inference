@@ -26,6 +26,7 @@ from engine.core.model_runner import ModelRunner
 from engine.core.request import FINISHED, Request, SamplingParams
 from engine.core.sampler import sample
 from engine.core.scheduler import Scheduler
+from engine.models import describe
 from engine.base import Engine
 from engine.model_loader import load_model
 from profiling.nvtx import nvtx_range
@@ -39,11 +40,14 @@ class CustomEngine(Engine):
         cfg = self.model.config
         self.device = next(self.model.parameters()).device
         self.dtype = next(self.model.parameters()).dtype if self.model.dtype is None else self.model.dtype
-        self.max_model_len = cfg.max_position_embeddings
+        # context limit: the model's own, capped by MAX_MODEL_LEN (Qwen3 allows 262k tokens)
+        self.max_model_len = min(cfg.max_position_embeddings, config.MAX_MODEL_LEN or cfg.max_position_embeddings)
+        self.arch = describe(self.model, self.max_model_len)   # fails early for unsupported models
+        print(f"Architecture: {self.arch['architecture']} | q/k norm: {self.arch['qk_norm']} | "
+              f"{'MoE' if self.arch['moe'] else 'dense MLP'} | heads {self.arch['heads']}/{self.arch['kv_heads']} "
+              f"(query/kv), head size {self.arch['head_dim']} | context limit {self.max_model_len}")
 
-        num_heads = cfg.num_attention_heads
-        kv_heads = getattr(cfg, "num_key_value_heads", None) or num_heads
-        head_dim = getattr(cfg, "head_dim", None) or cfg.hidden_size // num_heads
+        num_heads, kv_heads, head_dim = self.arch["heads"], self.arch["kv_heads"], self.arch["head_dim"]
         capacity = self._kv_budget_tokens(cfg.num_hidden_layers, kv_heads, head_dim)
         self.cache = KVCache(config.KV_CACHE, cfg.num_hidden_layers, kv_heads, head_dim, capacity,
                              self.dtype, self.device, block_size=config.KV_BLOCK_SIZE,
@@ -53,9 +57,18 @@ class CustomEngine(Engine):
         if attn_backend == "triton" and self.device.type != "cuda" and os.environ.get("TRITON_INTERPRET") != "1":
             print("ATTN_BACKEND=triton needs a CUDA GPU (or TRITON_INTERPRET=1): using sdpa")
             attn_backend = "sdpa"
-        self.runner = ModelRunner(self.model, self.cache, attn_backend)
+        self.runner = ModelRunner(self.model, self.cache, attn_backend, self.arch)
         print(f"Attention backend: {attn_backend}"
               + (" (paged decode kernel; prefill uses SDPA)" if attn_backend == "triton" else ""))
+        if config.FUSED_PROJ:                       # before graphs: they record the active path
+            start = time.perf_counter()
+            report = self.runner.fuse_projections(config.WEIGHT_LAYOUT, config.TUNING_CACHE or None)
+            print(f"Fused projections (layouts chosen in {time.perf_counter() - start:.1f}s):")
+            for name, r in report.items():
+                print(f"  {name:<8} {r['shape']:>12}: {'[in, out]' if r['layout'] == 'transposed' else '[out, in]'}"
+                      f"  ({r['why']})")
+        if config.CUDA_GRAPHS:
+            self._setup_cuda_graphs(self.max_model_len)
         self.scheduler = Scheduler(config.SCHEDULER, self.cache, config.MAX_NUM_SEQS,
                                    config.MAX_BATCHED_TOKENS, self.max_model_len,
                                    config.STATIC_BATCH_WAIT_S, chunked_prefill=config.CHUNKED_PREFILL)
@@ -68,6 +81,8 @@ class CustomEngine(Engine):
 
         self.lock = threading.Condition()
         self.last_error = None
+        # step wall time (launch + GPU + sampling) split by kind, to see what each kind of step costs
+        self.step_time = {"decode": [0, 0.0], "other": [0, 0.0]}
         print(f"Custom engine: scheduler={config.SCHEDULER}, kv_cache={config.KV_CACHE}, "
               f"kv_dtype={self.cache.stats()['kv_cache_dtype']}, prefix_caching={self.cache.prefix_caching}, "
               f"chunked_prefill={self.scheduler.chunked_prefill} | "
@@ -77,6 +92,32 @@ class CustomEngine(Engine):
         self.thread.start()
 
     # ------------------------------------------------------------------ setup
+    def _setup_cuda_graphs(self, max_model_len):
+        """CUDA_GRAPHS=1: record decode steps as CUDA graphs (engine/core/cuda_graphs.py)."""
+        from engine.core.cuda_graphs import DecodeGraphs
+        missing = [why for bad, why in (
+            (config.KV_CACHE != "paged", "KV_CACHE=paged"),
+            (self.runner.attn_backend != "triton", "ATTN_BACKEND=triton")) if bad]
+        emulate = self.device.type != "cuda"
+        if emulate and os.environ.get("TRITON_INTERPRET") != "1":
+            missing.append("a CUDA GPU")
+        if missing:
+            print(f"CUDA graphs need {', '.join(missing)}: running without them")
+            return
+        if self.arch["moe"] and self.load_info.get("moe_kernel") != "triton":
+            print("Note: CUDA graphs work best with MOE_KERNEL=triton (the default experts path may not capture)")
+        graphs = DecodeGraphs(self.runner, config.MAX_NUM_SEQS, max_model_len, emulate=emulate)
+        try:
+            graphs.capture()
+        except Exception as e:                      # e.g. an op that syncs with the CPU
+            print(f"CUDA graph capture failed ({type(e).__name__}: {str(e)[:200]}): running without them")
+            if torch.cuda.is_available():
+                torch.cuda.synchronize()
+            return
+        self.runner.graphs = graphs
+        print(f"CUDA graphs: {'emulated on CPU' if emulate else 'captured'} for batch sizes "
+              f"{graphs.buckets} in {graphs.capture_s:.1f}s")
+
     def _kv_budget_tokens(self, layers, kv_heads, head_dim):
         if config.KV_CACHE_TOKENS:
             return config.KV_CACHE_TOKENS
@@ -107,10 +148,14 @@ class CustomEngine(Engine):
                 time.sleep(0.002)
                 continue
             try:
+                step_start = time.perf_counter()
                 logits = self.runner.forward(chunks)
                 # .tolist() waits for the GPU to finish this step, so this range includes that wait
                 with nvtx_range("sample_and_sync"):
                     tokens = sample(logits, [r.params.temperature for r, _, _ in chunks]).tolist()
+                kind = "decode" if all(e - s == 1 and s > 0 for _, s, e in chunks) else "other"
+                self.step_time[kind][0] += 1
+                self.step_time[kind][1] += (time.perf_counter() - step_start) * 1e3
             except Exception as e:                  # e.g. out of memory: fail this batch, keep serving
                 self.last_error = f"{type(e).__name__}: {e}"
                 print(f"[engine] step failed: {self.last_error}")
@@ -157,6 +202,8 @@ class CustomEngine(Engine):
 
     def submit(self, prompt, max_new_tokens=None, temperature=None):
         ids = self._encode(prompt)
+        if not ids:          # an empty sequence would break the whole batch's step
+            raise ValueError("The prompt is empty after tokenization")
         limit = min(self.max_model_len, self.cache.capacity)
         if len(ids) >= limit:
             raise ValueError(f"Prompt is {len(ids)} tokens; the limit is {limit - 1}")
@@ -267,6 +314,9 @@ class CustomEngine(Engine):
     def engine_config(self):
         return {
             "engine": "custom",
+            "model": config.MODEL_NAME,
+            "architecture": self.arch["architecture"],
+            "max_model_len": self.max_model_len,
             "scheduler": config.SCHEDULER,
             "kv_cache": config.KV_CACHE,
             "kv_block_size": config.KV_BLOCK_SIZE if config.KV_CACHE == "paged" else None,
@@ -281,8 +331,16 @@ class CustomEngine(Engine):
             "moe_kernel": self.load_info.get("moe_kernel", "default"),
             "moe_align": self.load_info.get("moe_align"),
             "attn_backend": self.runner.attn_backend,
+            "cuda_graphs": self.runner.graphs is not None,
+            "fused_proj": self.runner.fused is not None,
+            "weight_layouts": {k: v["layout"] for k, v in self.runner.layout_report.items()} or None,
         }
 
     def stats(self):
         with self.lock:
-            return {**self.scheduler.stats(), **self.cache.stats()}
+            graphs = self.runner.graphs.stats() if self.runner.graphs is not None else {}
+            timing = {"decode_steps_timed": self.step_time["decode"][0],
+                      "decode_step_ms_total": round(self.step_time["decode"][1], 3),
+                      "other_steps_timed": self.step_time["other"][0],
+                      "other_step_ms_total": round(self.step_time["other"][1], 3)}
+            return {**self.scheduler.stats(), **self.cache.stats(), **graphs, **timing}

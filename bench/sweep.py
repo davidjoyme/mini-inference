@@ -15,7 +15,8 @@ Engine variants are written as "hf" (transformers, one request at a time) or
 Options: +prefix (prefix caching, paged only), +kv-fp8 / +kv-int8 (KV cache quantization),
          +chunked (chunked prefill), +budget-N (MAX_BATCHED_TOKENS = N tokens per step),
          +fused-moe (Triton fused MoE kernels; also works as hf+fused-moe),
-         +paged-attn (Triton paged decode-attention kernel).
+         +paged-attn (Triton paged decode-attention kernel), +cuda-graphs (decode as CUDA graphs),
+         +fused-proj (fused q/k/v and gate/up matmuls, layouts autotuned).
 
 Everything is saved under sweeps/<timestamp>/:
   summary.csv            one row per run (written as it goes, so a crash keeps earlier rows)
@@ -56,7 +57,16 @@ sys.path.insert(0, ROOT)
 
 import config  # noqa: E402
 
-OLMOE_CONTEXT_TOKENS = 4096
+
+
+def context_limit():
+    """The model's context limit (capped by MAX_MODEL_LEN), for the too-long-prompt warning."""
+    try:
+        from transformers import AutoConfig
+        own = AutoConfig.from_pretrained(config.MODEL_NAME).max_position_embeddings
+        return min(own, config.MAX_MODEL_LEN or own)
+    except Exception:
+        return 4096
 
 # Columns printed in the terminal table (summary.csv has all of them)
 SHOW = ["engine", "quant", "users", "out_tok", "in_words", "peak_gpu_mb", "kv_capacity_tokens",
@@ -93,7 +103,8 @@ def engine_env(spec):
                  f"[+prefix][+kv-fp8|+kv-int8]")
     env = {"ENGINE": "custom", "SCHEDULER": scheduler, "KV_CACHE": kv,
            "PREFIX_CACHING": "0", "KV_CACHE_DTYPE": "auto", "CHUNKED_PREFILL": "0",
-           "MOE_KERNEL": "default", "ATTN_BACKEND": "sdpa"}
+           "MOE_KERNEL": "default", "ATTN_BACKEND": "sdpa", "CUDA_GRAPHS": "0",
+           "FUSED_PROJ": "0"}
     for opt in options:
         if opt == "prefix":
             if kv != "paged":
@@ -107,16 +118,20 @@ def engine_env(spec):
             env["MOE_KERNEL"] = "triton"
         elif opt == "paged-attn":
             env["ATTN_BACKEND"] = "triton"
+        elif opt == "cuda-graphs":
+            env["CUDA_GRAPHS"] = "1"
+        elif opt == "fused-proj":
+            env["FUSED_PROJ"] = "1"
         elif opt.startswith("budget-") and opt[7:].isdigit():
             env["MAX_BATCHED_TOKENS"] = opt[7:]
         else:
             sys.exit(f"Unknown option '+{opt}' in '{spec}' "
-                     f"(use +prefix, +kv-fp8, +kv-int8, +chunked, +budget-N, +fused-moe, +paged-attn)")
+                     f"(use +prefix, +kv-fp8, +kv-int8, +chunked, +budget-N, +fused-moe, +paged-attn, +cuda-graphs, +fused-proj)")
     return env
 
 
 def start_server(quant, engine, port, log_path, kv_tokens=None, kv_mb=None):
-    env = {**os.environ, **engine_env(engine), "QUANT": quant, "PORT": str(port)}
+    env = {**os.environ, **engine_env(engine), "QUANT": quant, "PORT": str(port), "MODEL": config.MODEL}
     if kv_tokens:
         env["KV_CACHE_TOKENS"] = str(kv_tokens)     # shrink the KV pool to force memory pressure
     if kv_mb:
@@ -293,6 +308,8 @@ def print_table(rows, cols):
 # ---------------- main ----------------
 def main():
     p = argparse.ArgumentParser(description="Sweep configurations and record resource usage")
+    p.add_argument("--model", default=None,
+                   help="model short name from config.MODELS (olmoe, qwen3-4b) or a Hugging Face id")
     p.add_argument("--quants", nargs="+", default=config.SWEEP_QUANTIZATIONS,
                    choices=["none", "int8_wo", "int4_wo", "fp8"])
     p.add_argument("--engines", nargs="+", default=config.SWEEP_ENGINES,
@@ -316,6 +333,9 @@ def main():
     p.add_argument("--tag", default="", help="added to the output folder name")
     p.add_argument("--dry-run", action="store_true", help="only list the runs")
     args = p.parse_args()
+    if args.model:
+        config.MODEL = args.model
+        config.MODEL_NAME = config.MODELS.get(args.model, args.model)
 
     for e in args.engines:
         engine_env(e)                                   # validate early
@@ -328,11 +348,12 @@ def main():
         for users, out_tok, in_words in combos:
             print(f"  {engine:22} {quant:8} users={users:<3} out_tok={out_tok:<5} in_words={in_words:<5} "
                   f"requests={users * args.requests_per_user}")
+    limit = context_limit()
     for _, out_tok, in_words in combos:
         est = int(in_words * 1.35) + 60 + out_tok   # rough token estimate
-        if est > OLMOE_CONTEXT_TOKENS:
+        if est > limit:
             print(f"WARNING: in_words={in_words} + out_tok={out_tok} is ~{est} tokens, more than "
-                  f"OLMoE's {OLMOE_CONTEXT_TOKENS}-token context. Those runs will likely fail.")
+                  f"the model's {limit}-token context. Those runs will likely fail.")
     if args.dry_run:
         return
     if server_answers(args.port):

@@ -1,7 +1,8 @@
 """
 bench/micro/bench_attention.py - decode attention for one layer: gather + SDPA vs the paged Triton kernel.
 
-Uses OLMoE's attention shape (16 query heads, 16 kv heads, head size 128) and the engine's own
+Uses OLMoE's attention shape by default (16 query heads, 16 kv heads, head size 128), or another
+model's with --model (e.g. qwen3-4b: 32 query heads sharing 8 kv heads), and the engine's own
 KVCache, with pages handed out in shuffled order like a busy server's pool. For each batch size
 and context length:
     sdpa ms       what ATTN_BACKEND=sdpa does: gather every request's keys/values into a padded
@@ -15,6 +16,7 @@ and context length:
 Run from the project root on the GPU:
     python bench/micro/bench_attention.py
     python bench/micro/bench_attention.py --kv-dtype fp8 --ragged --out results/micro_attn_fp8.json
+    python bench/micro/bench_attention.py --model qwen3-4b --out results/micro_attn_qwen3.json
 """
 import argparse
 import json
@@ -113,10 +115,20 @@ def main():
     p.add_argument("--ctx", nargs="+", type=int, default=[256, 1024, 4096])
     p.add_argument("--kv-dtype", default="auto", choices=["auto", "fp8", "int8"])
     p.add_argument("--ragged", action="store_true", help="random context lengths up to --ctx (default: all equal)")
+    p.add_argument("--model", default=None,
+                   help="take the attention shape from this model's config (config.MODELS name or HF id)")
     p.add_argument("--out", default=None)
     args = p.parse_args()
     if not torch.cuda.is_available():
         sys.exit("Needs a CUDA GPU.")
+    global H, KV, D
+    if args.model:
+        import config
+        from transformers import AutoConfig
+        cfg = AutoConfig.from_pretrained(config.MODELS.get(args.model, args.model))
+        H = cfg.num_attention_heads
+        KV = getattr(cfg, "num_key_value_heads", None) or H
+        D = getattr(cfg, "head_dim", None) or cfg.hidden_size // H
 
     gpu = torch.cuda.get_device_name(0)
     peak = peak_bandwidth(gpu)

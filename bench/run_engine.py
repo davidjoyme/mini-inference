@@ -64,6 +64,12 @@ def main():
                         help="start every prompt differently, so prompts share no prefix")
     parser.add_argument("--long-every", type=int, default=0,
                         help="mixed workload: only every K-th request gets --prompt-words (0 = all do)")
+    parser.add_argument("--fused-proj", default=None, choices=["on", "off"],
+                        help="override FUSED_PROJ (custom engine): fused q/k/v and gate/up matmuls")
+    parser.add_argument("--weight-layout", default=None, choices=["auto", "normal", "transposed"],
+                        help="override WEIGHT_LAYOUT (with --fused-proj on)")
+    parser.add_argument("--cuda-graphs", default=None, choices=["on", "off"],
+                        help="override CUDA_GRAPHS (custom engine; needs --attn-backend triton)")
     parser.add_argument("--attn-backend", default=None, choices=["sdpa", "triton"],
                         help="override ATTN_BACKEND: 'triton' = paged decode-attention kernel (custom engine)")
     parser.add_argument("--moe-kernel", default=None, choices=["default", "triton"],
@@ -90,8 +96,13 @@ def main():
     parser.add_argument("--engine", default=None, choices=["hf", "custom"], help="override ENGINE")
     parser.add_argument("--scheduler", default=None, choices=["sequential", "static", "continuous"])
     parser.add_argument("--kv-cache", default=None, choices=["contiguous", "paged"])
+    parser.add_argument("--model", default=None,
+                        help="model short name from config.MODELS (olmoe, qwen3-4b) or a Hugging Face id")
     parser.add_argument("--out", default=None, help="optional JSON file for the results")
     args = parser.parse_args()
+    if args.model:
+        config.MODEL = args.model
+        config.MODEL_NAME = config.MODELS.get(args.model, args.model)
 
     for flag, name in ((args.quant, "QUANTIZATION"), (args.engine, "ENGINE"),
                        (args.scheduler, "SCHEDULER"), (args.kv_cache, "KV_CACHE")):
@@ -114,6 +125,12 @@ def main():
         config.MOE_KERNEL = args.moe_kernel
     if args.attn_backend:
         config.ATTN_BACKEND = args.attn_backend
+    if args.cuda_graphs:
+        config.CUDA_GRAPHS = args.cuda_graphs == "on"
+    if args.fused_proj:
+        config.FUSED_PROJ = args.fused_proj == "on"
+    if args.weight_layout:
+        config.WEIGHT_LAYOUT = args.weight_layout
     if args.max_batched_tokens:
         config.MAX_BATCHED_TOKENS = args.max_batched_tokens
     if config.ENGINE == "hf" and args.concurrency > 1:
@@ -171,6 +188,7 @@ def main():
     summary = {
         "engine": info,
         "engine_label": engine_label(info),
+        "model": info.get("model"),
         "quantization": info["quantization"].get("method"),
         "concurrency": args.concurrency,
         "num_prompts": args.num_prompts,
@@ -188,9 +206,20 @@ def main():
         "process_rss_mb": mem_after.get("process_rss_mb"),
     }
     for key in ("steps", "preemptions", "padding_tokens",     # custom engine counters
-                "prefix_hit_tokens", "prefix_query_tokens", "prefill_chunks", "mixed_steps"):
+                "prefix_hit_tokens", "prefix_query_tokens", "prefill_chunks", "mixed_steps",
+                "graph_replays", "graph_eager_steps", "decode_steps_timed", "decode_step_ms_total",
+                "other_steps_timed", "other_step_ms_total"):
         if key in stats_after:
             summary[key] = stats_after[key] - stats_before.get(key, 0)
+    # average step time by kind: pure decode (CUDA graphs if on) vs steps with prompt tokens
+    dn, dt = summary.pop("decode_steps_timed", 0), summary.pop("decode_step_ms_total", 0.0)
+    on, ot = summary.pop("other_steps_timed", 0), summary.pop("other_step_ms_total", 0.0)
+    if dn:
+        summary["decode_step_ms"] = round(dt / dn, 3)
+    if on:
+        summary["prefill_or_mixed_step_ms"] = round(ot / on, 3)
+    if dt + ot:
+        summary["prefill_or_mixed_share_of_step_time_pct"] = round(100 * ot / (dt + ot), 1)
     if summary.get("prefix_query_tokens"):
         summary["prefix_hit_pct"] = round(summary["prefix_hit_tokens"] / summary["prefix_query_tokens"] * 100, 1)
     if "steps" in summary and summary["steps"]:

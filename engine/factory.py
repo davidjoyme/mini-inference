@@ -29,6 +29,10 @@ def engine_label(info: dict) -> str:
     label = f"{e.get('scheduler')}/{e.get('kv_cache')}" + fused
     if e.get("attn_backend") == "triton":
         label += "+paged-attn"
+    if e.get("cuda_graphs"):
+        label += "+cuda-graphs"
+    if e.get("fused_proj"):
+        label += "+fused-proj"
     if e.get("prefix_caching"):
         label += "+prefix"
     if e.get("kv_cache_dtype") in ("fp8", "int8"):
