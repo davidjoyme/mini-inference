@@ -10,7 +10,6 @@ If compiling fails, available() returns False and fused_moe falls back to the Py
         sorted_ids, expert_ids, num_padded = moe_align_cuda(topk_ids, num_experts, block_m)
 """
 import os
-
 import torch
 
 _SOURCE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "csrc", "moe_align.cu")

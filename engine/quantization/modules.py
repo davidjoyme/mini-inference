@@ -12,7 +12,6 @@ would cast the FP8 weights and the scales.
 """
 import torch
 from torch import nn
-
 from profiling.nvtx import nvtx_range
 
 

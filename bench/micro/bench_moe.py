@@ -16,12 +16,9 @@ import argparse
 import json
 import os
 import sys
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
 import torch  # noqa: E402
 from transformers import OlmoeConfig, OlmoeForCausalLM  # noqa: E402
-
 from kernels.fused_moe.module import FusedExperts  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
 

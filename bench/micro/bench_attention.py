@@ -23,12 +23,9 @@ import json
 import os
 import sys
 import time
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
-
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
@@ -66,7 +63,6 @@ class _quiet_native_output:
         os.dup2(self.saved[1], 2)
         for fd in (*self.saved, self.devnull):
             os.close(fd)
-
 
 def kernels_per_call(fn):
     fn()

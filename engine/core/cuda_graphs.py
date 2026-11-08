@@ -29,9 +29,7 @@ On a CPU (tests), `emulate=True` runs the same padded fixed-buffer forward pass 
 graph, so the bookkeeping - buckets, padding, scratch block, stale rows - is checked exactly.
 """
 import time
-
 import torch
-
 from profiling.nvtx import nvtx_range
 
 BUCKETS = [1, 2, 4, 8, 12, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256]

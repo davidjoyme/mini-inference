@@ -22,9 +22,7 @@ Optional:
     score(token_ids)         logits for every position (perplexity through the engine's own cache)
 """
 from abc import ABC, abstractmethod
-
 import torch
-
 import config
 
 

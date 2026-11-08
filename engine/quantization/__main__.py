@@ -14,11 +14,8 @@ import argparse
 import glob
 import os
 import sys
-
 sys.path.insert(0, os.getcwd())
-
 import torch  # noqa: E402
-
 import config  # noqa: E402
 from engine.quantization import METHODS, get_method  # noqa: E402
 from engine.quantization.loader import cache_path, load_quantized_model, weight_memory  # noqa: E402

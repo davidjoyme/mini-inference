@@ -21,15 +21,11 @@ import argparse
 import asyncio
 import json
 import time
-
 import httpx
-
 import os
 import sys
-
 # Make the project root importable when run as `python bench/test.py`
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import config  # noqa: E402
 from bench.prompts import build_prompt as _build_prompt  # noqa: E402
 from engine.factory import engine_label  # noqa: E402

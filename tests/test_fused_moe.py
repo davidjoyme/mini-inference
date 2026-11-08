@@ -10,16 +10,11 @@ Run from the project root:
 """
 import os
 import sys
-
 import torch
-
 if not torch.cuda.is_available():
     os.environ["TRITON_INTERPRET"] = "1"        # must be set before triton is imported
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import tempfile  # noqa: E402
-
 import config  # noqa: E402
 from kernels.fused_moe.fused_moe_triton import fused_moe, moe_align  # noqa: E402
 from kernels.fused_moe.module import FusedExperts, apply_fused_moe  # noqa: E402

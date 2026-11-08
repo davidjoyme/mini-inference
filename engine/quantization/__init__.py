@@ -4,7 +4,6 @@ engine/quantization - weight quantization methods and the code that applies them
 Pick a method in config.py (QUANTIZATION) or with the QUANT environment variable.
 """
 import torch
-
 from engine.quantization.fp8 import FP8WeightAct
 from engine.quantization.int4_wo import Int4WeightOnly
 from engine.quantization.int8_wo import Int8WeightOnly

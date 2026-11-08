@@ -24,7 +24,6 @@ Chunked prefill (CHUNKED_PREFILL=1; sequential and continuous):
   first token only once its last prompt slice has been processed.
 """
 from collections import deque
-
 from engine.core.request import RUNNING, WAITING
 
 

@@ -15,11 +15,9 @@ Endpoints:
     GET  /metrics/engine         engine state only (scheduler and KV cache counters)
 """
 import json
-
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
-
 import config
 from api.schemas import InferenceRequest
 from engine import metrics

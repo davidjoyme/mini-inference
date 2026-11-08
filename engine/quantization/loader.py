@@ -17,11 +17,9 @@ import gc
 import json
 import os
 import time
-
 import torch
 from torch import nn
 from transformers import AutoConfig, AutoModelForCausalLM, GenerationConfig
-
 from engine.quantization.modules import QuantExperts, QuantLinear, is_fused_experts
 
 

@@ -10,16 +10,11 @@ Run from the project root:
 """
 import os
 import sys
-
 import torch
-
 if not torch.cuda.is_available():
     os.environ["TRITON_INTERPRET"] = "1"        # must be set before triton is imported
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import tempfile  # noqa: E402
-
 import config  # noqa: E402
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402

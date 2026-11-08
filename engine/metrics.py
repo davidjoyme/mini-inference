@@ -17,7 +17,6 @@ NVML comes from the `nvidia-ml-py` package:  pip install nvidia-ml-py
 import os
 import threading
 import time
-
 import torch
 
 # ---------------- NVML (GPU utilization and power) ----------------

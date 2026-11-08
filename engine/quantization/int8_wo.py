@@ -8,7 +8,6 @@ Each output channel (row of the weight) gets one scale:
 Activations stay in bfloat16. Memory: 1 byte per weight + a tiny scale per row.
 """
 import torch
-
 from engine.quantization.base import QuantMethod
 
 

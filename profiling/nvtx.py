@@ -11,9 +11,7 @@ The same label goes to both profilers:
 Costs nothing when neither is on.
 """
 import contextlib
-
 import torch
-
 import config
 
 # set by profiling.torch_profiler while the PyTorch profiler is recording

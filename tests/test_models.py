@@ -14,21 +14,15 @@ Run from the project root:
 """
 import os
 import sys
-
 import torch
-
 if not torch.cuda.is_available():
     os.environ["TRITON_INTERPRET"] = "1"        # must be set before triton is imported
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import tempfile  # noqa: E402
-
 from tokenizers import Tokenizer, models, pre_tokenizers  # noqa: E402
 from transformers import (LlamaConfig, LlamaForCausalLM, Olmo2Config, Olmo2ForCausalLM,  # noqa: E402
                           PreTrainedTokenizerFast, Qwen2Config, Qwen2ForCausalLM, Qwen3Config,
                           Qwen3ForCausalLM, Qwen3MoeConfig, Qwen3MoeForCausalLM)
-
 import config  # noqa: E402
 from tests.test_batching import PROMPTS, make_engine, reference_outputs, run_concurrently  # noqa: E402
 

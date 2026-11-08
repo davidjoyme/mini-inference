@@ -7,11 +7,9 @@ correctness-tested against. Implements the interface in engine/base.py.
 """
 import threading
 import time
-
 import torch
 from transformers import TextIteratorStreamer
 from transformers.generation.streamers import BaseStreamer
-
 import config
 from engine.base import Engine
 from engine.model_loader import load_model

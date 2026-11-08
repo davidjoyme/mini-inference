@@ -28,12 +28,9 @@ import os
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
-
 # Make the project root importable when run as `python bench/run_engine.py`
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import torch  # noqa: E402
-
 import config  # noqa: E402
 from bench.prompts import build_prompt  # noqa: E402
 from engine import metrics  # noqa: E402

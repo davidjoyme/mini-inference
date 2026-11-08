@@ -15,12 +15,9 @@ import copy
 import os
 import sys
 import tempfile
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import torch  # noqa: E402
 from transformers import OlmoeConfig, OlmoeForCausalLM  # noqa: E402
-
 from engine.quantization import METHODS, get_method  # noqa: E402
 from engine.quantization.loader import load_quantized_model, quantize_model, weight_memory  # noqa: E402
 from engine.quantization.modules import QuantExperts  # noqa: E402

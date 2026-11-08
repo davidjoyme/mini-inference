@@ -27,12 +27,9 @@ import json
 import math
 import os
 import sys
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
-
 import config  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
 

@@ -14,7 +14,6 @@ This is plain round-to-nearest; calibration methods like AWQ/GPTQ produce the sa
 storage format with smarter rounding, and can be added as another method later.
 """
 import torch
-
 from engine.quantization.base import QuantMethod
 
 

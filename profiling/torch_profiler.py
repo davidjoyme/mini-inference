@@ -14,10 +14,8 @@ record_shapes / profile_memory add detail but make traces much bigger; off by de
 import contextlib
 import os
 import time
-
 import torch
 from torch.profiler import ProfilerActivity, profile
-
 import config
 import profiling.nvtx as nvtx
 

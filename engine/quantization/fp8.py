@@ -12,7 +12,6 @@ are rounded to FP8 exactly as on real hardware, but the matmul runs in bf16. The
 accuracy is the same either way; only the real path is faster.
 """
 import torch
-
 from engine.quantization.base import QuantMethod
 
 FP8 = torch.float8_e4m3fn

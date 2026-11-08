@@ -35,7 +35,6 @@ KV quantization (KV_CACHE_DTYPE = "fp8" or "int8")
 """
 import math
 from collections import OrderedDict, deque
-
 import torch
 
 # ---------------------------------------------------------------- KV storage formats
