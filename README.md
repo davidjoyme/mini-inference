@@ -28,7 +28,7 @@ Each round followed the same loop: profile → find the bottleneck → fix → v
 | 2c | At small batches the CPU spent longer launching kernels than the GPU ran them | CUDA graphs for decode | Batch 1: 8.5 → 4.4 ms/token (1.9×); 64 users: 3,447 tok/s |
 | 3 | Dense model: cuBLAS ran skinny decode matmuls at 17–50% of peak bandwidth | Fused q/k/v and gate/up; weight layouts autotuned | −2 ms per step, matching the microbenchmark's prediction |
 
-The full log, with profiles, microbenchmarks and cross-checks, is in **[docs/OPTIMIZATION_LOG.md](docs/OPTIMIZATION_LOG.md)**.
+
 
 ## Features
 
@@ -91,15 +91,8 @@ kernels/         fused_moe/ (Triton + CUDA C++), paged_attention/ (Triton), each
 bench/           benchmarks, load tests, sweeps, quality checks, micro/ kernel benchmarks
 profiling/       profiler wrapper and bottleneck analyzer
 tests/           correctness tests (exact match against Hugging Face generate())
-docs/            design, code guide, experiments, optimization log
 ```
 
-| Document | What's in it |
-|---|---|
-| [docs/CODE_GUIDE.md](docs/CODE_GUIDE.md) | What every file does, and a request's path through the code |
-| [docs/DESIGN.md](docs/DESIGN.md) | How scheduling, the KV cache, prefix caching and quantization work; model details; limitations |
-| [docs/OPTIMIZATION_LOG.md](docs/OPTIMIZATION_LOG.md) | Every optimization round with evidence and measurements |
-| [docs/EXPERIMENTS.md](docs/EXPERIMENTS.md) | Commands to reproduce every measurement |
 
 ## Next steps
 
