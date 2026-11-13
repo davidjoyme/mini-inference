@@ -1,0 +1,77 @@
+Engine: continuous/paged+fused-moe
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   3] OK  status=200 latency=0.42s tokens=44 TTFT=0.04s TPOT=8.81ms queue=0.02s
+[req   0] OK  status=200 latency=0.74s tokens=79 TTFT=0.03s TPOT=9.18ms queue=0.0s
+[req   1] OK  status=200 latency=0.88s tokens=93 TTFT=0.03s TPOT=9.22ms queue=0.0s
+[req   2] OK  status=200 latency=1.21s tokens=128 TTFT=0.03s TPOT=9.3ms queue=0.0s
+[req   4] OK  status=200 latency=0.81s tokens=84 TTFT=0.02s TPOT=9.5ms queue=0.007s
+[req   6] OK  status=200 latency=0.79s tokens=83 TTFT=0.02s TPOT=9.39ms queue=0.006s
+[req   8] OK  status=200 latency=0.56s tokens=59 TTFT=0.02s TPOT=9.31ms queue=0.006s
+[req   7] OK  status=200 latency=0.65s tokens=67 TTFT=0.02s TPOT=9.49ms queue=0.006s
+[req   5] OK  status=200 latency=1.23s tokens=128 TTFT=0.02s TPOT=9.52ms queue=0.006s
+[req   9] OK  status=200 latency=0.90s tokens=95 TTFT=0.02s TPOT=9.38ms queue=0.007s
+[req  10] OK  status=200 latency=0.78s tokens=82 TTFT=0.02s TPOT=9.29ms queue=0.007s
+[req  11] OK  status=200 latency=0.86s tokens=92 TTFT=0.02s TPOT=9.24ms queue=0.006s
+[req  12] OK  status=200 latency=0.85s tokens=91 TTFT=0.02s TPOT=9.21ms queue=0.006s
+[req  14] OK  status=200 latency=0.40s tokens=44 TTFT=0.02s TPOT=8.73ms queue=0.007s
+[req  13] OK  status=200 latency=0.52s tokens=59 TTFT=0.03s TPOT=8.46ms queue=0.007s
+[req  15] OK  status=200 latency=0.48s tokens=59 TTFT=0.02s TPOT=7.97ms queue=0.006s
+
+===== Summary =====
+          total_time_s: 3.204
+            successful: 16
+                failed: 0
+        requests_per_s: 4.994
+total_generated_tokens: 1287
+  overall_tokens_per_s: 401.67
+             latency_s: {'avg': 0.755, 'p50': 0.783, 'p95': 1.214, 'p99': 1.228, 'max': 1.231}
+          queue_time_s: {'avg': 0.006, 'p50': 0.006, 'p95': 0.01, 'p99': 0.018, 'max': 0.02}
+                ttft_s: {'avg': 0.024, 'p50': 0.023, 'p95': 0.031, 'p99': 0.04, 'max': 0.042}
+               tpot_ms: {'avg': 9.125, 'p50': 9.265, 'p95': 9.505, 'p99': 9.517, 'max': 9.52}
+                itl_ms: {'avg': 9.188, 'p50': 9.06, 'p95': 10.624, 'p99': 13.108, 'max': 14.86}
+        prefill_time_s: {'avg': 0.015, 'p50': 0.013, 'p95': 0.021, 'p99': 0.021, 'max': 0.021}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21427.2
+          gpu_peak_reserved_mb: 24214.0
+       gpu_peak_device_used_mb: 24929.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 5.8
+   process_peak_rss_mb_sampled: 1736.1
+       process_rss_increase_mb: 22.9
+              gpu_util_pct_avg: 72.2
+              gpu_util_pct_max: 76.0
+       gpu_mem_bw_util_pct_avg: 35.0
+       gpu_mem_bw_util_pct_max: 42.0
+               gpu_power_w_avg: 177.2
+               gpu_power_w_max: 195.5
+           process_cpu_pct_avg: 91.2
+           process_cpu_pct_max: 103.0
+                batch_size_avg: 3.6
+                batch_size_max: 4
+                   running_avg: 3.5
+                   running_max: 4
+                   waiting_avg: 0.0
+                   waiting_max: 0
+               kv_used_pct_avg: 0.4
+               kv_used_pct_max: 0.6
+           kv_reserved_pct_avg: 0.4
+           kv_reserved_pct_max: 0.7
+              kv_waste_pct_avg: 8.7
+              kv_waste_pct_max: 22.3
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 349
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 1271
+                prefill_tokens: 384
+                prefill_chunks: 0
+                   mixed_steps: 12
+             padding_waste_pct: 0.0
+               max_step_tokens: 72
+                       samples: 13
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_191957_C2_align_cuda/runs/continuous-paged+fused-moe_none_u4_out128_in0.json

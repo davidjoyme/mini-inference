@@ -1,0 +1,21 @@
+Engine: continuous/paged+paged-attn+cuda-graphs+fused-proj+kv-fp8+chunked+budget-4096
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.12s tokens=8 TTFT=0.05s TPOT=10.31ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.124
+            successful: 1
+                failed: 0
+        requests_per_s: 8.087
+total_generated_tokens: 8
+  overall_tokens_per_s: 64.7
+             latency_s: {'avg': 0.124, 'p50': 0.124, 'p95': 0.124, 'p99': 0.124, 'max': 0.124}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.051, 'p50': 0.051, 'p95': 0.051, 'p99': 0.051, 'max': 0.051}
+               tpot_ms: {'avg': 10.31, 'p50': 10.31, 'p95': 10.31, 'p99': 10.31, 'max': 10.31}
+                itl_ms: {'avg': 10.219, 'p50': 9.94, 'p95': 11.316, 'p99': 11.695, 'max': 11.79}
+        prefill_time_s: {'avg': 0.043, 'p50': 0.043, 'p95': 0.043, 'p99': 0.043, 'max': 0.043}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261113_104837_H3_32k_qwen3/logs/warmup_continuous-paged+paged-attn+cuda-graphs+fused-proj+chunked+budget-4096+kv-fp8_none.json

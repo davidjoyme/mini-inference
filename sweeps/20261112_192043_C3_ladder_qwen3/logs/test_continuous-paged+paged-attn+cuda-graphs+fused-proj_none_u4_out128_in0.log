@@ -1,0 +1,77 @@
+Engine: continuous/paged+paged-attn+cuda-graphs+fused-proj
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   3] OK  status=200 latency=0.37s tokens=40 TTFT=0.04s TPOT=8.52ms queue=0.012s
+[req   2] OK  status=200 latency=0.49s tokens=53 TTFT=0.04s TPOT=8.6ms queue=0.013s
+[req   0] OK  status=200 latency=0.50s tokens=54 TTFT=0.04s TPOT=8.59ms queue=0.013s
+[req   1] OK  status=200 latency=0.55s tokens=59 TTFT=0.02s TPOT=9.09ms queue=0.0s
+[req   4] OK  status=200 latency=0.51s tokens=57 TTFT=0.02s TPOT=8.75ms queue=0.005s
+[req   5] OK  status=200 latency=0.46s tokens=51 TTFT=0.02s TPOT=8.74ms queue=0.005s
+[req   6] OK  status=200 latency=0.46s tokens=51 TTFT=0.03s TPOT=8.63ms queue=0.013s
+[req   7] OK  status=200 latency=0.45s tokens=50 TTFT=0.02s TPOT=8.83ms queue=0.005s
+[req  10] OK  status=200 latency=0.41s tokens=44 TTFT=0.03s TPOT=8.83ms queue=0.012s
+[req   8] OK  status=200 latency=0.53s tokens=57 TTFT=0.02s TPOT=9.08ms queue=0.006s
+[req   9] OK  status=200 latency=0.47s tokens=51 TTFT=0.02s TPOT=9.03ms queue=0.005s
+[req  11] OK  status=200 latency=0.52s tokens=57 TTFT=0.02s TPOT=9.0ms queue=0.004s
+[req  12] OK  status=200 latency=0.52s tokens=57 TTFT=0.02s TPOT=8.8ms queue=0.006s
+[req  13] OK  status=200 latency=0.51s tokens=57 TTFT=0.02s TPOT=8.66ms queue=0.005s
+[req  14] OK  status=200 latency=0.51s tokens=57 TTFT=0.03s TPOT=8.58ms queue=0.012s
+[req  15] OK  status=200 latency=0.50s tokens=57 TTFT=0.02s TPOT=8.48ms queue=0.005s
+
+===== Summary =====
+          total_time_s: 2.02
+            successful: 16
+                failed: 0
+        requests_per_s: 7.919
+total_generated_tokens: 852
+  overall_tokens_per_s: 421.71
+             latency_s: {'avg': 0.485, 'p50': 0.497, 'p95': 0.535, 'p99': 0.544, 'max': 0.546}
+          queue_time_s: {'avg': 0.008, 'p50': 0.005, 'p95': 0.013, 'p99': 0.013, 'max': 0.013}
+                ttft_s: {'avg': 0.027, 'p50': 0.024, 'p95': 0.042, 'p99': 0.043, 'max': 0.043}
+               tpot_ms: {'avg': 8.763, 'p50': 8.745, 'p95': 9.082, 'p99': 9.088, 'max': 9.09}
+                itl_ms: {'avg': 8.934, 'p50': 8.53, 'p95': 12.839, 'p99': 23.209, 'max': 31.73}
+        prefill_time_s: {'avg': 0.016, 'p50': 0.014, 'p95': 0.023, 'p99': 0.023, 'max': 0.023}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 17530.2
+          gpu_peak_reserved_mb: 18246.0
+       gpu_peak_device_used_mb: 19105.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 7.2
+   process_peak_rss_mb_sampled: 1924.3
+       process_rss_increase_mb: 20.2
+              gpu_util_pct_avg: 61.4
+              gpu_util_pct_max: 93.0
+       gpu_mem_bw_util_pct_avg: 31.9
+       gpu_mem_bw_util_pct_max: 48.0
+               gpu_power_w_avg: 318.3
+               gpu_power_w_max: 384.2
+           process_cpu_pct_avg: 142.8
+           process_cpu_pct_max: 407.0
+                batch_size_avg: 3.5
+                batch_size_max: 4
+                   running_avg: 3.4
+                   running_max: 4
+                   waiting_avg: 0.1
+                   waiting_max: 1
+               kv_used_pct_avg: 0.2
+               kv_used_pct_max: 0.4
+           kv_reserved_pct_avg: 0.3
+           kv_reserved_pct_max: 0.4
+              kv_waste_pct_avg: 30.5
+              kv_waste_pct_max: 100.0
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 226
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 836
+                prefill_tokens: 326
+                prefill_chunks: 0
+                   mixed_steps: 13
+             padding_waste_pct: 0.0
+               max_step_tokens: 1062
+                       samples: 8
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_192043_C3_ladder_qwen3/runs/continuous-paged+paged-attn+cuda-graphs+fused-proj_none_u4_out128_in0.json

@@ -1,0 +1,129 @@
+{
+  "summary": {
+    "server": {
+      "status": "ok",
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 2.4,
+      "engine": {
+        "engine": "custom",
+        "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+        "architecture": "OlmoeForCausalLM",
+        "max_model_len": 4096,
+        "scheduler": "static",
+        "kv_cache": "contiguous",
+        "kv_block_size": null,
+        "kv_watermark": null,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 65536,
+        "kv_cache_mb": 8192.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false,
+        "moe_kernel": "default",
+        "moe_align": null,
+        "attn_backend": "sdpa",
+        "cuda_graphs": false,
+        "fused_proj": false,
+        "weight_layouts": null
+      }
+    },
+    "test_config": {
+      "url": "http://localhost:8100/generate_stream",
+      "stream": true,
+      "num_requests": 1,
+      "concurrency": 1,
+      "max_new_tokens": 8,
+      "prompt_words": 0,
+      "unique_prompts": false,
+      "long_every": 0,
+      "prompt": "Tell me a short fact about space"
+    },
+    "total_time_s": 0.631,
+    "successful": 1,
+    "failed": 0,
+    "requests_per_s": 1.585,
+    "total_generated_tokens": 8,
+    "overall_tokens_per_s": 12.68,
+    "latency_s": {
+      "avg": 0.631,
+      "p50": 0.631,
+      "p95": 0.631,
+      "p99": 0.631,
+      "max": 0.631
+    },
+    "queue_time_s": {
+      "avg": 0.05,
+      "p50": 0.05,
+      "p95": 0.05,
+      "p99": 0.05,
+      "max": 0.05
+    },
+    "ttft_s": {
+      "avg": 0.547,
+      "p50": 0.547,
+      "p95": 0.547,
+      "p99": 0.547,
+      "max": 0.547
+    },
+    "tpot_ms": {
+      "avg": 12.03,
+      "p50": 12.03,
+      "p95": 12.03,
+      "p99": 12.03,
+      "max": 12.03
+    },
+    "itl_ms": {
+      "avg": 11.933,
+      "p50": 11.53,
+      "p95": 13.64,
+      "p99": 14.288,
+      "max": 14.45
+    },
+    "prefill_time_s": {
+      "avg": 0.49,
+      "p50": 0.49,
+      "p95": 0.49,
+      "p99": 0.49,
+      "max": 0.49
+    }
+  },
+  "requests": [
+    {
+      "id": 0,
+      "sent_at_s": 0.0,
+      "status": 200,
+      "latency_s": 0.631,
+      "output": "A short fact about space: The universe",
+      "generated_tokens": 8,
+      "queue_time_s": 0.05,
+      "prefill_time_s": 0.49,
+      "decode_time_s": 0.084,
+      "generation_time_s": 0.574,
+      "ttft_s": 0.547,
+      "tpot_ms": 12.03,
+      "itl_ms": [
+        14.45,
+        11.75,
+        11.43,
+        11.32,
+        11.42,
+        11.63,
+        11.53
+      ]
+    }
+  ]
+}

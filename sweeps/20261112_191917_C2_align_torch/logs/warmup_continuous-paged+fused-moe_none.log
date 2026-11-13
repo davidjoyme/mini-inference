@@ -1,0 +1,21 @@
+Engine: continuous/paged+fused-moe
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.57s tokens=8 TTFT=0.46s TPOT=15.97ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.573
+            successful: 1
+                failed: 0
+        requests_per_s: 1.745
+total_generated_tokens: 8
+  overall_tokens_per_s: 13.96
+             latency_s: {'avg': 0.573, 'p50': 0.573, 'p95': 0.573, 'p99': 0.573, 'max': 0.573}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.461, 'p50': 0.461, 'p95': 0.461, 'p99': 0.461, 'max': 0.461}
+               tpot_ms: {'avg': 15.97, 'p50': 15.97, 'p95': 15.97, 'p99': 15.97, 'max': 15.97}
+                itl_ms: {'avg': 15.861, 'p50': 9.84, 'p95': 39.617, 'p99': 49.771, 'max': 52.31}
+        prefill_time_s: {'avg': 0.454, 'p50': 0.454, 'p95': 0.454, 'p99': 0.454, 'max': 0.454}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_191917_C2_align_torch/logs/warmup_continuous-paged+fused-moe_none.json

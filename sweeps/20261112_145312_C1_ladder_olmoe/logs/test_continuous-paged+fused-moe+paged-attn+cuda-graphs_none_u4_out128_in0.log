@@ -1,0 +1,77 @@
+Engine: continuous/paged+fused-moe+paged-attn+cuda-graphs
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   3] OK  status=200 latency=0.45s tokens=67 TTFT=0.04s TPOT=6.2ms queue=0.012s
+[req   0] OK  status=200 latency=0.56s tokens=84 TTFT=0.04s TPOT=6.25ms queue=0.012s
+[req   1] OK  status=200 latency=0.62s tokens=93 TTFT=0.02s TPOT=6.51ms queue=0.0s
+[req   2] OK  status=200 latency=0.84s tokens=128 TTFT=0.04s TPOT=6.33ms queue=0.011s
+[req   4] OK  status=200 latency=0.54s tokens=83 TTFT=0.02s TPOT=6.34ms queue=0.003s
+[req   6] OK  status=200 latency=0.43s tokens=67 TTFT=0.02s TPOT=6.27ms queue=0.003s
+[req   7] OK  status=200 latency=0.42s tokens=67 TTFT=0.02s TPOT=6.15ms queue=0.004s
+[req   5] OK  status=200 latency=0.82s tokens=128 TTFT=0.02s TPOT=6.3ms queue=0.005s
+[req   8] OK  status=200 latency=0.47s tokens=73 TTFT=0.02s TPOT=6.25ms queue=0.003s
+[req   9] OK  status=200 latency=0.59s tokens=93 TTFT=0.02s TPOT=6.19ms queue=0.004s
+[req  11] OK  status=200 latency=0.45s tokens=72 TTFT=0.02s TPOT=6.1ms queue=0.003s
+[req  10] OK  status=200 latency=0.56s tokens=89 TTFT=0.02s TPOT=6.17ms queue=0.004s
+[req  12] OK  status=200 latency=0.57s tokens=94 TTFT=0.02s TPOT=5.94ms queue=0.003s
+[req  13] OK  status=200 latency=0.41s tokens=68 TTFT=0.02s TPOT=5.83ms queue=0.004s
+[req  14] OK  status=200 latency=0.41s tokens=78 TTFT=0.02s TPOT=5.09ms queue=0.003s
+[req  15] OK  status=200 latency=0.41s tokens=79 TTFT=0.02s TPOT=5.07ms queue=0.002s
+
+===== Summary =====
+          total_time_s: 2.241
+            successful: 16
+                failed: 0
+        requests_per_s: 7.14
+total_generated_tokens: 1363
+  overall_tokens_per_s: 608.27
+             latency_s: {'avg': 0.534, 'p50': 0.503, 'p95': 0.824, 'p99': 0.839, 'max': 0.843}
+          queue_time_s: {'avg': 0.005, 'p50': 0.004, 'p95': 0.012, 'p99': 0.012, 'max': 0.012}
+                ttft_s: {'avg': 0.022, 'p50': 0.018, 'p95': 0.04, 'p99': 0.04, 'max': 0.04}
+               tpot_ms: {'avg': 6.062, 'p50': 6.195, 'p95': 6.383, 'p99': 6.484, 'max': 6.51}
+                itl_ms: {'avg': 6.08, 'p50': 5.98, 'p95': 6.92, 'p99': 12.257, 'max': 21.9}
+        prefill_time_s: {'avg': 0.014, 'p50': 0.012, 'p95': 0.022, 'p99': 0.022, 'max': 0.022}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21902.3
+          gpu_peak_reserved_mb: 23682.0
+       gpu_peak_device_used_mb: 24519.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 6.0
+   process_peak_rss_mb_sampled: 1878.7
+       process_rss_increase_mb: 20.9
+              gpu_util_pct_avg: 93.8
+              gpu_util_pct_max: 98.0
+       gpu_mem_bw_util_pct_avg: 54.8
+       gpu_mem_bw_util_pct_max: 58.0
+               gpu_power_w_avg: 257.1
+               gpu_power_w_max: 279.6
+           process_cpu_pct_avg: 140.0
+           process_cpu_pct_max: 421.4
+                batch_size_avg: 3.7
+                batch_size_max: 4
+                   running_avg: 3.6
+                   running_max: 4
+                   waiting_avg: 0.0
+                   waiting_max: 0
+               kv_used_pct_avg: 0.4
+               kv_used_pct_max: 0.5
+           kv_reserved_pct_avg: 0.5
+           kv_reserved_pct_max: 0.6
+              kv_waste_pct_avg: 23.4
+              kv_waste_pct_max: 100.0
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 367
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 1347
+                prefill_tokens: 384
+                prefill_chunks: 0
+                   mixed_steps: 12
+             padding_waste_pct: 0.0
+               max_step_tokens: 1068
+                       samples: 9
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_145312_C1_ladder_olmoe/runs/continuous-paged+fused-moe+paged-attn+cuda-graphs_none_u4_out128_in0.json

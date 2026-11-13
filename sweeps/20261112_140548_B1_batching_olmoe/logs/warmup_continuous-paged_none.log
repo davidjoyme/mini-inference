@@ -1,0 +1,21 @@
+Engine: continuous/paged
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.60s tokens=8 TTFT=0.51s TPOT=13.15ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.598
+            successful: 1
+                failed: 0
+        requests_per_s: 1.673
+total_generated_tokens: 8
+  overall_tokens_per_s: 13.39
+             latency_s: {'avg': 0.598, 'p50': 0.598, 'p95': 0.598, 'p99': 0.598, 'max': 0.598}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.506, 'p50': 0.506, 'p95': 0.506, 'p99': 0.506, 'max': 0.506}
+               tpot_ms: {'avg': 13.15, 'p50': 13.15, 'p95': 13.15, 'p99': 13.15, 'max': 13.15}
+                itl_ms: {'avg': 13.013, 'p50': 12.77, 'p95': 14.427, 'p99': 14.933, 'max': 15.06}
+        prefill_time_s: {'avg': 0.498, 'p50': 0.498, 'p95': 0.498, 'p99': 0.498, 'max': 0.498}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_140548_B1_batching_olmoe/logs/warmup_continuous-paged_none.json

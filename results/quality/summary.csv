@@ -1,0 +1,12 @@
+table,file,model,engine,quant,weights_MB,perplexity,ppl_change_%,exact_match,matching_prefix
+quality,olmoe_attnbackend_triton.json,OLMoE-1B-7B-0125-Instruct,continuous/paged+paged-attn,none,13197.3,7.2122,0.0,0.75,0.842
+quality,olmoe_fusedproj_on.json,OLMoE-1B-7B-0125-Instruct,continuous/paged+fused-proj,none,13197.3,7.2122,0.0,0.75,0.867
+quality,olmoe_kvdtype_fp8.json,OLMoE-1B-7B-0125-Instruct,continuous/paged+kv-fp8,none,13197.3,7.1786,-0.47,0.25,0.629
+quality,olmoe_kvdtype_int8.json,OLMoE-1B-7B-0125-Instruct,continuous/paged+kv-int8,none,13197.3,7.2436,0.44,0.5,0.822
+quality,olmoe_moekernel_triton.json,OLMoE-1B-7B-0125-Instruct,continuous/paged+fused-moe,none,13197.3,7.195,-0.24,0.625,0.898
+quality,olmoe_ref.json,OLMoE-1B-7B-0125-Instruct,hf,none,13197.3,7.2122,,,
+quality,qwen3_attnbackend_triton.json,Qwen3-4B-Instruct-2507,continuous/paged+paged-attn,none,7672.2,6.6731,0.0,0.75,0.805
+quality,qwen3_fusedproj_on.json,Qwen3-4B-Instruct-2507,continuous/paged+fused-proj,none,7672.2,6.6859,0.19,0.5,0.682
+quality,qwen3_kvdtype_fp8.json,Qwen3-4B-Instruct-2507,continuous/paged+kv-fp8,none,7672.2,6.7224,0.74,0.625,0.784
+quality,qwen3_kvdtype_int8.json,Qwen3-4B-Instruct-2507,continuous/paged+kv-int8,none,7672.2,6.7093,0.54,0.75,0.797
+quality,qwen3_ref.json,Qwen3-4B-Instruct-2507,hf,none,7672.2,6.6731,,,

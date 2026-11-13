@@ -1,0 +1,21 @@
+Engine: continuous/paged+paged-attn
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: fp8, weights: 6813.8 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.45s tokens=8 TTFT=0.19s TPOT=37.27ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.454
+            successful: 1
+                failed: 0
+        requests_per_s: 2.205
+total_generated_tokens: 8
+  overall_tokens_per_s: 17.64
+             latency_s: {'avg': 0.453, 'p50': 0.453, 'p95': 0.453, 'p99': 0.453, 'max': 0.453}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.192, 'p50': 0.192, 'p95': 0.192, 'p99': 0.192, 'max': 0.192}
+               tpot_ms: {'avg': 37.27, 'p50': 37.27, 'p95': 37.27, 'p99': 37.27, 'max': 37.27}
+                itl_ms: {'avg': 37.083, 'p50': 31.27, 'p95': 60.186, 'p99': 69.973, 'max': 72.42}
+        prefill_time_s: {'avg': 0.186, 'p50': 0.186, 'p95': 0.186, 'p99': 0.186, 'max': 0.186}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_193936_C5_quant_kernels_olmoe/logs/warmup_continuous-paged+fused-moe+paged-attn+cuda-graphs_fp8.json

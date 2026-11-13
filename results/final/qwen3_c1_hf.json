@@ -1,0 +1,89 @@
+{
+  "summary": {
+    "engine": {
+      "model": "Qwen/Qwen3-4B-Instruct-2507",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 7672.2,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 7672.2
+      },
+      "load_time_s": 2.1,
+      "engine": {
+        "engine": "hf",
+        "moe_kernel": "default",
+        "moe_align": null
+      }
+    },
+    "engine_label": "hf",
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 4,
+    "weights_total_mb": 7672.2,
+    "wall_time_s": 2.438,
+    "throughput_tok_s": 86.53,
+    "avg_latency_s": 0.61,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.02,
+    "avg_tpot_ms": 11.387,
+    "max_itl_ms": 11.714,
+    "avg_tokens_per_s": 86.597,
+    "gpu_peak_allocated_mb": 7717.0,
+    "gpu_allocated_before_mb": 7704.4,
+    "process_rss_mb": 1795.0
+  },
+  "runs": [
+    {
+      "output": "Sure! A short fact about space: The nearest star to our solar system, Proxima Centauri, is about 4.24 light-years away. That means the light we see from it today left the star over four years ago! \ud83c\udf1f",
+      "generated_tokens": 54,
+      "queue_time_s": 0.0,
+      "latency_s": 0.6439,
+      "ttft_s": 0.04,
+      "tpot_ms": 11.389,
+      "tokens_per_s": 83.87,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 11.714
+    },
+    {
+      "output": "Sure! A short fact about space: The vacuum of space is so empty that if you were to stretch a piece of string between Earth and the Moon, it would be about 384,400 kilometers long\u2014yet there's not a single atom of matter in that stretch.",
+      "generated_tokens": 60,
+      "queue_time_s": 0.0,
+      "latency_s": 0.6859,
+      "ttft_s": 0.0134,
+      "tpot_ms": 11.395,
+      "tokens_per_s": 87.48,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 11.601
+    },
+    {
+      "output": "Sure! A short fact about space:  \nThe vacuum of space is so empty that if you could remove all the air from a room and then expand it to the size of the solar system, there would still be more air in a single breath than exists in all of space.",
+      "generated_tokens": 57,
+      "queue_time_s": 0.0,
+      "latency_s": 0.6517,
+      "ttft_s": 0.0133,
+      "tpot_ms": 11.395,
+      "tokens_per_s": 87.47,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 11.516
+    },
+    {
+      "output": "Sure! Here's a short fact about space:  \nThe Moon is the only natural satellite of Earth, and it takes about 27.3 days to complete one orbit around our planet.",
+      "generated_tokens": 40,
+      "queue_time_s": 0.0,
+      "latency_s": 0.4568,
+      "ttft_s": 0.0133,
+      "tpot_ms": 11.368,
+      "tokens_per_s": 87.57,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 11.406
+    }
+  ]
+}

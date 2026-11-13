@@ -1,0 +1,90 @@
+{
+  "settings": {
+    "model": null,
+    "quants": [
+      "none"
+    ],
+    "engines": [
+      "continuous/paged+fused-moe+paged-attn+cuda-graphs+fused-proj"
+    ],
+    "users": [
+      2
+    ],
+    "max_new_tokens": [
+      128
+    ],
+    "prompt_words": [
+      0
+    ],
+    "requests_per_user": 1,
+    "mem_interval": 0.25,
+    "long_every": 0,
+    "unique_prompts": false,
+    "kv_tokens": 65536,
+    "kv_mb": null,
+    "port": 8100,
+    "startup_timeout": 3600,
+    "tag": "smoke_olmoe"
+  },
+  "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+  "duration_s": 11,
+  "rows": [
+    {
+      "engine": "continuous/paged+fused-moe+paged-attn+cuda-graphs+fused-proj",
+      "quant": "none",
+      "users": 2,
+      "requests": 2,
+      "out_tok": 128,
+      "in_words": 0,
+      "weights_mb": 13197.3,
+      "loaded_gpu_mb": 21864.3,
+      "loaded_rss_mb": 1736.5,
+      "peak_gpu_mb": 21898.3,
+      "extra_gpu_mb": 2.0,
+      "extra_gpu_per_user_mb": 1.0,
+      "peak_reserved_mb": 23680.0,
+      "peak_device_used_mb": 24514.8,
+      "device_total_mb": 32086.6,
+      "peak_rss_mb": 1834.7,
+      "gpu_util_avg": 0.0,
+      "gpu_util_max": 0.0,
+      "gpu_bw_util_avg": 0.0,
+      "power_avg_w": 80.2,
+      "power_max_w": 94.6,
+      "cpu_avg_pct": 53.4,
+      "kv_capacity_tokens": 65536,
+      "kv_cache_dtype": "bfloat16",
+      "prefix_hit_pct": null,
+      "prefix_evictions": null,
+      "batch_size_avg": 1.5,
+      "batch_size_max": 2,
+      "waiting_max": 0,
+      "kv_used_pct_max": 0.2,
+      "kv_reserved_pct_max": 0.3,
+      "kv_waste_pct_avg": 58.8,
+      "kv_fragmentation_pct_max": 0.0,
+      "preemptions": 0,
+      "padding_waste_pct": 0.0,
+      "steps": 89,
+      "throughput_tok_s": 358.28,
+      "requests_per_s": 5.118,
+      "ttft_p50_s": 0.026,
+      "ttft_p95_s": 0.036,
+      "tpot_p50_ms": 4.43,
+      "tpot_p95_ms": 4.583,
+      "itl_p50_ms": 4.5,
+      "itl_p95_ms": 4.89,
+      "itl_p99_ms": 5.148,
+      "itl_max_ms": 21.44,
+      "max_step_tokens": 25,
+      "prefill_chunks": 0,
+      "mixed_steps": 1,
+      "latency_p95_s": 0.384,
+      "queue_p95_s": 0.01,
+      "joules_per_token": 0.224,
+      "failed": 0,
+      "total_time_s": 0.391,
+      "run_file": "runs/continuous-paged+fused-moe+paged-attn+cuda-graphs+fused-proj_none_u2_out128_in0.json"
+    }
+  ]
+}

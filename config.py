@@ -173,7 +173,7 @@ TEST_STREAM_URL = f"http://localhost:{PORT}/generate_stream"
 TEST_NUM_REQUESTS = 8
 TEST_CONCURRENCY = 4
 TEST_PROMPT = "Tell me a short fact about space"
-TEST_MAX_NEW_TOKENS = 50
+TEST_MAX_NEW_TOKENS = 128
 TEST_TIMEOUT_S = 600
 TEST_OUTPUT_FILE = "results.json"
 TEST_MEMORY = True           # collect server memory metrics during the test
@@ -181,7 +181,7 @@ TEST_MEMORY_INTERVAL_S = 0.5
 
 # ---------------- Direct engine runs (bench/run_engine.py) ----------------
 ENGINE_BENCH_NUM_PROMPTS = 3
-ENGINE_BENCH_WARMUP = 1      # warmup runs, not measured (first run is often slower)
+ENGINE_BENCH_WARMUP = 2      # warmup runs, not measured (first run is often slower)
 
 # ---------------- Resource sweeps (bench/sweep.py) ----------------
 # The sweep starts the server once per quantization, then runs a load test for every
@@ -190,9 +190,9 @@ SWEEP_QUANTIZATIONS = ["none", "int4_wo"]
 # "hf" or "<scheduler>/<kv_cache>" for the custom engine
 SWEEP_ENGINES = ["hf", "static/contiguous", "continuous/contiguous", "continuous/paged"]
 SWEEP_CONCURRENCY = [1, 4, 16, 32]    # number of simultaneous users
-SWEEP_MAX_NEW_TOKENS = [64]           # output length
+SWEEP_MAX_NEW_TOKENS = [128]           # output length
 SWEEP_PROMPT_WORDS = [0, 1000]        # extra input length in words (0 = short prompt only)
-SWEEP_REQUESTS_PER_USER = 2           # each run sends concurrency x this many requests
+SWEEP_REQUESTS_PER_USER = 4           # each run sends concurrency x this many requests
 SWEEP_MEMORY_INTERVAL_S = 0.25        # sample resources more often than normal tests
 SWEEP_STARTUP_TIMEOUT_S = 3600        # first start of a quantization can take a while
 SWEEP_PORT = 8100                     # separate port, so it never hits a server you left running

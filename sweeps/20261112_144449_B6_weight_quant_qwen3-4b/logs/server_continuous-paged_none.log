@@ -1,0 +1,295 @@
+Loading model: Qwen/Qwen3-4B-Instruct-2507 (quantization: none) ...
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   1%|          | 3/398 [00:00<00:15, 25.33it/s]Loading weights:  18%|█▊        | 73/398 [00:00<00:02, 149.25it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 761.50it/s]
+INFO:     Started server process [140137]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8100 (Press CTRL+C to quit)
+Model loaded in 2.2s
+
+===== Model diagnostics =====
+PyTorch version: 2.14.0+cu130
+CUDA available: True
+GPU 0: NVIDIA GeForce RTX 5090 (compute 12.0) | model uses 8.05 GB of 33.65 GB
+Model device: cuda:0
+Model dtype: torch.bfloat16
+Attention implementation: sdpa
+MoE kernel: default
+Experts implementation: eager 
+Device map: None
+Quantization: {'method': 'none'}
+Weight memory: {'weights_total_mb': 7672.2, 'weights_quantized_layers_mb': 0.0, 'weights_other_mb': 7672.2}
+=============================
+
+Architecture: Qwen3ForCausalLM | q/k norm: per_head | dense MLP | heads 32/8 (query/kv), head size 128 | context limit 32768
+Attention backend: sdpa
+Custom engine: scheduler=continuous, kv_cache=paged, kv_dtype=bfloat16, prefix_caching=False, chunked_prefill=False | KV capacity 65536 tokens (9216.0 MB, 144.0 KB/token), max_num_seqs=64
+INFO:     127.0.0.1:42126 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42136 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42150 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42150 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42170 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42160 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42172 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42172 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42172 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42172 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42172 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42182 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42182 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42182 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42196 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42196 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42196 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42204 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42204 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42204 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42204 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42212 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42220 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42236 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42256 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42250 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42266 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42272 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42270 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42284 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42294 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42314 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42298 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42320 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42328 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42322 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38316 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38316 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38316 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38318 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38318 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38320 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38320 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38322 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38332 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38346 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38352 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38354 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38360 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38376 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38366 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38404 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38382 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38412 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38388 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38416 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38416 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38430 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38430 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38430 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38446 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38446 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38464 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38452 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38470 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38472 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38478 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38478 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38490 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38502 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38508 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38516 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38514 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38528 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38532 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38532 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38546 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38554 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38556 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38556 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38562 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38562 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38574 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38590 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38594 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38594 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38600 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38604 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38618 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38630 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38626 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38636 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38646 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38646 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38662 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38668 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38668 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38684 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38684 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38694 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38702 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38702 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38702 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38702 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38702 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38710 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38710 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38710 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38710 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38724 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38726 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38738 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38746 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38758 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38768 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38770 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38800 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38786 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38816 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38846 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38830 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38858 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38832 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38838 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38868 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38880 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38894 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38910 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38888 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38916 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38928 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38942 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38960 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38954 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38966 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38970 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38978 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39000 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38986 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39008 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39012 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39028 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39036 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39042 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39054 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39056 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39068 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39080 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39116 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39092 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39100 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39136 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39122 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39188 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39158 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39156 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39182 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39174 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39152 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39144 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39202 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39218 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39232 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39236 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39242 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39244 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39260 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39258 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39276 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39292 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39300 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39316 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39280 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39304 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39330 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39342 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39346 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39348 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39364 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39376 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39380 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39396 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39400 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39412 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39426 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39452 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39436 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39464 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39484 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39478 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39494 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39496 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39502 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39510 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39512 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39526 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39540 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39552 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39576 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39564 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39588 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39592 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39602 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39610 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39624 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39634 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39646 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39662 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39664 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39668 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39666 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39692 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39682 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39698 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39702 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39704 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39708 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39716 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39726 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39734 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39738 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39740 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39742 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39748 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39760 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39764 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39766 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39780 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39790 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39804 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39812 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39820 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39826 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39838 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39840 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39850 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39866 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39882 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39896 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39902 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39910 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39924 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39938 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39942 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39954 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39956 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39972 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39986 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40000 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40012 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40026 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40034 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40048 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40052 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40062 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57170 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57172 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57176 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57176 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57176 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57176 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [140137]

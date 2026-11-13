@@ -1,0 +1,21 @@
+Engine: static/contiguous
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.60s tokens=8 TTFT=0.46s TPOT=19.71ms queue=0.05s
+
+===== Summary =====
+          total_time_s: 0.601
+            successful: 1
+                failed: 0
+        requests_per_s: 1.663
+total_generated_tokens: 8
+  overall_tokens_per_s: 13.31
+             latency_s: {'avg': 0.601, 'p50': 0.601, 'p95': 0.601, 'p99': 0.601, 'max': 0.601}
+          queue_time_s: {'avg': 0.05, 'p50': 0.05, 'p95': 0.05, 'p99': 0.05, 'max': 0.05}
+                ttft_s: {'avg': 0.463, 'p50': 0.463, 'p95': 0.463, 'p99': 0.463, 'max': 0.463}
+               tpot_ms: {'avg': 19.71, 'p50': 19.71, 'p95': 19.71, 'p99': 19.71, 'max': 19.71}
+                itl_ms: {'avg': 19.62, 'p50': 12.65, 'p95': 47.48, 'p99': 59.312, 'max': 62.27}
+        prefill_time_s: {'avg': 0.404, 'p50': 0.404, 'p95': 0.404, 'p99': 0.404, 'max': 0.404}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_141524_B1_batching_qwen3-4b/logs/warmup_static-contiguous_none.json

@@ -1,0 +1,77 @@
+Engine: continuous/paged+paged-attn+cuda-graphs
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   3] OK  status=200 latency=0.40s tokens=40 TTFT=0.05s TPOT=9.07ms queue=0.013s
+[req   0] OK  status=200 latency=0.52s tokens=54 TTFT=0.02s TPOT=9.43ms queue=0.0s
+[req   1] OK  status=200 latency=0.56s tokens=57 TTFT=0.05s TPOT=9.25ms queue=0.014s
+[req   2] OK  status=200 latency=0.59s tokens=59 TTFT=0.05s TPOT=9.35ms queue=0.013s
+[req   4] OK  status=200 latency=0.55s tokens=57 TTFT=0.02s TPOT=9.31ms queue=0.006s
+[req   5] OK  status=200 latency=0.49s tokens=51 TTFT=0.02s TPOT=9.35ms queue=0.006s
+[req   6] OK  status=200 latency=0.48s tokens=50 TTFT=0.02s TPOT=9.36ms queue=0.006s
+[req   7] OK  status=200 latency=0.55s tokens=57 TTFT=0.02s TPOT=9.37ms queue=0.006s
+[req  10] OK  status=200 latency=0.28s tokens=29 TTFT=0.02s TPOT=9.31ms queue=0.006s
+[req   8] OK  status=200 latency=0.56s tokens=57 TTFT=0.02s TPOT=9.5ms queue=0.007s
+[req   9] OK  status=200 latency=0.56s tokens=57 TTFT=0.02s TPOT=9.52ms queue=0.003s
+[req  11] OK  status=200 latency=0.55s tokens=57 TTFT=0.02s TPOT=9.35ms queue=0.005s
+[req  12] OK  status=200 latency=0.54s tokens=57 TTFT=0.02s TPOT=9.31ms queue=0.006s
+[req  13] OK  status=200 latency=0.47s tokens=50 TTFT=0.03s TPOT=9.16ms queue=0.006s
+[req  14] OK  status=200 latency=0.53s tokens=57 TTFT=0.02s TPOT=8.96ms queue=0.007s
+[req  15] OK  status=200 latency=0.46s tokens=51 TTFT=0.02s TPOT=8.77ms queue=0.006s
+
+===== Summary =====
+          total_time_s: 2.146
+            successful: 16
+                failed: 0
+        requests_per_s: 7.456
+total_generated_tokens: 840
+  overall_tokens_per_s: 391.43
+             latency_s: {'avg': 0.506, 'p50': 0.535, 'p95': 0.571, 'p99': 0.585, 'max': 0.589}
+          queue_time_s: {'avg': 0.007, 'p50': 0.006, 'p95': 0.013, 'p99': 0.014, 'max': 0.014}
+                ttft_s: {'avg': 0.028, 'p50': 0.024, 'p95': 0.047, 'p99': 0.047, 'max': 0.047}
+               tpot_ms: {'avg': 9.273, 'p50': 9.33, 'p95': 9.505, 'p99': 9.517, 'max': 9.52}
+                itl_ms: {'avg': 9.477, 'p50': 8.97, 'p95': 14.541, 'p99': 26.054, 'max': 27.91}
+        prefill_time_s: {'avg': 0.017, 'p50': 0.015, 'p95': 0.024, 'p99': 0.024, 'max': 0.024}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 17522.0
+          gpu_peak_reserved_mb: 17654.0
+       gpu_peak_device_used_mb: 18531.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 4.9
+   process_peak_rss_mb_sampled: 1932.6
+       process_rss_increase_mb: 20.4
+              gpu_util_pct_avg: 95.9
+              gpu_util_pct_max: 99.0
+       gpu_mem_bw_util_pct_avg: 54.2
+       gpu_mem_bw_util_pct_max: 60.0
+               gpu_power_w_avg: 308.2
+               gpu_power_w_max: 403.8
+           process_cpu_pct_avg: 93.8
+           process_cpu_pct_max: 110.5
+                batch_size_avg: 3.3
+                batch_size_max: 4
+                   running_avg: 3.2
+                   running_max: 4
+                   waiting_avg: 0.0
+                   waiting_max: 0
+               kv_used_pct_avg: 0.3
+               kv_used_pct_max: 0.4
+           kv_reserved_pct_avg: 0.3
+           kv_reserved_pct_max: 0.4
+              kv_waste_pct_avg: 28.5
+              kv_waste_pct_max: 100.0
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 228
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 824
+                prefill_tokens: 326
+                prefill_chunks: 0
+                   mixed_steps: 13
+             padding_waste_pct: 0.0
+               max_step_tokens: 1062
+                       samples: 9
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_192043_C3_ladder_qwen3/runs/continuous-paged+paged-attn+cuda-graphs_none_u4_out128_in0.json

@@ -1,0 +1,48 @@
+Loading model: Qwen/Qwen3-4B-Instruct-2507 (quantization: none) ...
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   2%|▏         | 6/398 [00:00<00:15, 25.03it/s]Loading weights:  49%|████▉     | 195/398 [00:00<00:00, 625.47it/s]Loading weights:  72%|███████▏  | 286/398 [00:00<00:00, 611.46it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 742.15it/s]
+INFO:     Started server process [128914]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8100 (Press CTRL+C to quit)
+Model loaded in 2.0s
+
+===== Model diagnostics =====
+PyTorch version: 2.14.0+cu130
+CUDA available: True
+GPU 0: NVIDIA GeForce RTX 5090 (compute 12.0) | model uses 8.05 GB of 33.65 GB
+Model device: cuda:0
+Model dtype: torch.bfloat16
+Attention implementation: sdpa
+MoE kernel: default
+Experts implementation: eager 
+Device map: None
+Quantization: {'method': 'none'}
+Weight memory: {'weights_total_mb': 7672.2, 'weights_quantized_layers_mb': 0.0, 'weights_other_mb': 7672.2}
+=============================
+
+Architecture: Qwen3ForCausalLM | q/k norm: per_head | dense MLP | heads 32/8 (query/kv), head size 128 | context limit 32768
+Attention backend: triton (paged decode kernel; prefill uses SDPA)
+Fused projections (layouts chosen in 0.0s):
+  qkv         6144x2560: [in, out]  (from the tuning cache, 1/16/64 rows: [out,in] 0.173 ms, [in,out] 0.159 ms)
+  o_proj      2560x4096: [in, out]  (from the tuning cache, 1/16/64 rows: [out,in] 0.166 ms, [in,out] 0.135 ms)
+  gate_up    19456x2560: [in, out]  (from the tuning cache, 1/16/64 rows: [out,in] 0.604 ms, [in,out] 0.529 ms)
+  down_proj    2560x9728: [in, out]  (from the tuning cache, 1/16/64 rows: [out,in] 0.392 ms, [in,out] 0.311 ms)
+  lm_head   151936x2560: [out, in]  (kept (tied to the embeddings))
+CUDA graphs: captured for batch sizes [1, 2, 4, 8, 12, 16, 24, 32, 40, 48, 56, 64] in 0.9s
+Custom engine: scheduler=continuous, kv_cache=paged, kv_dtype=bfloat16, prefix_caching=False, chunked_prefill=False | KV capacity 65536 tokens (9216.0 MB, 144.0 KB/token), max_num_seqs=64
+INFO:     127.0.0.1:52022 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52036 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52044 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52044 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52068 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52078 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52058 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [128914]

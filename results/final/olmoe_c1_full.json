@@ -1,0 +1,122 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 2.4,
+      "engine": {
+        "engine": "custom",
+        "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+        "architecture": "OlmoeForCausalLM",
+        "max_model_len": 4096,
+        "scheduler": "continuous",
+        "kv_cache": "paged",
+        "kv_block_size": 16,
+        "kv_watermark": 0.01,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 65536,
+        "kv_cache_mb": 8192.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false,
+        "moe_kernel": "triton",
+        "moe_align": "cuda",
+        "attn_backend": "triton",
+        "cuda_graphs": true,
+        "fused_proj": true,
+        "weight_layouts": {
+          "qkv": "normal",
+          "o_proj": "normal",
+          "lm_head": "normal"
+        }
+      }
+    },
+    "engine_label": "continuous/paged+fused-moe+paged-attn+cuda-graphs+fused-proj",
+    "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 4,
+    "weights_total_mb": 13197.3,
+    "wall_time_s": 1.039,
+    "throughput_tok_s": 322.32,
+    "avg_latency_s": 0.259,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.011,
+    "avg_tpot_ms": 3.006,
+    "max_itl_ms": 3.451,
+    "avg_tokens_per_s": 321.8,
+    "gpu_peak_allocated_mb": 21898.0,
+    "gpu_allocated_before_mb": 21896.3,
+    "process_rss_mb": 1796.4,
+    "steps": 335,
+    "preemptions": 0,
+    "padding_tokens": 0,
+    "prefill_chunks": 0,
+    "mixed_steps": 0,
+    "graph_replays": 331,
+    "graph_eager_steps": 4,
+    "decode_step_ms": 2.998,
+    "prefill_or_mixed_step_ms": 10.658,
+    "prefill_or_mixed_share_of_step_time_pct": 4.1,
+    "avg_batch_size": 0.99
+  },
+  "runs": [
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential life-supporting planets is likely immense as well, though the exact number remains unknown and is a subject of ongoing research and speculation in the field of astrobiology.",
+      "generated_tokens": 73,
+      "queue_time_s": 0.0001,
+      "latency_s": 0.2377,
+      "ttft_s": 0.0111,
+      "tpot_ms": 3.148,
+      "tokens_per_s": 307.07,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 3.451
+    },
+    {
+      "output": "A short fact about space: The universe is estimated to be about 13.8 billion years old, with the Big Bang occurring around 13.8 billion years ago. This event marked the beginning of the universe as we know it, expanding from an incredibly hot and dense state into the vast, cool cosmos we observe today. The age of the universe is constantly being refined as scientists make new discoveries and refine their models based on observational data from telescopes and spacecraft.",
+      "generated_tokens": 93,
+      "queue_time_s": 0.0001,
+      "latency_s": 0.2865,
+      "ttft_s": 0.0109,
+      "tpot_ms": 2.996,
+      "tokens_per_s": 324.63,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 3.047
+    },
+    {
+      "output": "A short fact about space:\n\n**The universe is expanding faster than the speed of light.**\n\nAccording to the theory of general relativity, nothing with mass can exceed the speed of light. However, when it comes to the expansion of the universe, space itself is not bound by this speed limit. This means that distant galaxies are moving away from us faster than light, due to the accelerated expansion driven by dark energy. This phenomenon is known as the \"cosmological redshift\" and is a fundamental aspect of our universe's current state, as observed and measured through astronomical observations.",
+      "generated_tokens": 120,
+      "queue_time_s": 0.0001,
+      "latency_s": 0.3629,
+      "ttft_s": 0.0106,
+      "tpot_ms": 2.96,
+      "tokens_per_s": 330.67,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 3.07
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas from burps cannot move up and out of the body like it does on Earth, leading to trapped gas and potential discomfort or even health issues.",
+      "generated_tokens": 49,
+      "queue_time_s": 0.0001,
+      "latency_s": 0.1508,
+      "ttft_s": 0.0106,
+      "tpot_ms": 2.921,
+      "tokens_per_s": 324.83,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 2.939
+    }
+  ]
+}

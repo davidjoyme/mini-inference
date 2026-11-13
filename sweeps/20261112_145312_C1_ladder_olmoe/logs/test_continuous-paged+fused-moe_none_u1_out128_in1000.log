@@ -1,0 +1,65 @@
+Engine: continuous/paged+fused-moe
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 4 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=128, prompt_words=1000, stream=True)
+
+[req   0] OK  status=200 latency=0.98s tokens=86 TTFT=0.35s TPOT=7.41ms queue=0.0s
+[req   1] OK  status=200 latency=0.67s tokens=88 TTFT=0.03s TPOT=7.42ms queue=0.0s
+[req   2] OK  status=200 latency=0.97s tokens=128 TTFT=0.03s TPOT=7.45ms queue=0.0s
+[req   3] OK  status=200 latency=0.97s tokens=127 TTFT=0.03s TPOT=7.49ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 3.597
+            successful: 4
+                failed: 0
+        requests_per_s: 1.112
+total_generated_tokens: 429
+  overall_tokens_per_s: 119.26
+             latency_s: {'avg': 0.899, 'p50': 0.97, 'p95': 0.983, 'p99': 0.985, 'max': 0.985}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.108, 'p50': 0.026, 'p95': 0.306, 'p99': 0.345, 'max': 0.355}
+               tpot_ms: {'avg': 7.442, 'p50': 7.435, 'p95': 7.484, 'p99': 7.489, 'max': 7.49}
+                itl_ms: {'avg': 7.442, 'p50': 7.43, 'p95': 7.699, 'p99': 8.372, 'max': 8.51}
+        prefill_time_s: {'avg': 0.105, 'p50': 0.023, 'p95': 0.302, 'p99': 0.341, 'max': 0.351}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21497.4
+          gpu_peak_reserved_mb: 23444.0
+       gpu_peak_device_used_mb: 24159.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 76.0
+   process_peak_rss_mb_sampled: 1800.3
+       process_rss_increase_mb: 89.7
+              gpu_util_pct_avg: 72.5
+              gpu_util_pct_max: 77.0
+       gpu_mem_bw_util_pct_avg: 25.7
+       gpu_mem_bw_util_pct_max: 29.0
+               gpu_power_w_avg: 160.4
+               gpu_power_w_max: 177.8
+           process_cpu_pct_avg: 91.0
+           process_cpu_pct_max: 106.8
+                batch_size_avg: 1.0
+                batch_size_max: 1
+                   running_avg: 0.9
+                   running_max: 1
+                   waiting_avg: 0.0
+                   waiting_max: 0
+               kv_used_pct_avg: 1.6
+               kv_used_pct_max: 1.8
+           kv_reserved_pct_avg: 1.6
+           kv_reserved_pct_max: 1.8
+              kv_waste_pct_avg: 0.6
+              kv_waste_pct_max: 1.4
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 429
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 425
+                prefill_tokens: 4272
+                prefill_chunks: 0
+                   mixed_steps: 0
+             padding_waste_pct: 0.0
+               max_step_tokens: 1068
+                       samples: 15
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_145312_C1_ladder_olmoe/runs/continuous-paged+fused-moe_none_u1_out128_in1000.json

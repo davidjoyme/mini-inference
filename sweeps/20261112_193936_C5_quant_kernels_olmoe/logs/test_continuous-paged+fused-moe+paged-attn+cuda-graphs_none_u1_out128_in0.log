@@ -1,0 +1,65 @@
+Engine: continuous/paged+fused-moe+paged-attn+cuda-graphs
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 4 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.24s tokens=67 TTFT=0.01s TPOT=3.49ms queue=0.0s
+[req   1] OK  status=200 latency=0.25s tokens=71 TTFT=0.01s TPOT=3.43ms queue=0.0s
+[req   2] OK  status=200 latency=0.38s tokens=110 TTFT=0.01s TPOT=3.4ms queue=0.0s
+[req   3] OK  status=200 latency=0.23s tokens=67 TTFT=0.01s TPOT=3.37ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 1.117
+            successful: 4
+                failed: 0
+        requests_per_s: 3.581
+total_generated_tokens: 315
+  overall_tokens_per_s: 282.03
+             latency_s: {'avg': 0.279, 'p50': 0.249, 'p95': 0.364, 'p99': 0.379, 'max': 0.383}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.013, 'p50': 0.013, 'p95': 0.015, 'p99': 0.015, 'max': 0.015}
+               tpot_ms: {'avg': 3.423, 'p50': 3.415, 'p95': 3.481, 'p99': 3.488, 'max': 3.49}
+                itl_ms: {'avg': 3.414, 'p50': 3.4, 'p95': 3.53, 'p99': 3.729, 'max': 3.89}
+        prefill_time_s: {'avg': 0.011, 'p50': 0.011, 'p95': 0.012, 'p99': 0.012, 'max': 0.012}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21898.0
+          gpu_peak_reserved_mb: 24448.0
+       gpu_peak_device_used_mb: 25285.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 1.7
+   process_peak_rss_mb_sampled: 1818.1
+       process_rss_increase_mb: 0.3
+              gpu_util_pct_avg: 40.8
+              gpu_util_pct_max: 51.0
+       gpu_mem_bw_util_pct_avg: 20.0
+       gpu_mem_bw_util_pct_max: 25.0
+               gpu_power_w_avg: 103.1
+               gpu_power_w_max: 147.6
+           process_cpu_pct_avg: 83.0
+           process_cpu_pct_max: 106.5
+                batch_size_avg: 1.0
+                batch_size_max: 1
+                   running_avg: 0.8
+                   running_max: 1
+                   waiting_avg: 0.0
+                   waiting_max: 0
+               kv_used_pct_avg: 0.0
+               kv_used_pct_max: 0.1
+           kv_reserved_pct_avg: 0.1
+           kv_reserved_pct_max: 0.2
+              kv_waste_pct_avg: 49.7
+              kv_waste_pct_max: 100.0
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 315
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 311
+                prefill_tokens: 96
+                prefill_chunks: 0
+                   mixed_steps: 0
+             padding_waste_pct: 0.0
+               max_step_tokens: 24
+                       samples: 5
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_193936_C5_quant_kernels_olmoe/runs/continuous-paged+fused-moe+paged-attn+cuda-graphs_none_u1_out128_in0.json

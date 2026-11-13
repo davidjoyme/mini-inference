@@ -1,0 +1,47 @@
+Loading model: allenai/OLMoE-1B-7B-0125-Instruct (quantization: none) ...
+Loading weights:   0%|          | 0/179 [00:00<?, ?it/s]Loading weights:   3%|▎         | 5/179 [00:00<00:06, 27.64it/s]Loading weights:   9%|▉         | 16/179 [00:00<00:03, 51.31it/s]Loading weights:  27%|██▋       | 48/179 [00:00<00:00, 139.63it/s]Loading weights:  40%|███▉      | 71/179 [00:00<00:00, 163.40it/s]Loading weights:  58%|█████▊    | 103/179 [00:00<00:00, 187.22it/s]Loading weights:  69%|██████▊   | 123/179 [00:00<00:00, 189.29it/s]Loading weights:  80%|███████▉  | 143/179 [00:00<00:00, 181.45it/s]Loading weights:  91%|█████████ | 162/179 [00:01<00:00, 164.44it/s]Loading weights: 100%|██████████| 179/179 [00:01<00:00, 168.79it/s]
+Compiling the CUDA moe_align kernel (first time only, ~1 minute) with the CUDA toolkit at /usr/local/cuda-13.0 (PyTorch built for CUDA 13.0)...
+INFO:     Started server process [128713]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8100 (Press CTRL+C to quit)
+Fused MoE kernel: 16 experts modules replaced, moe_align: cuda
+Model loaded in 2.4s
+
+===== Model diagnostics =====
+PyTorch version: 2.14.0+cu130
+CUDA available: True
+GPU 0: NVIDIA GeForce RTX 5090 (compute 12.0) | model uses 13.84 GB of 33.65 GB
+Model device: cuda:0
+Model dtype: torch.bfloat16
+Attention implementation: sdpa
+MoE kernel: triton
+Experts implementation: grouped_mm 
+Device map: None
+Quantization: {'method': 'none'}
+Weight memory: {'weights_total_mb': 13197.3, 'weights_quantized_layers_mb': 0.0, 'weights_other_mb': 13197.3}
+=============================
+
+Architecture: OlmoeForCausalLM | q/k norm: full | MoE | heads 16/16 (query/kv), head size 128 | context limit 4096
+Attention backend: triton (paged decode kernel; prefill uses SDPA)
+Fused projections (layouts chosen in 0.0s):
+  qkv         6144x2048: [out, in]  (from the tuning cache, 1/16/64 rows: [out,in] 0.058 ms, [in,out] 0.066 ms)
+  o_proj      2048x2048: [out, in]  (from the tuning cache, 1/16/64 rows: [out,in] 0.035 ms, [in,out] 0.045 ms)
+  lm_head    50304x2048: [out, in]  (from the tuning cache, 1/16/64 rows: [out,in] 0.398 ms, [in,out] 0.414 ms)
+CUDA graphs: captured for batch sizes [1, 2, 4, 8, 12, 16, 24, 32, 40, 48, 56, 64] in 0.7s
+Custom engine: scheduler=continuous, kv_cache=paged, kv_dtype=bfloat16, prefix_caching=False, chunked_prefill=False | KV capacity 65536 tokens (8192.0 MB, 128.0 KB/token), max_num_seqs=64
+INFO:     127.0.0.1:51262 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51266 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51280 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51280 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51292 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51292 - "POST /metrics/memory/reset HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51292 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51306 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51314 - "POST /generate_stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51292 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51292 - "GET /metrics/memory HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [128713]

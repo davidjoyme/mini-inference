@@ -1,0 +1,77 @@
+Engine: continuous/paged+paged-attn+cuda-graphs+fused-proj+kv-fp8+chunked+budget-4096
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=8, max_new_tokens=128, prompt_words=6000, stream=True)
+
+[req   7] OK  status=200 latency=4.54s tokens=46 TTFT=0.58s TPOT=87.83ms queue=0.0s
+[req   5] OK  status=200 latency=4.80s tokens=46 TTFT=1.22s TPOT=79.46ms queue=0.233s
+[req   3] OK  status=200 latency=5.51s tokens=49 TTFT=1.55s TPOT=82.6ms queue=0.971s
+[req   2] OK  status=200 latency=5.51s tokens=46 TTFT=2.51s TPOT=66.68ms queue=1.916s
+[req   1] OK  status=200 latency=5.75s tokens=46 TTFT=3.16s TPOT=57.46ms queue=2.163s
+[req   0] OK  status=200 latency=5.75s tokens=49 TTFT=2.18s TPOT=74.26ms queue=1.204s
+[req   4] OK  status=200 latency=7.03s tokens=49 TTFT=3.50s TPOT=73.48ms queue=2.877s
+[req   6] OK  status=200 latency=7.68s tokens=49 TTFT=3.99s TPOT=76.8ms queue=3.138s
+[req   8] OK  status=200 latency=4.35s tokens=46 TTFT=0.50s TPOT=85.48ms queue=0.008s
+[req   9] OK  status=200 latency=4.12s tokens=46 TTFT=0.70s TPOT=76.16ms queue=0.233s
+[req  10] OK  status=200 latency=3.47s tokens=46 TTFT=0.55s TPOT=64.85ms queue=0.003s
+[req  11] OK  status=200 latency=3.54s tokens=49 TTFT=1.19s TPOT=49.11ms queue=0.222s
+[req  13] OK  status=200 latency=3.32s tokens=49 TTFT=1.28s TPOT=42.48ms queue=0.708s
+[req  12] OK  status=200 latency=3.35s tokens=49 TTFT=1.93s TPOT=29.53ms queue=0.943s
+[req  14] OK  status=200 latency=2.08s tokens=49 TTFT=0.91s TPOT=24.28ms queue=0.384s
+[req  15] OK  status=200 latency=1.45s tokens=49 TTFT=0.71s TPOT=15.45ms queue=0.252s
+
+===== Summary =====
+          total_time_s: 9.13
+            successful: 16
+                failed: 0
+        requests_per_s: 1.753
+total_generated_tokens: 763
+  overall_tokens_per_s: 83.58
+             latency_s: {'avg': 4.515, 'p50': 4.441, 'p95': 7.194, 'p99': 7.582, 'max': 7.679}
+          queue_time_s: {'avg': 0.953, 'p50': 0.546, 'p95': 2.942, 'p99': 3.099, 'max': 3.138}
+                ttft_s: {'avg': 1.654, 'p50': 1.252, 'p95': 3.626, 'p99': 3.92, 'max': 3.993}
+               tpot_ms: {'avg': 61.619, 'p50': 70.08, 'p95': 86.067, 'p99': 87.477, 'max': 87.83}
+                itl_ms: {'avg': 60.641, 'p50': 16.24, 'p95': 331.15, 'p99': 397.074, 'max': 404.03}
+        prefill_time_s: {'avg': 0.687, 'p50': 0.573, 'p95': 0.977, 'p99': 0.979, 'max': 0.979}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 27321.6
+          gpu_peak_reserved_mb: 28000.0
+       gpu_peak_device_used_mb: 28889.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 479.9
+   process_peak_rss_mb_sampled: 2128.4
+       process_rss_increase_mb: 13.7
+              gpu_util_pct_avg: 96.7
+              gpu_util_pct_max: 99.0
+       gpu_mem_bw_util_pct_avg: 27.8
+       gpu_mem_bw_util_pct_max: 55.0
+               gpu_power_w_avg: 479.6
+               gpu_power_w_max: 528.4
+           process_cpu_pct_avg: 98.7
+           process_cpu_pct_max: 116.8
+                batch_size_avg: 6.2
+                batch_size_max: 8
+                   running_avg: 6.2
+                   running_max: 8
+                   waiting_avg: 1.6
+                   waiting_max: 6
+               kv_used_pct_avg: 14.2
+               kv_used_pct_max: 19.4
+           kv_reserved_pct_avg: 14.2
+           kv_reserved_pct_max: 19.4
+              kv_waste_pct_avg: 3.0
+              kv_waste_pct_max: 100.0
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 112
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 747
+                prefill_tokens: 100028
+                prefill_chunks: 22
+                   mixed_steps: 25
+             padding_waste_pct: 0.0
+               max_step_tokens: 4096
+                       samples: 36
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261113_104025_H2_long_context_qwen3/runs/continuous-paged+paged-attn+cuda-graphs+fused-proj+chunked+budget-4096+kv-fp8_none_u8_out128_in6000.json

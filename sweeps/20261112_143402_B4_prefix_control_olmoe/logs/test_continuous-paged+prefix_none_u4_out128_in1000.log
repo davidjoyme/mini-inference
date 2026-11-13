@@ -1,0 +1,81 @@
+Engine: continuous/paged+prefix
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=1000, stream=True)
+
+[req   1] OK  status=200 latency=1.62s tokens=94 TTFT=0.09s TPOT=16.42ms queue=0.0s
+[req   0] OK  status=200 latency=2.23s tokens=128 TTFT=0.09s TPOT=16.88ms queue=0.0s
+[req   3] OK  status=200 latency=2.25s tokens=128 TTFT=0.16s TPOT=16.43ms queue=0.083s
+[req   2] OK  status=200 latency=2.25s tokens=128 TTFT=0.17s TPOT=16.43ms queue=0.084s
+[req   4] OK  status=200 latency=2.27s tokens=128 TTFT=0.08s TPOT=17.26ms queue=0.012s
+[req   6] OK  status=200 latency=2.08s tokens=117 TTFT=0.12s TPOT=16.88ms queue=0.045s
+[req   7] OK  status=200 latency=2.18s tokens=121 TTFT=0.12s TPOT=17.14ms queue=0.045s
+[req   5] OK  status=200 latency=2.26s tokens=124 TTFT=0.07s TPOT=17.84ms queue=0.012s
+[req   8] OK  status=200 latency=2.24s tokens=127 TTFT=0.07s TPOT=17.26ms queue=0.012s
+[req   9] OK  status=200 latency=2.15s tokens=122 TTFT=0.06s TPOT=17.27ms queue=0.012s
+[req  10] OK  status=200 latency=2.15s tokens=122 TTFT=0.07s TPOT=17.26ms queue=0.011s
+[req  11] OK  status=200 latency=2.25s tokens=128 TTFT=0.07s TPOT=17.23ms queue=0.011s
+[req  12] OK  status=200 latency=2.16s tokens=122 TTFT=0.07s TPOT=17.3ms queue=0.012s
+[req  13] OK  status=200 latency=2.18s tokens=128 TTFT=0.06s TPOT=16.68ms queue=0.012s
+[req  14] OK  status=200 latency=2.14s tokens=128 TTFT=0.07s TPOT=16.32ms queue=0.011s
+[req  15] OK  status=200 latency=2.06s tokens=128 TTFT=0.06s TPOT=15.75ms queue=0.011s
+
+===== Summary =====
+          total_time_s: 8.816
+            successful: 16
+                failed: 0
+        requests_per_s: 1.815
+total_generated_tokens: 1973
+  overall_tokens_per_s: 223.8
+             latency_s: {'avg': 2.156, 'p50': 2.181, 'p95': 2.265, 'p99': 2.271, 'max': 2.273}
+          queue_time_s: {'avg': 0.023, 'p50': 0.012, 'p95': 0.083, 'p99': 0.084, 'max': 0.084}
+                ttft_s: {'avg': 0.089, 'p50': 0.067, 'p95': 0.164, 'p99': 0.165, 'max': 0.165}
+               tpot_ms: {'avg': 16.897, 'p50': 17.01, 'p95': 17.435, 'p99': 17.759, 'max': 17.84}
+                itl_ms: {'avg': 16.873, 'p50': 16.26, 'p95': 17.826, 'p99': 49.096, 'max': 73.62}
+        prefill_time_s: {'avg': 0.06, 'p50': 0.051, 'p95': 0.084, 'p99': 0.084, 'max': 0.084}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21717.1
+          gpu_peak_reserved_mb: 23190.0
+       gpu_peak_device_used_mb: 23905.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 295.7
+   process_peak_rss_mb_sampled: 1840.0
+       process_rss_increase_mb: 82.2
+              gpu_util_pct_avg: 72.7
+              gpu_util_pct_max: 83.0
+       gpu_mem_bw_util_pct_avg: 28.7
+       gpu_mem_bw_util_pct_max: 35.0
+               gpu_power_w_avg: 182.4
+               gpu_power_w_max: 211.5
+           process_cpu_pct_avg: 96.3
+           process_cpu_pct_max: 103.0
+                batch_size_avg: 3.8
+                batch_size_max: 4
+                   running_avg: 3.7
+                   running_max: 4
+                   waiting_avg: 0.1
+                   waiting_max: 2
+               kv_used_pct_avg: 6.5
+               kv_used_pct_max: 7.2
+           kv_reserved_pct_avg: 6.5
+           kv_reserved_pct_max: 7.2
+              kv_waste_pct_avg: 0.7
+              kv_waste_pct_max: 1.2
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 511
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 1957
+                prefill_tokens: 17136
+             prefix_hit_tokens: 0
+           prefix_query_tokens: 17136
+              prefix_evictions: 0
+                prefill_chunks: 0
+                   mixed_steps: 12
+             padding_waste_pct: 0.0
+               max_step_tokens: 2144
+                prefix_hit_pct: 0.0
+                       samples: 35
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_143402_B4_prefix_control_olmoe/runs/continuous-paged+prefix_none_u4_out128_in1000.json

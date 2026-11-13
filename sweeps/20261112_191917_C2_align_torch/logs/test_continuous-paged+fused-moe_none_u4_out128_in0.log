@@ -1,0 +1,77 @@
+Engine: continuous/paged+fused-moe
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   3] OK  status=200 latency=0.70s tokens=62 TTFT=0.05s TPOT=10.65ms queue=0.013s
+[req   0] OK  status=200 latency=0.87s tokens=79 TTFT=0.02s TPOT=10.88ms queue=0.0s
+[req   1] OK  status=200 latency=1.04s tokens=93 TTFT=0.05s TPOT=10.76ms queue=0.013s
+[req   2] OK  status=200 latency=1.27s tokens=115 TTFT=0.05s TPOT=10.75ms queue=0.013s
+[req   4] OK  status=200 latency=0.80s tokens=73 TTFT=0.03s TPOT=10.79ms queue=0.009s
+[req   5] OK  status=200 latency=1.00s tokens=92 TTFT=0.03s TPOT=10.77ms queue=0.009s
+[req   6] OK  status=200 latency=0.91s tokens=83 TTFT=0.03s TPOT=10.76ms queue=0.008s
+[req   7] OK  status=200 latency=0.75s tokens=68 TTFT=0.03s TPOT=10.82ms queue=0.009s
+[req   8] OK  status=200 latency=0.66s tokens=59 TTFT=0.03s TPOT=10.88ms queue=0.006s
+[req  10] OK  status=200 latency=0.87s tokens=79 TTFT=0.03s TPOT=10.86ms queue=0.009s
+[req   9] OK  status=200 latency=0.98s tokens=88 TTFT=0.03s TPOT=10.92ms queue=0.009s
+[req  11] OK  status=200 latency=1.01s tokens=92 TTFT=0.03s TPOT=10.88ms queue=0.009s
+[req  12] OK  status=200 latency=1.00s tokens=91 TTFT=0.03s TPOT=10.88ms queue=0.009s
+[req  13] OK  status=200 latency=0.49s tokens=44 TTFT=0.03s TPOT=10.81ms queue=0.009s
+[req  14] OK  status=200 latency=0.48s tokens=44 TTFT=0.03s TPOT=10.69ms queue=0.008s
+[req  15] OK  status=200 latency=0.69s tokens=68 TTFT=0.03s TPOT=9.98ms queue=0.009s
+
+===== Summary =====
+          total_time_s: 3.733
+            successful: 16
+                failed: 0
+        requests_per_s: 4.286
+total_generated_tokens: 1230
+  overall_tokens_per_s: 329.49
+             latency_s: {'avg': 0.846, 'p50': 0.871, 'p95': 1.095, 'p99': 1.237, 'max': 1.272}
+          queue_time_s: {'avg': 0.009, 'p50': 0.009, 'p95': 0.013, 'p99': 0.013, 'max': 0.013}
+                ttft_s: {'avg': 0.029, 'p50': 0.025, 'p95': 0.047, 'p99': 0.047, 'max': 0.047}
+               tpot_ms: {'avg': 10.755, 'p50': 10.8, 'p95': 10.89, 'p99': 10.914, 'max': 10.92}
+                itl_ms: {'avg': 10.761, 'p50': 10.59, 'p95': 12.01, 'p99': 14.561, 'max': 24.99}
+        prefill_time_s: {'avg': 0.016, 'p50': 0.014, 'p95': 0.024, 'p99': 0.024, 'max': 0.024}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21427.2
+          gpu_peak_reserved_mb: 23958.0
+       gpu_peak_device_used_mb: 24673.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 5.8
+   process_peak_rss_mb_sampled: 1799.7
+       process_rss_increase_mb: 21.9
+              gpu_util_pct_avg: 68.1
+              gpu_util_pct_max: 73.0
+       gpu_mem_bw_util_pct_avg: 28.6
+       gpu_mem_bw_util_pct_max: 33.0
+               gpu_power_w_avg: 167.3
+               gpu_power_w_max: 182.4
+           process_cpu_pct_avg: 93.0
+           process_cpu_pct_max: 102.8
+                batch_size_avg: 3.4
+                batch_size_max: 4
+                   running_avg: 3.3
+                   running_max: 4
+                   waiting_avg: 0.1
+                   waiting_max: 1
+               kv_used_pct_avg: 0.3
+               kv_used_pct_max: 0.6
+           kv_reserved_pct_avg: 0.4
+           kv_reserved_pct_max: 0.6
+              kv_waste_pct_avg: 9.8
+              kv_waste_pct_max: 14.8
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 347
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 1214
+                prefill_tokens: 384
+                prefill_chunks: 0
+                   mixed_steps: 13
+             padding_waste_pct: 0.0
+               max_step_tokens: 73
+                       samples: 15
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_191917_C2_align_torch/runs/continuous-paged+fused-moe_none_u4_out128_in0.json

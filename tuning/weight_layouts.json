@@ -6,6 +6,13 @@
       "transposed": 0.5289
     }
   },
+  "NVIDIA GeForce RTX 5090 | torch 2.14.0+cu130 | torch.bfloat16 | 2048x2048": {
+    "layout": "normal",
+    "ms": {
+      "normal": 0.0354,
+      "transposed": 0.0452
+    }
+  },
   "NVIDIA GeForce RTX 5090 | torch 2.14.0+cu130 | torch.bfloat16 | 2560x4096": {
     "layout": "transposed",
     "ms": {
@@ -18,6 +25,20 @@
     "ms": {
       "normal": 0.3924,
       "transposed": 0.3113
+    }
+  },
+  "NVIDIA GeForce RTX 5090 | torch 2.14.0+cu130 | torch.bfloat16 | 50304x2048": {
+    "layout": "normal",
+    "ms": {
+      "normal": 0.3979,
+      "transposed": 0.4142
+    }
+  },
+  "NVIDIA GeForce RTX 5090 | torch 2.14.0+cu130 | torch.bfloat16 | 6144x2048": {
+    "layout": "normal",
+    "ms": {
+      "normal": 0.0584,
+      "transposed": 0.0656
     }
   },
   "NVIDIA GeForce RTX 5090 | torch 2.14.0+cu130 | torch.bfloat16 | 6144x2560": {

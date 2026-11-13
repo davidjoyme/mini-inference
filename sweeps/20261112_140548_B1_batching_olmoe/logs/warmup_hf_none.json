@@ -1,0 +1,110 @@
+{
+  "summary": {
+    "server": {
+      "status": "ok",
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 2.3,
+      "engine": {
+        "engine": "hf",
+        "moe_kernel": "default",
+        "moe_align": null
+      }
+    },
+    "test_config": {
+      "url": "http://localhost:8100/generate_stream",
+      "stream": true,
+      "num_requests": 1,
+      "concurrency": 1,
+      "max_new_tokens": 8,
+      "prompt_words": 0,
+      "unique_prompts": false,
+      "long_every": 0,
+      "prompt": "Tell me a short fact about space"
+    },
+    "total_time_s": 0.585,
+    "successful": 1,
+    "failed": 0,
+    "requests_per_s": 1.71,
+    "total_generated_tokens": 8,
+    "overall_tokens_per_s": 13.68,
+    "latency_s": {
+      "avg": 0.585,
+      "p50": 0.585,
+      "p95": 0.585,
+      "p99": 0.585,
+      "max": 0.585
+    },
+    "queue_time_s": {
+      "avg": 0.0,
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "max": 0.0
+    },
+    "ttft_s": {
+      "avg": 0.54,
+      "p50": 0.54,
+      "p95": 0.54,
+      "p99": 0.54,
+      "max": 0.54
+    },
+    "tpot_ms": {
+      "avg": 6.38,
+      "p50": 6.38,
+      "p95": 6.38,
+      "p99": 6.38,
+      "max": 6.38
+    },
+    "itl_ms": {
+      "avg": 7.29,
+      "p50": 7.305,
+      "p95": 12.635,
+      "p99": 14.007,
+      "max": 14.35
+    },
+    "prefill_time_s": {
+      "avg": 0.538,
+      "p50": 0.538,
+      "p95": 0.538,
+      "p99": 0.538,
+      "max": 0.538
+    }
+  },
+  "requests": [
+    {
+      "id": 0,
+      "sent_at_s": 0.0,
+      "status": 200,
+      "latency_s": 0.585,
+      "output": "A short fact about space: The universe",
+      "generated_tokens": 8,
+      "queue_time_s": 0.0,
+      "prefill_time_s": 0.538,
+      "decode_time_s": 0.044,
+      "generation_time_s": 0.582,
+      "ttft_s": 0.54,
+      "tpot_ms": 6.38,
+      "itl_ms": [
+        7.49,
+        7.26,
+        7.22,
+        14.35,
+        7.35,
+        0.07
+      ]
+    }
+  ]
+}

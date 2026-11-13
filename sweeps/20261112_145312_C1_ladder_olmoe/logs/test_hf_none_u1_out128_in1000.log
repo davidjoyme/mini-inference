@@ -1,0 +1,42 @@
+Engine: hf
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 4 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=128, prompt_words=1000, stream=True)
+
+[req   0] OK  status=200 latency=0.67s tokens=82 TTFT=0.08s TPOT=7.27ms queue=0.0s
+[req   1] OK  status=200 latency=0.93s tokens=119 TTFT=0.06s TPOT=7.37ms queue=0.0s
+[req   2] OK  status=200 latency=0.97s tokens=128 TTFT=0.06s TPOT=7.22ms queue=0.0s
+[req   3] OK  status=200 latency=0.98s tokens=128 TTFT=0.06s TPOT=7.28ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 3.556
+            successful: 4
+                failed: 0
+        requests_per_s: 1.125
+total_generated_tokens: 457
+  overall_tokens_per_s: 128.53
+             latency_s: {'avg': 0.889, 'p50': 0.951, 'p95': 0.98, 'p99': 0.981, 'max': 0.981}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.064, 'p50': 0.058, 'p95': 0.08, 'p99': 0.083, 'max': 0.084}
+               tpot_ms: {'avg': 7.285, 'p50': 7.275, 'p95': 7.357, 'p99': 7.367, 'max': 7.37}
+                itl_ms: {'avg': 8.363, 'p50': 7.32, 'p95': 14.651, 'p99': 21.761, 'max': 28.55}
+        prefill_time_s: {'avg': 0.062, 'p50': 0.056, 'p95': 0.077, 'p99': 0.08, 'max': 0.081}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 13514.0
+          gpu_peak_reserved_mb: 15530.0
+       gpu_peak_device_used_mb: 16245.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 284.7
+   process_peak_rss_mb_sampled: 1899.1
+       process_rss_increase_mb: 56.3
+              gpu_util_pct_avg: 71.6
+              gpu_util_pct_max: 72.0
+       gpu_mem_bw_util_pct_avg: 39.6
+       gpu_mem_bw_util_pct_max: 40.0
+               gpu_power_w_avg: 209.8
+               gpu_power_w_max: 220.2
+           process_cpu_pct_avg: 94.0
+           process_cpu_pct_max: 103.1
+                       samples: 15
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_145312_C1_ladder_olmoe/runs/hf_none_u1_out128_in1000.json

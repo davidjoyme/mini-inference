@@ -1,0 +1,42 @@
+Engine: hf
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 4 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.65s tokens=53 TTFT=0.05s TPOT=11.4ms queue=0.0s
+[req   1] OK  status=200 latency=0.72s tokens=59 TTFT=0.06s TPOT=11.42ms queue=0.0s
+[req   2] OK  status=200 latency=1.04s tokens=56 TTFT=0.06s TPOT=17.81ms queue=0.0s
+[req   3] OK  status=200 latency=0.48s tokens=39 TTFT=0.05s TPOT=11.33ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 2.887
+            successful: 4
+                failed: 0
+        requests_per_s: 1.385
+total_generated_tokens: 207
+  overall_tokens_per_s: 71.69
+             latency_s: {'avg': 0.722, 'p50': 0.683, 'p95': 0.99, 'p99': 1.028, 'max': 1.038}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.055, 'p50': 0.055, 'p95': 0.059, 'p99': 0.059, 'max': 0.059}
+               tpot_ms: {'avg': 12.99, 'p50': 11.41, 'p95': 16.852, 'p99': 17.618, 'max': 17.81}
+                itl_ms: {'avg': 16.844, 'p50': 11.905, 'p95': 34.757, 'p99': 57.789, 'max': 91.56}
+        prefill_time_s: {'avg': 0.053, 'p50': 0.054, 'p95': 0.057, 'p99': 0.057, 'max': 0.057}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 7717.0
+          gpu_peak_reserved_mb: 7720.0
+       gpu_peak_device_used_mb: 8435.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 12.6
+   process_peak_rss_mb_sampled: 1783.7
+       process_rss_increase_mb: 0.6
+              gpu_util_pct_avg: 57.6
+              gpu_util_pct_max: 82.0
+       gpu_mem_bw_util_pct_avg: 32.8
+       gpu_mem_bw_util_pct_max: 47.0
+               gpu_power_w_avg: 182.8
+               gpu_power_w_max: 239.7
+           process_cpu_pct_avg: 92.1
+           process_cpu_pct_max: 103.1
+                       samples: 12
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_141524_B1_batching_qwen3-4b/runs/hf_none_u1_out128_in0.json

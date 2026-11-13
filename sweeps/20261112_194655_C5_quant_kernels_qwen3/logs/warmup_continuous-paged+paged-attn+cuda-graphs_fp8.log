@@ -1,0 +1,21 @@
+Engine: continuous/paged+paged-attn+cuda-graphs
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: fp8, weights: 4211.5 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.17s tokens=8 TTFT=0.06s TPOT=15.32ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.172
+            successful: 1
+                failed: 0
+        requests_per_s: 5.822
+total_generated_tokens: 8
+  overall_tokens_per_s: 46.57
+             latency_s: {'avg': 0.172, 'p50': 0.172, 'p95': 0.172, 'p99': 0.172, 'max': 0.172}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.064, 'p50': 0.064, 'p95': 0.064, 'p99': 0.064, 'max': 0.064}
+               tpot_ms: {'avg': 15.32, 'p50': 15.32, 'p95': 15.32, 'p99': 15.32, 'max': 15.32}
+                itl_ms: {'avg': 15.244, 'p50': 15.09, 'p95': 15.877, 'p99': 16.023, 'max': 16.06}
+        prefill_time_s: {'avg': 0.056, 'p50': 0.056, 'p95': 0.056, 'p99': 0.056, 'max': 0.056}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_194655_C5_quant_kernels_qwen3/logs/warmup_continuous-paged+paged-attn+cuda-graphs_fp8.json

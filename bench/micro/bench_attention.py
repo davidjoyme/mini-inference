@@ -23,9 +23,12 @@ import json
 import os
 import sys
 import time
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
+
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
@@ -63,6 +66,7 @@ class _quiet_native_output:
         os.dup2(self.saved[1], 2)
         for fd in (*self.saved, self.devnull):
             os.close(fd)
+
 
 def kernels_per_call(fn):
     fn()
@@ -146,8 +150,10 @@ def main():
 
                 def run_sdpa():
                     kc, vc = cache.gather(0, idx)                                   # [B, L, KV, D]
+                    # enable_gqa: query heads share kv heads (Qwen3: 32 / 8), as in the engine's SDPA path
                     return F.scaled_dot_product_attention(q[:, :, None, :], kc.transpose(1, 2),
-                                                          vc.transpose(1, 2), attn_mask=mask, scale=scale)[:, :, 0]
+                                                          vc.transpose(1, 2), attn_mask=mask, scale=scale,
+                                                          enable_gqa=H != KV)[:, :, 0]
 
                 def run_triton():
                     return paged_decode_attention(q, cache.k[0], cache.v[0], table, lens, PAGE, scale, max_len,

@@ -1,0 +1,116 @@
+{
+  "summary": {
+    "engine": {
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "none"
+      },
+      "weight_memory": {
+        "weights_total_mb": 13197.3,
+        "weights_quantized_layers_mb": 0.0,
+        "weights_other_mb": 13197.3
+      },
+      "load_time_s": 28.2,
+      "engine": {
+        "engine": "custom",
+        "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+        "architecture": "OlmoeForCausalLM",
+        "max_model_len": 4096,
+        "scheduler": "continuous",
+        "kv_cache": "paged",
+        "kv_block_size": 16,
+        "kv_watermark": 0.01,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 65536,
+        "kv_cache_mb": 8192.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false,
+        "moe_kernel": "triton",
+        "moe_align": "cuda",
+        "attn_backend": "sdpa",
+        "cuda_graphs": false,
+        "fused_proj": false,
+        "weight_layouts": null
+      }
+    },
+    "engine_label": "continuous/paged+fused-moe",
+    "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+    "quantization": "none",
+    "concurrency": 1,
+    "num_prompts": 4,
+    "weights_total_mb": 13197.3,
+    "wall_time_s": 2.545,
+    "throughput_tok_s": 139.5,
+    "avg_latency_s": 0.636,
+    "avg_queue_s": 0.0,
+    "avg_ttft_s": 0.011,
+    "avg_tpot_ms": 7.122,
+    "max_itl_ms": 7.436,
+    "avg_tokens_per_s": 139.525,
+    "gpu_peak_allocated_mb": 21423.2,
+    "gpu_allocated_before_mb": 21421.4,
+    "process_rss_mb": 1693.3,
+    "steps": 355,
+    "preemptions": 0,
+    "padding_tokens": 0,
+    "prefill_chunks": 0,
+    "mixed_steps": 0,
+    "decode_step_ms": 7.105,
+    "prefill_or_mixed_step_ms": 10.752,
+    "prefill_or_mixed_share_of_step_time_pct": 1.7,
+    "avg_batch_size": 0.99
+  },
+  "runs": [
+    {
+      "output": "A short fact about space: The universe is vast, with an estimated 100 billion galaxies, each containing billions of stars and potentially even more planets. This immense scale means that the number of potential life-supporting planets is likely immense as well, though the exact number remains unknown and is one of the most profound mysteries in astronomy.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0001,
+      "latency_s": 0.4818,
+      "ttft_s": 0.011,
+      "tpot_ms": 7.134,
+      "tokens_per_s": 139.05,
+      "prompt": "Tell me a short fact about space (request 0)",
+      "itl_ms_max": 7.436
+    },
+    {
+      "output": "A short fact about space: The universe is estimated to be about 13.8 billion years old, with the Big Bang occurring around 13.8 billion years ago. This event marked the beginning of the universe as we know it, expanding from an incredibly hot and dense state into the vast, cool cosmos we observe today. The age of the universe is constantly being refined as scientists make new discoveries and refine their models based on observational data from telescopes and spacecraft.",
+      "generated_tokens": 93,
+      "queue_time_s": 0.0,
+      "latency_s": 0.6647,
+      "ttft_s": 0.0107,
+      "tpot_ms": 7.108,
+      "tokens_per_s": 139.92,
+      "prompt": "Tell me a short fact about space (request 1)",
+      "itl_ms_max": 7.214
+    },
+    {
+      "output": "A short fact about space:\n\n**The universe is expanding faster than the speed of light.**\n\nAccording to the theory of cosmic inflation and the Big Bang model, the universe expanded rapidly during its early stages. This expansion is continuing today, albeit at a slower rate. The speed of this expansion is such that any two distant parts of the universe are moving away from each other faster than light can travel between them. This is possible because space itself can expand faster than light, thanks to the concept of the speed of light being a limit only for material objects within space, not for the expansion of space itself. This phenomenon is a",
+      "generated_tokens": 128,
+      "queue_time_s": 0.0,
+      "latency_s": 0.915,
+      "ttft_s": 0.0107,
+      "tpot_ms": 7.12,
+      "tokens_per_s": 139.89,
+      "prompt": "Tell me a short fact about space (request 2)",
+      "itl_ms_max": 7.282
+    },
+    {
+      "output": "Astronauts cannot burp in space. The reason is that without gravity, the gas and liquid from consumed food and drinks can freely move around the spacecraft, leading to a buildup of gas that cannot be expelled through a burp. This can cause discomfort and potentially lead to more serious digestive issues during extended space missions.",
+      "generated_tokens": 67,
+      "queue_time_s": 0.0,
+      "latency_s": 0.4812,
+      "ttft_s": 0.0108,
+      "tpot_ms": 7.127,
+      "tokens_per_s": 139.24,
+      "prompt": "Tell me a short fact about space (request 3)",
+      "itl_ms_max": 7.241
+    }
+  ]
+}

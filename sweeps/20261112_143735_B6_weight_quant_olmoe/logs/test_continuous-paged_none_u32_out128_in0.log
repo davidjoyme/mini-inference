@@ -1,0 +1,189 @@
+Engine: continuous/paged
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 128 requests to http://localhost:8100/generate_stream (concurrency=32, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req  23] OK  status=200 latency=1.29s tokens=44 TTFT=0.10s TPOT=27.59ms queue=0.023s
+[req  20] OK  status=200 latency=1.29s tokens=44 TTFT=0.10s TPOT=27.63ms queue=0.024s
+[req  28] OK  status=200 latency=1.29s tokens=44 TTFT=0.10s TPOT=27.62ms queue=0.022s
+[req  16] OK  status=200 latency=1.29s tokens=44 TTFT=0.10s TPOT=27.64ms queue=0.025s
+[req   7] OK  status=200 latency=1.77s tokens=59 TTFT=0.11s TPOT=28.74ms queue=0.034s
+[req  25] OK  status=200 latency=1.77s tokens=59 TTFT=0.10s TPOT=28.77ms queue=0.022s
+[req   8] OK  status=200 latency=1.88s tokens=62 TTFT=0.11s TPOT=29.05ms queue=0.032s
+[req  27] OK  status=200 latency=2.04s tokens=67 TTFT=0.10s TPOT=29.42ms queue=0.022s
+[req  26] OK  status=200 latency=2.08s tokens=68 TTFT=0.10s TPOT=29.45ms queue=0.022s
+[req   1] OK  status=200 latency=2.25s tokens=73 TTFT=0.11s TPOT=29.79ms queue=0.037s
+[req  21] OK  status=200 latency=2.28s tokens=74 TTFT=0.10s TPOT=29.85ms queue=0.023s
+[req  30] OK  status=200 latency=2.28s tokens=74 TTFT=0.10s TPOT=29.87ms queue=0.021s
+[req  15] OK  status=200 latency=2.29s tokens=74 TTFT=0.10s TPOT=29.86ms queue=0.028s
+[req  24] OK  status=200 latency=2.32s tokens=75 TTFT=0.10s TPOT=30.0ms queue=0.023s
+[req  13] OK  status=200 latency=2.33s tokens=75 TTFT=0.11s TPOT=29.99ms queue=0.028s
+[req  14] OK  status=200 latency=2.44s tokens=78 TTFT=0.11s TPOT=30.26ms queue=0.029s
+[req  29] OK  status=200 latency=2.43s tokens=78 TTFT=0.10s TPOT=30.28ms queue=0.022s
+[req   3] OK  status=200 latency=2.47s tokens=79 TTFT=0.11s TPOT=30.33ms queue=0.035s
+[req   0] OK  status=200 latency=2.47s tokens=79 TTFT=0.11s TPOT=30.33ms queue=0.04s
+[req   6] OK  status=200 latency=2.62s tokens=83 TTFT=0.11s TPOT=30.59ms queue=0.032s
+[req   4] OK  status=200 latency=2.65s tokens=84 TTFT=0.10s TPOT=30.67ms queue=0.035s
+[req  18] OK  status=200 latency=2.82s tokens=89 TTFT=0.10s TPOT=30.88ms queue=0.024s
+[req  19] OK  status=200 latency=2.93s tokens=92 TTFT=0.10s TPOT=31.04ms queue=0.023s
+[req   9] OK  status=200 latency=3.04s tokens=96 TTFT=0.05s TPOT=31.44ms queue=0.0s
+[req   5] OK  status=200 latency=3.17s tokens=99 TTFT=0.11s TPOT=31.26ms queue=0.034s
+[req  22] OK  status=200 latency=3.30s tokens=103 TTFT=0.10s TPOT=31.35ms queue=0.023s
+[req  31] OK  status=200 latency=3.30s tokens=103 TTFT=0.10s TPOT=31.35ms queue=0.021s
+[req  36] OK  status=200 latency=1.56s tokens=44 TTFT=0.07s TPOT=34.73ms queue=0.026s
+[req  38] OK  status=200 latency=1.57s tokens=44 TTFT=0.07s TPOT=34.88ms queue=0.027s
+[req  12] OK  status=200 latency=3.48s tokens=108 TTFT=0.11s TPOT=31.55ms queue=0.028s
+[req  32] OK  status=200 latency=2.37s tokens=68 TTFT=0.07s TPOT=34.34ms queue=0.024s
+[req  42] OK  status=200 latency=1.58s tokens=44 TTFT=0.08s TPOT=34.96ms queue=0.031s
+[req  33] OK  status=200 latency=2.60s tokens=75 TTFT=0.07s TPOT=34.28ms queue=0.023s
+[req  46] OK  status=200 latency=1.57s tokens=44 TTFT=0.08s TPOT=34.85ms queue=0.031s
+[req  48] OK  status=200 latency=1.57s tokens=44 TTFT=0.07s TPOT=34.93ms queue=0.026s
+[req  34] OK  status=200 latency=2.79s tokens=80 TTFT=0.07s TPOT=34.45ms queue=0.023s
+[req  17] OK  status=200 latency=4.19s tokens=128 TTFT=0.10s TPOT=32.13ms queue=0.025s
+[req  10] OK  status=200 latency=4.19s tokens=128 TTFT=0.11s TPOT=32.13ms queue=0.03s
+[req   2] OK  status=200 latency=4.19s tokens=128 TTFT=0.11s TPOT=32.13ms queue=0.036s
+[req  11] OK  status=200 latency=4.19s tokens=128 TTFT=0.11s TPOT=32.15ms queue=0.028s
+[req  53] OK  status=200 latency=1.56s tokens=44 TTFT=0.07s TPOT=34.77ms queue=0.026s
+[req  40] OK  status=200 latency=2.38s tokens=67 TTFT=0.07s TPOT=34.98ms queue=0.03s
+[req  54] OK  status=200 latency=1.56s tokens=44 TTFT=0.07s TPOT=34.69ms queue=0.026s
+[req  35] OK  status=200 latency=3.24s tokens=93 TTFT=0.07s TPOT=34.45ms queue=0.023s
+[req  45] OK  status=200 latency=2.38s tokens=67 TTFT=0.08s TPOT=34.86ms queue=0.031s
+[req  41] OK  status=200 latency=2.58s tokens=73 TTFT=0.07s TPOT=34.9ms queue=0.026s
+[req  37] OK  status=200 latency=3.10s tokens=88 TTFT=0.07s TPOT=34.75ms queue=0.025s
+[req  58] OK  status=200 latency=1.57s tokens=44 TTFT=0.07s TPOT=34.81ms queue=0.025s
+[req  59] OK  status=200 latency=1.57s tokens=44 TTFT=0.07s TPOT=34.8ms queue=0.031s
+[req  52] OK  status=200 latency=2.87s tokens=82 TTFT=0.07s TPOT=34.57ms queue=0.029s
+[req  44] OK  status=200 latency=3.27s tokens=93 TTFT=0.08s TPOT=34.69ms queue=0.031s
+[req  49] OK  status=200 latency=3.26s tokens=93 TTFT=0.08s TPOT=34.58ms queue=0.032s
+[req  39] OK  status=200 latency=3.82s tokens=109 TTFT=0.07s TPOT=34.77ms queue=0.024s
+[req  50] OK  status=200 latency=3.43s tokens=98 TTFT=0.07s TPOT=34.61ms queue=0.031s
+[req  72] OK  status=200 latency=1.55s tokens=44 TTFT=0.07s TPOT=34.61ms queue=0.025s
+[req  73] OK  status=200 latency=1.56s tokens=44 TTFT=0.07s TPOT=34.74ms queue=0.027s
+[req  60] OK  status=200 latency=2.71s tokens=77 TTFT=0.07s TPOT=34.75ms queue=0.028s
+[req  55] OK  status=200 latency=3.26s tokens=93 TTFT=0.07s TPOT=34.69ms queue=0.024s
+[req  56] OK  status=200 latency=3.27s tokens=93 TTFT=0.07s TPOT=34.74ms queue=0.025s
+[req  57] OK  status=200 latency=3.27s tokens=93 TTFT=0.07s TPOT=34.74ms queue=0.027s
+[req  47] OK  status=200 latency=4.21s tokens=120 TTFT=0.07s TPOT=34.73ms queue=0.026s
+[req  43] OK  status=200 latency=4.49s tokens=128 TTFT=0.08s TPOT=34.75ms queue=0.031s
+[req  64] OK  status=200 latency=3.11s tokens=89 TTFT=0.08s TPOT=34.46ms queue=0.032s
+[req  51] OK  status=200 latency=4.46s tokens=128 TTFT=0.07s TPOT=34.61ms queue=0.026s
+[req  65] OK  status=200 latency=3.25s tokens=93 TTFT=0.07s TPOT=34.54ms queue=0.032s
+[req  66] OK  status=200 latency=3.25s tokens=93 TTFT=0.07s TPOT=34.51ms queue=0.026s
+[req  67] OK  status=200 latency=3.25s tokens=93 TTFT=0.07s TPOT=34.52ms queue=0.027s
+[req  70] OK  status=200 latency=3.24s tokens=93 TTFT=0.07s TPOT=34.5ms queue=0.024s
+[req  71] OK  status=200 latency=3.24s tokens=93 TTFT=0.07s TPOT=34.51ms queue=0.024s
+[req  61] OK  status=200 latency=4.25s tokens=122 TTFT=0.07s TPOT=34.54ms queue=0.031s
+[req  76] OK  status=200 latency=3.13s tokens=90 TTFT=0.07s TPOT=34.44ms queue=0.026s
+[req  68] OK  status=200 latency=3.82s tokens=110 TTFT=0.07s TPOT=34.37ms queue=0.023s
+[req  69] OK  status=200 latency=3.92s tokens=113 TTFT=0.07s TPOT=34.42ms queue=0.024s
+[req  78] OK  status=200 latency=3.24s tokens=93 TTFT=0.08s TPOT=34.44ms queue=0.031s
+[req  62] OK  status=200 latency=4.45s tokens=128 TTFT=0.07s TPOT=34.51ms queue=0.026s
+[req  80] OK  status=200 latency=3.24s tokens=93 TTFT=0.07s TPOT=34.41ms queue=0.03s
+[req  77] OK  status=200 latency=3.49s tokens=100 TTFT=0.07s TPOT=34.52ms queue=0.026s
+[req  63] OK  status=200 latency=4.46s tokens=128 TTFT=0.07s TPOT=34.55ms queue=0.026s
+[req  74] OK  status=200 latency=4.17s tokens=120 TTFT=0.07s TPOT=34.42ms queue=0.031s
+[req  83] OK  status=200 latency=3.21s tokens=92 TTFT=0.07s TPOT=34.47ms queue=0.027s
+[req  75] OK  status=200 latency=4.44s tokens=128 TTFT=0.07s TPOT=34.36ms queue=0.031s
+[req  85] OK  status=200 latency=3.23s tokens=93 TTFT=0.07s TPOT=34.38ms queue=0.03s
+[req  79] OK  status=200 latency=4.27s tokens=123 TTFT=0.07s TPOT=34.39ms queue=0.031s
+[req  91] OK  status=200 latency=3.20s tokens=93 TTFT=0.07s TPOT=34.03ms queue=0.026s
+[req  89] OK  status=200 latency=3.51s tokens=102 TTFT=0.07s TPOT=34.03ms queue=0.027s
+[req  97] OK  status=200 latency=2.66s tokens=77 TTFT=0.07s TPOT=34.09ms queue=0.026s
+[req  81] OK  status=200 latency=4.43s tokens=128 TTFT=0.07s TPOT=34.29ms queue=0.025s
+[req  82] OK  status=200 latency=4.43s tokens=128 TTFT=0.07s TPOT=34.31ms queue=0.03s
+[req  90] OK  status=200 latency=3.59s tokens=104 TTFT=0.07s TPOT=34.19ms queue=0.025s
+[req  86] OK  status=200 latency=4.16s tokens=120 TTFT=0.08s TPOT=34.29ms queue=0.03s
+[req  87] OK  status=200 latency=4.15s tokens=120 TTFT=0.07s TPOT=34.3ms queue=0.027s
+[req 100] OK  status=200 latency=2.77s tokens=80 TTFT=0.07s TPOT=34.29ms queue=0.026s
+[req  94] OK  status=200 latency=3.20s tokens=92 TTFT=0.07s TPOT=34.43ms queue=0.026s
+[req  84] OK  status=200 latency=4.41s tokens=127 TTFT=0.07s TPOT=34.45ms queue=0.027s
+[req 102] OK  status=200 latency=2.69s tokens=77 TTFT=0.07s TPOT=34.4ms queue=0.025s
+[req  88] OK  status=200 latency=4.43s tokens=128 TTFT=0.07s TPOT=34.36ms queue=0.026s
+[req  99] OK  status=200 latency=3.23s tokens=93 TTFT=0.07s TPOT=34.37ms queue=0.026s
+[req  92] OK  status=200 latency=4.41s tokens=128 TTFT=0.07s TPOT=34.17ms queue=0.024s
+[req 106] OK  status=200 latency=3.06s tokens=89 TTFT=0.07s TPOT=33.97ms queue=0.025s
+[req  93] OK  status=200 latency=4.40s tokens=128 TTFT=0.07s TPOT=34.11ms queue=0.023s
+[req  96] OK  status=200 latency=4.12s tokens=120 TTFT=0.07s TPOT=34.02ms queue=0.025s
+[req  95] OK  status=200 latency=4.34s tokens=127 TTFT=0.07s TPOT=33.9ms queue=0.026s
+[req 103] OK  status=200 latency=3.48s tokens=102 TTFT=0.07s TPOT=33.79ms queue=0.025s
+[req  98] OK  status=200 latency=4.34s tokens=128 TTFT=0.07s TPOT=33.65ms queue=0.026s
+[req 110] OK  status=200 latency=3.07s tokens=91 TTFT=0.07s TPOT=33.31ms queue=0.025s
+[req 104] OK  status=200 latency=3.81s tokens=113 TTFT=0.07s TPOT=33.34ms queue=0.026s
+[req 101] OK  status=200 latency=4.30s tokens=128 TTFT=0.07s TPOT=33.34ms queue=0.023s
+[req 105] OK  status=200 latency=3.92s tokens=117 TTFT=0.07s TPOT=33.21ms queue=0.025s
+[req 112] OK  status=200 latency=3.10s tokens=93 TTFT=0.07s TPOT=32.87ms queue=0.03s
+[req 109] OK  status=200 latency=3.83s tokens=115 TTFT=0.07s TPOT=32.95ms queue=0.025s
+[req 107] OK  status=200 latency=4.23s tokens=128 TTFT=0.07s TPOT=32.73ms queue=0.03s
+[req 108] OK  status=200 latency=4.20s tokens=128 TTFT=0.07s TPOT=32.48ms queue=0.027s
+[req 111] OK  status=200 latency=3.64s tokens=112 TTFT=0.07s TPOT=32.16ms queue=0.025s
+[req 119] OK  status=200 latency=2.90s tokens=93 TTFT=0.07s TPOT=30.72ms queue=0.028s
+[req 120] OK  status=200 latency=2.89s tokens=93 TTFT=0.08s TPOT=30.6ms queue=0.03s
+[req 113] OK  status=200 latency=3.80s tokens=120 TTFT=0.07s TPOT=31.34ms queue=0.025s
+[req 125] OK  status=200 latency=2.70s tokens=89 TTFT=0.07s TPOT=29.92ms queue=0.026s
+[req 114] OK  status=200 latency=3.99s tokens=128 TTFT=0.07s TPOT=30.86ms queue=0.025s
+[req 126] OK  status=200 latency=2.72s tokens=93 TTFT=0.07s TPOT=28.83ms queue=0.026s
+[req 115] OK  status=200 latency=3.61s tokens=120 TTFT=0.07s TPOT=29.72ms queue=0.025s
+[req 118] OK  status=200 latency=3.54s tokens=120 TTFT=0.07s TPOT=29.09ms queue=0.031s
+[req 122] OK  status=200 latency=3.33s tokens=115 TTFT=0.07s TPOT=28.6ms queue=0.026s
+[req 124] OK  status=200 latency=3.35s tokens=117 TTFT=0.07s TPOT=28.3ms queue=0.031s
+[req 116] OK  status=200 latency=3.76s tokens=128 TTFT=0.08s TPOT=29.01ms queue=0.031s
+[req 117] OK  status=200 latency=3.70s tokens=128 TTFT=0.07s TPOT=28.57ms queue=0.024s
+[req 121] OK  status=200 latency=3.59s tokens=128 TTFT=0.07s TPOT=27.69ms queue=0.027s
+[req 123] OK  status=200 latency=3.52s tokens=128 TTFT=0.07s TPOT=27.15ms queue=0.031s
+[req 127] OK  status=200 latency=3.19s tokens=121 TTFT=0.07s TPOT=25.98ms queue=0.024s
+
+===== Summary =====
+          total_time_s: 13.78
+            successful: 128
+                failed: 0
+        requests_per_s: 9.289
+total_generated_tokens: 12045
+  overall_tokens_per_s: 874.08
+             latency_s: {'avg': 3.123, 'p50': 3.238, 'p95': 4.43, 'p99': 4.463, 'max': 4.491}
+          queue_time_s: {'avg': 0.027, 'p50': 0.026, 'p95': 0.033, 'p99': 0.037, 'max': 0.04}
+                ttft_s: {'avg': 0.079, 'p50': 0.072, 'p95': 0.107, 'p99': 0.108, 'max': 0.109}
+               tpot_ms: {'avg': 32.661, 'p50': 34.1, 'p95': 34.836, 'p99': 34.952, 'max': 34.98}
+                itl_ms: {'avg': 32.664, 'p50': 32.8, 'p95': 39.05, 'p99': 41.07, 'max': 56.56}
+        prefill_time_s: {'avg': 0.041, 'p50': 0.038, 'p95': 0.052, 'p99': 0.052, 'max': 0.052}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 21526.2
+          gpu_peak_reserved_mb: 23980.0
+       gpu_peak_device_used_mb: 24695.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 104.8
+   process_peak_rss_mb_sampled: 1805.8
+       process_rss_increase_mb: 21.2
+              gpu_util_pct_avg: 68.8
+              gpu_util_pct_max: 73.0
+       gpu_mem_bw_util_pct_avg: 29.9
+       gpu_mem_bw_util_pct_max: 32.0
+               gpu_power_w_avg: 177.9
+               gpu_power_w_max: 182.2
+           process_cpu_pct_avg: 96.4
+           process_cpu_pct_max: 146.1
+                batch_size_avg: 28.1
+                batch_size_max: 32
+                   running_avg: 28.0
+                   running_max: 32
+                   waiting_avg: 0.2
+                   waiting_max: 3
+               kv_used_pct_avg: 3.2
+               kv_used_pct_max: 4.4
+           kv_reserved_pct_avg: 3.5
+           kv_reserved_pct_max: 4.8
+              kv_waste_pct_avg: 9.0
+              kv_waste_pct_max: 21.8
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 437
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 11917
+                prefill_tokens: 3072
+                prefill_chunks: 0
+                   mixed_steps: 76
+             padding_waste_pct: 0.0
+               max_step_tokens: 745
+                       samples: 55
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_143735_B6_weight_quant_olmoe/runs/continuous-paged_none_u32_out128_in0.json

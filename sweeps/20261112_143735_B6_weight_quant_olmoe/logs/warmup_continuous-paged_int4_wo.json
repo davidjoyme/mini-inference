@@ -1,0 +1,140 @@
+{
+  "summary": {
+    "server": {
+      "status": "ok",
+      "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+      "is_chat_model": true,
+      "dtype": "torch.bfloat16",
+      "device": "cuda:0",
+      "cuda_available": true,
+      "do_sample": false,
+      "quantization": {
+        "method": "int4_wo",
+        "group_size": 128,
+        "targets": [
+          "experts",
+          "linear"
+        ],
+        "experts": 16,
+        "linear": 64,
+        "lm_head": 0,
+        "quantized_params": 6710886400,
+        "load_source": "cache",
+        "load_time_s": 2.1
+      },
+      "weight_memory": {
+        "weights_total_mb": 3797.3,
+        "weights_quantized_layers_mb": 3400.0,
+        "weights_other_mb": 397.3
+      },
+      "load_time_s": 3.0,
+      "engine": {
+        "engine": "custom",
+        "model": "allenai/OLMoE-1B-7B-0125-Instruct",
+        "architecture": "OlmoeForCausalLM",
+        "max_model_len": 4096,
+        "scheduler": "continuous",
+        "kv_cache": "paged",
+        "kv_block_size": 16,
+        "kv_watermark": 0.01,
+        "kv_cache_dtype": "bfloat16",
+        "prefix_caching": false,
+        "kv_capacity_tokens": 65536,
+        "kv_cache_mb": 8192.0,
+        "max_num_seqs": 64,
+        "max_batched_tokens": 4096,
+        "chunked_prefill": false,
+        "moe_kernel": "default",
+        "moe_align": null,
+        "attn_backend": "sdpa",
+        "cuda_graphs": false,
+        "fused_proj": false,
+        "weight_layouts": null
+      }
+    },
+    "test_config": {
+      "url": "http://localhost:8100/generate_stream",
+      "stream": true,
+      "num_requests": 1,
+      "concurrency": 1,
+      "max_new_tokens": 8,
+      "prompt_words": 0,
+      "unique_prompts": false,
+      "long_every": 0,
+      "prompt": "Tell me a short fact about space"
+    },
+    "total_time_s": 0.864,
+    "successful": 1,
+    "failed": 0,
+    "requests_per_s": 1.157,
+    "total_generated_tokens": 8,
+    "overall_tokens_per_s": 9.26,
+    "latency_s": {
+      "avg": 0.864,
+      "p50": 0.864,
+      "p95": 0.864,
+      "p99": 0.864,
+      "max": 0.864
+    },
+    "queue_time_s": {
+      "avg": 0.0,
+      "p50": 0.0,
+      "p95": 0.0,
+      "p99": 0.0,
+      "max": 0.0
+    },
+    "ttft_s": {
+      "avg": 0.618,
+      "p50": 0.618,
+      "p95": 0.618,
+      "p99": 0.618,
+      "max": 0.618
+    },
+    "tpot_ms": {
+      "avg": 35.09,
+      "p50": 35.09,
+      "p95": 35.09,
+      "p99": 35.09,
+      "max": 35.09
+    },
+    "itl_ms": {
+      "avg": 34.906,
+      "p50": 27.96,
+      "p95": 62.463,
+      "p99": 74.245,
+      "max": 77.19
+    },
+    "prefill_time_s": {
+      "avg": 0.61,
+      "p50": 0.61,
+      "p95": 0.61,
+      "p99": 0.61,
+      "max": 0.61
+    }
+  },
+  "requests": [
+    {
+      "id": 0,
+      "sent_at_s": 0.0,
+      "status": 200,
+      "latency_s": 0.864,
+      "output": "A short fact about space:\n\n",
+      "generated_tokens": 8,
+      "queue_time_s": 0.0,
+      "prefill_time_s": 0.61,
+      "decode_time_s": 0.245,
+      "generation_time_s": 0.855,
+      "ttft_s": 0.618,
+      "tpot_ms": 35.09,
+      "itl_ms": [
+        77.19,
+        28.03,
+        27.81,
+        27.96,
+        28.1,
+        27.7,
+        27.55
+      ]
+    }
+  ]
+}

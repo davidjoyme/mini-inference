@@ -1,0 +1,77 @@
+Engine: continuous/paged+paged-attn
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 16 requests to http://localhost:8100/generate_stream (concurrency=4, max_new_tokens=128, prompt_words=1000, stream=True)
+
+[req   3] OK  status=200 latency=0.88s tokens=46 TTFT=0.23s TPOT=14.33ms queue=0.059s
+[req   0] OK  status=200 latency=0.95s tokens=48 TTFT=0.23s TPOT=15.38ms queue=0.059s
+[req   1] OK  status=200 latency=0.95s tokens=49 TTFT=0.07s TPOT=18.48ms queue=0.0s
+[req   2] OK  status=200 latency=0.97s tokens=49 TTFT=0.23s TPOT=15.38ms queue=0.058s
+[req   5] OK  status=200 latency=0.81s tokens=46 TTFT=0.13s TPOT=15.15ms queue=0.01s
+[req   6] OK  status=200 latency=0.81s tokens=46 TTFT=0.13s TPOT=15.16ms queue=0.01s
+[req   4] OK  status=200 latency=0.90s tokens=49 TTFT=0.07s TPOT=17.21ms queue=0.012s
+[req   7] OK  status=200 latency=1.00s tokens=49 TTFT=0.17s TPOT=17.17ms queue=0.108s
+[req   8] OK  status=200 latency=0.90s tokens=49 TTFT=0.13s TPOT=16.15ms queue=0.009s
+[req   9] OK  status=200 latency=0.90s tokens=49 TTFT=0.13s TPOT=16.15ms queue=0.008s
+[req  11] OK  status=200 latency=0.86s tokens=49 TTFT=0.07s TPOT=16.27ms queue=0.009s
+[req  10] OK  status=200 latency=1.14s tokens=55 TTFT=0.17s TPOT=17.83ms queue=0.109s
+[req  13] OK  status=200 latency=0.91s tokens=49 TTFT=0.13s TPOT=16.18ms queue=0.01s
+[req  12] OK  status=200 latency=0.91s tokens=49 TTFT=0.13s TPOT=16.18ms queue=0.012s
+[req  14] OK  status=200 latency=0.80s tokens=49 TTFT=0.07s TPOT=15.09ms queue=0.011s
+[req  15] OK  status=200 latency=0.74s tokens=49 TTFT=0.08s TPOT=13.91ms queue=0.01s
+
+===== Summary =====
+          total_time_s: 3.658
+            successful: 16
+                failed: 0
+        requests_per_s: 4.374
+total_generated_tokens: 780
+  overall_tokens_per_s: 213.21
+             latency_s: {'avg': 0.901, 'p50': 0.902, 'p95': 1.032, 'p99': 1.115, 'max': 1.136}
+          queue_time_s: {'avg': 0.031, 'p50': 0.01, 'p95': 0.108, 'p99': 0.109, 'max': 0.109}
+                ttft_s: {'avg': 0.136, 'p50': 0.127, 'p95': 0.231, 'p99': 0.231, 'max': 0.231}
+               tpot_ms: {'avg': 16.001, 'p50': 16.15, 'p95': 17.992, 'p99': 18.383, 'max': 18.48}
+                itl_ms: {'avg': 15.926, 'p50': 14.07, 'p95': 15.809, 'p99': 62.419, 'max': 163.45}
+        prefill_time_s: {'avg': 0.1, 'p50': 0.112, 'p95': 0.163, 'p99': 0.163, 'max': 0.163}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 17150.2
+          gpu_peak_reserved_mb: 17378.0
+       gpu_peak_device_used_mb: 18093.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 229.2
+   process_peak_rss_mb_sampled: 1726.0
+       process_rss_increase_mb: 3.5
+              gpu_util_pct_avg: 78.0
+              gpu_util_pct_max: 79.0
+       gpu_mem_bw_util_pct_avg: 38.3
+       gpu_mem_bw_util_pct_max: 39.0
+               gpu_power_w_avg: 271.3
+               gpu_power_w_max: 301.3
+           process_cpu_pct_avg: 93.4
+           process_cpu_pct_max: 103.1
+                batch_size_avg: 3.6
+                batch_size_max: 4
+                   running_avg: 3.5
+                   running_max: 4
+                   waiting_avg: 0.2
+                   waiting_max: 2
+               kv_used_pct_avg: 5.8
+               kv_used_pct_max: 6.8
+           kv_reserved_pct_avg: 5.9
+           kv_reserved_pct_max: 6.8
+              kv_waste_pct_avg: 0.7
+              kv_waste_pct_max: 1.2
+      kv_fragmentation_pct_avg: 0.0
+      kv_fragmentation_pct_max: 0.0
+                         steps: 203
+                   preemptions: 0
+                padding_tokens: 0
+                 decode_tokens: 764
+                prefill_tokens: 16998
+                prefill_chunks: 0
+                   mixed_steps: 10
+             padding_waste_pct: 0.0
+               max_step_tokens: 3187
+                       samples: 15
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_192043_C3_ladder_qwen3/runs/continuous-paged+paged-attn_none_u4_out128_in1000.json

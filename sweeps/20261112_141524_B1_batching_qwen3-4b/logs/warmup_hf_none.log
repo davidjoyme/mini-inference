@@ -1,0 +1,21 @@
+Engine: hf
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.57s tokens=8 TTFT=0.51s TPOT=8.52ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.566
+            successful: 1
+                failed: 0
+        requests_per_s: 1.767
+total_generated_tokens: 8
+  overall_tokens_per_s: 14.14
+             latency_s: {'avg': 0.566, 'p50': 0.566, 'p95': 0.566, 'p99': 0.566, 'max': 0.566}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.506, 'p50': 0.506, 'p95': 0.506, 'p99': 0.506, 'max': 0.506}
+               tpot_ms: {'avg': 8.52, 'p50': 8.52, 'p95': 8.52, 'p99': 8.52, 'max': 8.52}
+                itl_ms: {'avg': 11.704, 'p50': 11.62, 'p95': 12.206, 'p99': 12.305, 'max': 12.33}
+        prefill_time_s: {'avg': 0.504, 'p50': 0.504, 'p95': 0.504, 'p99': 0.504, 'max': 0.504}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_141524_B1_batching_qwen3-4b/logs/warmup_hf_none.json

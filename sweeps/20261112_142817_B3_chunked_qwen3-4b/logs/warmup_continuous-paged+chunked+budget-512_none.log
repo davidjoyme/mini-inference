@@ -1,0 +1,21 @@
+Engine: continuous/paged+chunked+budget-512
+Server model: Qwen/Qwen3-4B-Instruct-2507 on cuda:0 (quantization: none, weights: 7672.2 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.55s tokens=8 TTFT=0.41s TPOT=19.73ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.549
+            successful: 1
+                failed: 0
+        requests_per_s: 1.822
+total_generated_tokens: 8
+  overall_tokens_per_s: 14.57
+             latency_s: {'avg': 0.549, 'p50': 0.549, 'p95': 0.549, 'p99': 0.549, 'max': 0.549}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.411, 'p50': 0.411, 'p95': 0.411, 'p99': 0.411, 'max': 0.411}
+               tpot_ms: {'avg': 19.73, 'p50': 19.73, 'p95': 19.73, 'p99': 19.73, 'max': 19.73}
+                itl_ms: {'avg': 19.629, 'p50': 12.54, 'p95': 47.437, 'p99': 59.319, 'max': 62.29}
+        prefill_time_s: {'avg': 0.401, 'p50': 0.401, 'p95': 0.401, 'p99': 0.401, 'max': 0.401}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_142817_B3_chunked_qwen3-4b/logs/warmup_continuous-paged+chunked+budget-512_none.json

@@ -1,0 +1,42 @@
+Engine: hf
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 4 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=128, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.64s tokens=83 TTFT=0.04s TPOT=7.23ms queue=0.0s
+[req   1] OK  status=200 latency=0.70s tokens=92 TTFT=0.04s TPOT=7.27ms queue=0.0s
+[req   2] OK  status=200 latency=0.98s tokens=128 TTFT=0.04s TPOT=7.39ms queue=0.0s
+[req   3] OK  status=200 latency=0.52s tokens=67 TTFT=0.06s TPOT=6.91ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 2.835
+            successful: 4
+                failed: 0
+        requests_per_s: 1.411
+total_generated_tokens: 370
+  overall_tokens_per_s: 130.53
+             latency_s: {'avg': 0.708, 'p50': 0.668, 'p95': 0.936, 'p99': 0.97, 'max': 0.978}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.046, 'p50': 0.041, 'p95': 0.06, 'p99': 0.062, 'max': 0.063}
+               tpot_ms: {'avg': 7.2, 'p50': 7.25, 'p95': 7.372, 'p99': 7.386, 'max': 7.39}
+                itl_ms: {'avg': 8.669, 'p50': 7.27, 'p95': 14.59, 'p99': 22.234, 'max': 28.53}
+        prefill_time_s: {'avg': 0.044, 'p50': 0.039, 'p95': 0.058, 'p99': 0.06, 'max': 0.061}
+
+===== Resources =====
+         gpu_peak_allocated_mb: 13344.4
+          gpu_peak_reserved_mb: 15786.0
+       gpu_peak_device_used_mb: 16501.4
+           gpu_device_total_mb: 32086.6
+     gpu_allocated_increase_mb: 115.1
+   process_peak_rss_mb_sampled: 1842.7
+       process_rss_increase_mb: 10.0
+              gpu_util_pct_avg: 65.7
+              gpu_util_pct_max: 72.0
+       gpu_mem_bw_util_pct_avg: 34.7
+       gpu_mem_bw_util_pct_max: 39.0
+               gpu_power_w_avg: 167.2
+               gpu_power_w_max: 204.4
+           process_cpu_pct_avg: 91.7
+           process_cpu_pct_max: 106.9
+                       samples: 12
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_140548_B1_batching_olmoe/runs/hf_none_u1_out128_in0.json

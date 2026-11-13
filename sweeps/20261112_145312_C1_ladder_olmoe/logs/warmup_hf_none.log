@@ -1,0 +1,21 @@
+Engine: hf
+Server model: allenai/OLMoE-1B-7B-0125-Instruct on cuda:0 (quantization: none, weights: 13197.3 MB)
+Sending 1 requests to http://localhost:8100/generate_stream (concurrency=1, max_new_tokens=8, prompt_words=0, stream=True)
+
+[req   0] OK  status=200 latency=0.60s tokens=8 TTFT=0.55s TPOT=6.41ms queue=0.0s
+
+===== Summary =====
+          total_time_s: 0.596
+            successful: 1
+                failed: 0
+        requests_per_s: 1.677
+total_generated_tokens: 8
+  overall_tokens_per_s: 13.42
+             latency_s: {'avg': 0.596, 'p50': 0.596, 'p95': 0.596, 'p99': 0.596, 'max': 0.596}
+          queue_time_s: {'avg': 0.0, 'p50': 0.0, 'p95': 0.0, 'p99': 0.0, 'max': 0.0}
+                ttft_s: {'avg': 0.551, 'p50': 0.551, 'p95': 0.551, 'p99': 0.551, 'max': 0.551}
+               tpot_ms: {'avg': 6.41, 'p50': 6.41, 'p95': 6.41, 'p99': 6.41, 'max': 6.41}
+                itl_ms: {'avg': 7.34, 'p50': 7.495, 'p95': 12.345, 'p99': 13.557, 'max': 13.86}
+        prefill_time_s: {'avg': 0.549, 'p50': 0.549, 'p95': 0.549, 'p99': 0.549, 'max': 0.549}
+
+Saved full results to /home/dj69594/projects/mini-inference/sweeps/20261112_145312_C1_ladder_olmoe/logs/warmup_hf_none.json
