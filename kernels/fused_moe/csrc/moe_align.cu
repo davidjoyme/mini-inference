@@ -1,21 +1,3 @@
-// kernels/fused_moe/csrc/moe_align.cu - group (token, expert) pairs by expert in ONE CUDA kernel.
-//
-// Replaces the ~35 small PyTorch ops of the Python moe_align (sort, scatter, cumsum, search, ...)
-// with a single launch. Same outputs (see fused_moe_triton.moe_align):
-//   sorted_ids [max_padded]  pair index per row, grouped by expert, each expert's group padded
-//                            to a multiple of block_m with num_pairs (= "no pair")
-//   expert_ids [max_blocks]  the expert that owns each block_m-row tile
-//   num_padded [1]           rows actually used
-// Within one expert the order of pairs may differ from run to run (atomic placement); that's
-// fine, since every row of the matmul is computed independently.
-//
-// One thread block does everything (an MoE layer has few experts, e.g. 64):
-//   1. count pairs per expert          shared-memory atomics
-//   2. padded prefix sum over experts  one thread (num_experts is small)
-//   3. owner expert of every tile      binary search over the offsets
-//   4. place each pair in its group    per-expert atomic cursors
-// It runs on PyTorch's current CUDA stream, with no host synchronization, so it can be
-// captured in a CUDA graph.
 #include <torch/extension.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <c10/cuda/CUDAGuard.h>

@@ -1,19 +1,3 @@
-"""
-engine/metrics.py - resource measurements for the server process and GPU(s).
-
-memory_snapshot() returns (fields are missing/None when not available):
-    process_rss_mb, process_peak_rss_mb   CPU RAM used by the server
-    process_cpu_pct                       server CPU use since the previous snapshot
-                                          (100 = one full core)
-    gpu_allocated_mb, gpu_reserved_mb     PyTorch's view of GPU memory
-    gpu_peak_allocated_mb, ..._reserved   peaks since the last reset
-    gpu_device_used_mb, ..._total_mb      whole-GPU view, like nvidia-smi
-    gpu_util_pct                          % of time the GPU was running kernels    (needs NVML)
-    gpu_mem_bw_util_pct                   % of time GPU memory was being read/written (needs NVML)
-    gpu_power_w                           power draw in watts                      (needs NVML)
-
-NVML comes from the `nvidia-ml-py` package:  pip install nvidia-ml-py
-"""
 import os
 import threading
 import time

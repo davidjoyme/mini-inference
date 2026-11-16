@@ -1,14 +1,3 @@
-#!/usr/bin/env bash
-# Profile a few configurations, each chosen to expose a different bottleneck, then print a
-# side-by-side summary. Run from the project root (don't run main.py at the same time):
-#     bash profiling/scripts/profile_suite.sh
-#     bash profiling/scripts/profile_suite.sh custom_bs1 custom_bs64     # only some of them
-#
-# Each run loads the model, does a warmup request (not profiled), profiles the measured
-# requests, and writes into profiles/suite_<time>/<name>/:
-#     *.json              the trace (open at https://ui.perfetto.dev)
-#     *.report.json       the bottleneck report (also printed)
-#     result.json         latency / throughput numbers from bench/run_engine.py
 set -e
 OUT="profiles/suite_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$OUT"

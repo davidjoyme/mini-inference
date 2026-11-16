@@ -1,34 +1,11 @@
-"""
-bench/micro/bench_attention.py - decode attention for one layer: gather + SDPA vs the paged Triton kernel.
-
-Uses OLMoE's attention shape by default (16 query heads, 16 kv heads, head size 128), or another
-model's with --model (e.g. qwen3-4b: 32 query heads sharing 8 kv heads), and the engine's own
-KVCache, with pages handed out in shuffled order like a busy server's pool. For each batch size
-and context length:
-    sdpa ms       what ATTN_BACKEND=sdpa does: gather every request's keys/values into a padded
-                  copy (dequantizing 8-bit caches), then PyTorch SDPA with a mask
-    triton ms     ATTN_BACKEND=triton: kernels/paged_attention reads the cache in place
-    kernels       GPU kernels per call for each
-    copy MB       the temporary gathered copy the sdpa path writes and reads back
-    GB/s, % peak  cache bytes the kernel must read / its time (decode attention is memory-bound,
-                  so this is the number that matters), vs the GPU's peak bandwidth
-
-Run from the project root on the GPU:
-    python bench/micro/bench_attention.py
-    python bench/micro/bench_attention.py --kv-dtype fp8 --ragged --out results/micro_attn_fp8.json
-    python bench/micro/bench_attention.py --model qwen3-4b --out results/micro_attn_qwen3.json
-"""
 import argparse
 import json
 import os
 import sys
 import time
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-
 import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
-
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402

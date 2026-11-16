@@ -1,19 +1,3 @@
-"""
-main.py - the HTTP server. A thin layer: turns HTTP requests into engine calls.
-
-Run from the project root with:
-    python main.py                                              # settings from config.py
-    ENGINE=custom SCHEDULER=continuous KV_CACHE=paged python main.py
-    ENGINE=custom SCHEDULER=static KV_CACHE=contiguous QUANT=int4_wo python main.py
-
-Endpoints:
-    GET  /health                 server status, model, quantization and engine features
-    POST /generate               whole reply at once
-    POST /generate_stream        reply streamed as Server-Sent Events (for TTFT/TPOT)
-    GET  /metrics/memory         memory, GPU utilization and engine state (batch, KV cache)
-    POST /metrics/memory/reset   reset GPU peak-memory counters
-    GET  /metrics/engine         engine state only (scheduler and KV cache counters)
-"""
 import json
 import uvicorn
 from fastapi import FastAPI, HTTPException

@@ -1,11 +1,3 @@
-"""
-engine/factory.py - build the engine selected in config.py (ENGINE, or the ENGINE env variable).
-
-    "hf"      engine.hf_engine.HFEngine          transformers pipeline, one request at a time
-    "custom"  engine.custom_engine.CustomEngine  own scheduler / KV cache / attention (engine/core/)
-
-Both implement engine.base.Engine, so callers never need to know which one they got.
-"""
 import config
 
 

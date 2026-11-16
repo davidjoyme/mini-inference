@@ -1,27 +1,3 @@
-"""
-bench/eval_quality.py - how much does quantization change the model's outputs?
-
-Two measurements:
-  1. Perplexity on a piece of text (lower = the model predicts the text better).
-     Compare across quantizations: a small rise is normal, a big jump means trouble.
-  2. Greedy agreement with a reference run: the same prompts are answered with greedy
-     decoding, and the answers are compared token by token with a saved bf16 run.
-
-Run from the project root:
-    # 1) reference run in bf16 (do this once)
-    python bench/eval_quality.py --quant none --out quality_none.json
-
-    # 2) each quantization, compared against the reference
-    python bench/eval_quality.py --quant int8_wo --reference quality_none.json --out quality_int8.json
-    python bench/eval_quality.py --quant int4_wo --reference quality_none.json --out quality_int4.json
-    python bench/eval_quality.py --quant fp8     --reference quality_none.json --out quality_fp8.json
-
-    # KV cache quantization (custom engine): reference with a bf16 cache, then fp8 / int8
-    python bench/eval_quality.py --engine custom --out quality_kv_auto.json
-    python bench/eval_quality.py --engine custom --kv-dtype fp8 --reference quality_kv_auto.json --out quality_kv_fp8.json
-
-Use --text-file to measure perplexity on your own text (more text = more reliable numbers).
-"""
 import argparse
 import json
 import math

@@ -1,38 +1,3 @@
-"""
-engine/core/kv_cache.py - the KV cache: one memory pool, two ways of handing it out,
-optional quantized storage, optional prefix caching.
-
-Storage (shared by both modes):
-    k, v: [num_layers, capacity_tokens, num_kv_heads, head_dim]
-Every token of every request lives in one "slot" (a row of that pool). The attention code
-only ever sees slot numbers, so it's identical for both modes. The difference is how slots
-are assigned:
-
-ContiguousAllocator ("contiguous") - the pre-vLLM way
-    On admission a request reserves ONE contiguous range big enough for
-    prompt + max_new_tokens, whether or not it ends up using it.
-    Costs: reserved-but-unused memory (internal waste), and free space that's split into
-    gaps too small for the next request (external fragmentation).
-
-PagedAllocator ("paged") - the PagedAttention way
-    Memory is split into fixed-size blocks (e.g. 16 tokens). A request gets a block table
-    and receives a new block only when its last one is full. Waste is at most one partly
-    filled block per request, and any free block can be used by anyone.
-    If blocks run out mid-generation, the scheduler preempts a request (frees its blocks,
-    recomputes it later).
-
-Prefix caching (paged only, PREFIX_CACHING=1) - like vLLM's automatic prefix caching
-    Every FULL block gets a hash of its tokens chained with the hash of the block before it,
-    so a hash identifies the whole prefix up to that block. When a request is admitted, its
-    leading blocks are looked up; matching blocks are shared (reference counted) instead of
-    recomputed, so the prefill skips those tokens. Finished requests' blocks are not erased:
-    they stay cached and are evicted least-recently-used first, only when memory is needed.
-
-KV quantization (KV_CACHE_DTYPE = "fp8" or "int8")
-    Values are stored in 8 bits with one scale per (token, head), computed when the token is
-    written: scale = max|x| / QMAX over the head's values. Attention reads them back
-    dequantized to the model's dtype. About half the memory of bf16, so ~2x the tokens.
-"""
 import math
 from collections import OrderedDict, deque
 import torch

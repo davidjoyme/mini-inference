@@ -1,22 +1,3 @@
-"""
-bench/test.py - server load test: send many requests to the server at the same time.
-
-Defaults come from config.py; any of them can be overridden on the command line:
-    python bench/test.py                          # use the settings in config.py
-    python bench/test.py -n 1 -c 1                # single request (baseline)
-    python bench/test.py -n 10 -c 10              # 10 requests, all at once
-    python bench/test.py --no-stream              # use /generate (no TTFT/TPOT)
-    python bench/test.py --out results_c8.json    # save to a different file
-    python bench/test.py --prompt-words 1000      # long prompts sharing ~1000 words of text
-    python bench/test.py --prompt-words 1000 --unique-prompts   # same length, nothing shared
-    python bench/test.py --prompt-words 2000 --long-every 4 --unique-prompts
-                                                  # mixed: every 4th request has a long prompt
-
-Streaming mode (default) measures:
-    TTFT - time to first token (includes queue time + prefill)
-    TPOT - time per output token after the first one
-    ITL  - gap between consecutive streamed chunks
-"""
 import argparse
 import asyncio
 import json
@@ -24,7 +5,6 @@ import time
 import httpx
 import os
 import sys
-# Make the project root importable when run as `python bench/test.py`
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config  # noqa: E402
 from bench.prompts import build_prompt as _build_prompt  # noqa: E402

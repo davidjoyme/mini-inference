@@ -1,32 +1,3 @@
-"""
-engine/models.py - which model architectures the custom engine runs, and how they differ.
-
-Like vLLM's and SGLang's model registries, but small: the custom engine reuses each transformers
-model's own modules and weights (projections, norms, rotary embeddings, MLP / MoE blocks) and only
-replaces attention and the KV cache. So any decoder that follows the common "pre-norm Llama"
-layout works, as long as we know how it prepares queries and keys:
-
-    x = x + attention(input_layernorm(x))          rotary positions, optional q/k norms
-    x = x + mlp(post_attention_layernorm(x))       dense MLP or a Mixture-of-Experts block
-
-What differs between architectures, and is detected here from the loaded model:
-    qk_norm   "none"      Llama, Mistral, Qwen2
-              "per_head"  Qwen3, Qwen3-MoE: RMSNorm over each head's head_dim, after the reshape
-              "full"      OLMoE: RMSNorm over the whole q/k projection, before the reshape
-    moe       True when the MLP is a Mixture-of-Experts block (OLMoE, Qwen3-MoE); the fused MoE
-              kernels and expert quantization then apply
-    GQA, head_dim != hidden/heads, q/k/v biases (Qwen2), clip_qkv (OLMoE), rope scaling (Llama 3):
-              handled generically (the paged kernel supports GQA; the projections carry their biases;
-              rotary embeddings come from the model's own module)
-
-Not supported (rejected at startup with a clear message): sliding-window attention (Mistral v0.1,
-Gemma, Qwen with use_sliding_window) and architectures with a different layer layout (OLMo 2
-normalizes after attention, Gemma adds extra norms, DeepSeek uses MLA).
-
-Short names usable as MODEL=... are in config.MODELS.
-"""
-
-# architecture -> what we've tested it with (tests/test_models.py builds a tiny version of each)
 SUPPORTED = {
     "OlmoeForCausalLM": "OLMoE (MoE, q/k norm over the full projection)",
     "Qwen3ForCausalLM": "Qwen3 dense (GQA, per-head q/k norm)",

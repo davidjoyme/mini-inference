@@ -1,10 +1,3 @@
-"""
-engine/hf_engine.py - the baseline engine: the transformers pipeline, one request at a time.
-
-Requests take turns behind a lock, and generation is transformers' own generate() - an
-independent reference that the custom engine (engine/custom_engine.py) is benchmarked and
-correctness-tested against. Implements the interface in engine/base.py.
-"""
 import threading
 import time
 import torch

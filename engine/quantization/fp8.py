@@ -1,16 +1,3 @@
-"""
-engine/quantization/fp8.py - FP8 weights and activations (W8A8, e4m3).
-
-Weights: one scale per output channel, computed once at load time.
-Activations: one scale per token, computed on the fly every forward pass ("dynamic").
-    scale = max(|row|) / 448          (448 is the largest e4m3 value)
-    w_fp8 = (w / scale) cast to float8_e4m3fn
-
-On GPUs with FP8 tensor cores (compute capability 8.9+: Ada, Hopper, Blackwell) the
-matmul runs natively with torch._scaled_mm. On other hardware it's emulated: values
-are rounded to FP8 exactly as on real hardware, but the matmul runs in bf16. The
-accuracy is the same either way; only the real path is faster.
-"""
 import torch
 from engine.quantization.base import QuantMethod
 

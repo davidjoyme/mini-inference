@@ -1,13 +1,3 @@
-"""
-tests/test_fused_moe.py - the fused MoE Triton kernels against plain PyTorch.
-
-On a machine without a GPU this runs the kernels through Triton's interpreter (TRITON_INTERPRET=1,
-numpy on the CPU) in float32: slow, but it checks the indexing and math exactly. With a GPU it
-runs the real kernels in bfloat16 with bf16-sized tolerances, including OLMoE's real shapes.
-
-Run from the project root:
-    python tests/test_fused_moe.py
-"""
 import os
 import sys
 import torch

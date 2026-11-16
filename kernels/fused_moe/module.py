@@ -1,15 +1,3 @@
-"""
-kernels/fused_moe/module.py - put the fused MoE kernels into a loaded model.
-
-FusedExperts replaces transformers' experts module (called as experts(hidden, top_k_index,
-top_k_weights) after the router has picked each token's experts). It shares the original weight
-tensors - nothing is copied - so memory use doesn't change. The router and everything else in
-the model stay exactly as they were, which is why both engines (hf and custom) can use it.
-
-Only applied where the kernels match the math: unquantized experts in OLMoE's layout
-(gate_up_proj [E, 2I, H], down_proj [E, H, I]) with a SiLU activation. Quantized experts
-(QuantExperts) keep their own path.
-"""
 import os
 import torch
 from torch import nn

@@ -1,11 +1,3 @@
-"""
-tests/test_chunked_prefill.py - chunked prefill must split long prompts across steps, keep every
-step within the token budget, keep decoding requests running in the same steps, and still give
-exactly the same tokens as transformers' model.generate().
-
-Run from the project root:
-    python tests/test_chunked_prefill.py
-"""
 import os
 import sys
 import tempfile

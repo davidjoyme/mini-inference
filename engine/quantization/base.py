@@ -1,18 +1,4 @@
-"""
-engine/quantization/base.py - the interface every quantization method implements.
-
-A method knows how to:
-  quantize(w)          turn a float weight [..., out, in] into a dict of tensors
-                       (e.g. {"qweight": int8, "scale": bf16}). Leading dims (like the
-                       expert dimension of OLMoE's fused experts) are kept as they are.
-  linear(x, **q)       compute x @ W.T using those tensors (the hot path at inference)
-  dequantize(**q)      rebuild an approximate float weight (for tests and debugging)
-
-`linear` is the reference implementation in plain PyTorch. This is the function a
-custom (e.g. Triton) kernel replaces later: same inputs, same outputs, faster.
-"""
 import torch
-
 
 class QuantMethod:
     name = "base"

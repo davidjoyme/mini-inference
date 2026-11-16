@@ -1,18 +1,3 @@
-"""
-engine/quantization/int4_wo.py - INT4 group-wise weight-only quantization (W4A16).
-
-Each row is split into groups of `group_size` values; each group gets its own
-scale and minimum (asymmetric, round-to-nearest):
-    scale = (max - min) / 15
-    q     = round((w - min) / scale)   in [0, 15]
-    w    ~= q * scale + min
-Two 4-bit values are packed into one uint8 byte (low nibble = even column,
-high nibble = odd column), so storage is 0.5 bytes per weight plus the group
-scales/minimums (~0.03 bytes per weight at group size 128).
-
-This is plain round-to-nearest; calibration methods like AWQ/GPTQ produce the same
-storage format with smarter rounding, and can be added as another method later.
-"""
 import torch
 from engine.quantization.base import QuantMethod
 

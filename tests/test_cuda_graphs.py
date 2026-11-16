@@ -1,18 +1,6 @@
-"""
-tests/test_cuda_graphs.py - decode steps replayed as CUDA graphs must give exactly the same tokens.
-
-Without a GPU, DecodeGraphs runs in emulation: the same fixed buffers, batch buckets, padding rows
-and scratch block, without recording a graph (Triton kernels in the interpreter). That checks all of
-the bookkeeping exactly against model.generate(). With a GPU, graphs are really captured and
-replayed, and outputs must match the same engine without graphs.
-
-Run from the project root:
-    python tests/test_cuda_graphs.py
-"""
 import os
 import sys
 import torch
-
 if not torch.cuda.is_available():
     os.environ["TRITON_INTERPRET"] = "1"        # must be set before triton is imported
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

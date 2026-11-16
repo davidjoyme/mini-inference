@@ -1,12 +1,3 @@
-"""
-engine/quantization/int8_wo.py - INT8 weight-only quantization (W8A16).
-
-Each output channel (row of the weight) gets one scale:
-    scale = max(|row|) / 127
-    q     = round(w / scale)           stored as int8 in [-127, 127]
-    w    ~= q * scale
-Activations stay in bfloat16. Memory: 1 byte per weight + a tiny scale per row.
-"""
 import torch
 from engine.quantization.base import QuantMethod
 

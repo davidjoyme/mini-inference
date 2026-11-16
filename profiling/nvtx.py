@@ -1,15 +1,3 @@
-"""
-profiling/nvtx.py - label code regions so they show up in profiler timelines.
-
-    with nvtx_range("decode"):
-        ...
-
-The same label goes to both profilers:
-  - Nsight Systems (NVTX ranges), when NVTX is enabled in config (set NVTX=1)
-  - the PyTorch profiler (record_function), while profiling/torch_profiler.py is recording;
-    profiling/analyze.py uses these labels to split time into attention, MoE, scheduling, ...
-Costs nothing when neither is on.
-"""
 import contextlib
 import torch
 import config

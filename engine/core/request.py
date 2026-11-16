@@ -1,12 +1,3 @@
-"""
-engine/core/request.py - one request's state as it moves through the engine.
-
-Life cycle:
-    WAITING  -> in the queue, no KV cache yet
-    RUNNING  -> admitted: has KV cache, gets one forward pass per engine step
-    FINISHED -> done; the result is delivered and its KV cache is freed
-(A preempted request goes back from RUNNING to WAITING and is recomputed later.)
-"""
 import itertools
 import queue
 import time

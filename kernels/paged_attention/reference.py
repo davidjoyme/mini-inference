@@ -1,6 +1,4 @@
-"""kernels/paged_attention/reference.py - decode attention over a paged cache in plain PyTorch (ground truth)."""
 import torch
-
 
 def _rows(t, slots):
     """t[slots], also for FP8 tensors (indexed as raw bytes)."""

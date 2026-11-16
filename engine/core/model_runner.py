@@ -1,23 +1,3 @@
-"""
-engine/core/model_runner.py - one forward pass over a whole batch of requests.
-
-The batch is "flat" (no padding): the new tokens of every scheduled request are joined
-into one sequence of T tokens, each with its own position. Layers that work token by token
-(norms, projections, the MoE experts) process all T tokens together - that's where batching
-pays off, since the weights are read once per step for everyone. Only attention has to keep
-requests apart; it reads each request's keys/values from the KV cache through slot numbers:
-
-    prefill chunk (a new or recomputed prompt): causal attention over its own tokens
-    decode tokens (1 new token per request): batched into ONE attention call, each request
-    attending to its own cached context. Two backends (ATTN_BACKEND):
-        sdpa    gather every request's keys/values into a padded copy, then PyTorch SDPA with a mask
-        triton  kernels/paged_attention: reads keys/values in place through the page tables
-
-This file reuses the transformers model's modules and weights (so quantized layers work
-as-is) but replaces its attention and cache handling. It runs any architecture listed in
-engine/models.py (OLMoE, Qwen3, Qwen3-MoE, Qwen2, Llama, Mistral): the differences between them
-(how q/k are normalized, dense MLP vs MoE) are detected there when the model loads.
-"""
 import torch
 import torch.nn.functional as F
 from profiling.nvtx import nvtx_range

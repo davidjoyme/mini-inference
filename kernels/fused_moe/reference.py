@@ -1,13 +1,3 @@
-"""
-kernels/fused_moe/reference.py - the MoE experts computation in plain PyTorch, one expert at a
-time. Slow, but obviously correct: tests compare the Triton kernels against it.
-
-Weights use transformers' OLMoE layout:
-    w_gate_up [E, 2*I, H]   first I output rows = gate, next I = up
-    w_down    [E, H, I]
-For each token and each of its top-k experts e (routing weight w):
-    out += w * W_down[e] @ (silu(W_gate[e] @ x) * (W_up[e] @ x))
-"""
 import torch
 import torch.nn.functional as F
 

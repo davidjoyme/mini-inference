@@ -1,9 +1,3 @@
-#!/usr/bin/env bash
-# Nsight Compute: detailed analysis of individual kernels. Slow, so keep runs tiny
-# and limit which kernels are captured. Run from the project root:
-#     bash profiling/scripts/ncu.sh                     # first 20 kernels after warmup
-#     KERNEL=gemm bash profiling/scripts/ncu.sh         # only kernels whose name contains "gemm"
-# Open the resulting .ncu-rep file in the Nsight Compute GUI.
 set -e
 mkdir -p profiles
 FILTER=()

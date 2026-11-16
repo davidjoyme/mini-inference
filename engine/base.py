@@ -1,26 +1,3 @@
-"""
-engine/base.py - the interface every engine implements.
-
-The server (main.py) and every benchmark only ever talk to this interface, through
-engine.factory.create_engine(). Which implementation runs is a startup choice (ENGINE=...),
-the same way vLLM or SGLang put interchangeable backends behind one engine API:
-
-    HFEngine      engine/hf_engine.py       baseline: transformers pipeline, one request at a time
-    CustomEngine  engine/custom_engine.py   scheduler + KV cache + model runner (engine/core/)
-
-Methods to implement:
-    generate(prompt, max_new_tokens, temperature) -> dict
-        the whole reply: {"output", "generated_tokens", "queue_time_s", "generation_time_s", ...}
-    stream(prompt, max_new_tokens, temperature) -> iterator of dicts
-        {"text": "..."} for each piece of the reply, then one {"done": True, ...metrics}
-    generate_timed(prompt, max_new_tokens, temperature) -> dict
-        exact per-token timings: {"ttft_s", "tpot_ms", "itl_ms": [...], "latency_s", ...}
-    engine_config() -> dict
-        the features this engine runs with, e.g. {"engine": "custom", "scheduler": ...}
-Optional:
-    stats() -> dict          live counters (batch size, KV usage, preemptions, ...)
-    score(token_ids)         logits for every position (perplexity through the engine's own cache)
-"""
 from abc import ABC, abstractmethod
 import torch
 import config

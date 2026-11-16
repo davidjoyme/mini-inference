@@ -1,11 +1,4 @@
-"""
-engine/core/sampler.py - turn each request's logits into its next token.
-
-Greedy (temperature 0) takes the most likely token; otherwise the next token is drawn from
-softmax(logits / temperature). Rows are handled together, so one batch can mix both.
-"""
 import torch
-
 
 def sample(logits, temperatures):
     """logits [batch, vocab]; temperatures: one float per row -> token ids [batch]"""

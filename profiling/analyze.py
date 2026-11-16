@@ -1,22 +1,3 @@
-"""
-profiling/analyze.py - turn a PyTorch profiler trace into a bottleneck report.
-
-bench/run_engine.py --profile torch runs this automatically. It can also be run by hand:
-    python -m profiling.analyze profiles/run_engine_20261025_193501.json
-    python -m profiling.analyze --summary profiles/suite_*/report.json     # compare configurations
-
-What it reports (custom engine; the hf engine only gets the GPU and kernel parts):
-  Engine loop   where the engine thread's wall time goes: scheduling, building the batch
-                (Python), launching the forward pass, waiting for the GPU, delivering tokens.
-                Long "wait for GPU" = the GPU is the bottleneck. Long Python phases with little
-                waiting = the CPU side is the bottleneck.
-  GPU           how much of the time the GPU was actually running kernels (busy %), and how
-                kernel time splits between attention, MoE and the rest of the layers, and
-                between kinds of kernels (matmuls, attention kernels, gathers/copies, ...)
-  Decode steps  time per step by batch size, tokens/s, and an estimate of the memory
-                bandwidth achieved versus the GPU's peak (decode is usually bandwidth-bound)
-  Hints         rule-of-thumb readings of the numbers above, pointing at what to optimize
-"""
 import argparse
 import glob
 import json

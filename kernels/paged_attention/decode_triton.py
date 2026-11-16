@@ -1,35 +1,3 @@
-"""
-kernels/paged_attention/decode_triton.py - paged decode attention in Triton (split-KV, flash-decoding style).
-
-Decode = one new query token per request, attending to that request's whole cached context.
-The engine's default path first GATHERS every request's keys/values into a padded [B, max_len]
-copy, then runs SDPA on the copy: the KV cache is read once, written once (the copy), read again,
-and padding is computed and thrown away. This kernel reads keys/values IN PLACE from the cache
-through each request's page table, so each cached byte is read exactly once.
-
-    page table   block_table[b, i] = the page (cache block) holding tokens i*PAGE .. i*PAGE+PAGE-1
-                 of request b; slot of token n = block_table[b, n // PAGE] * PAGE + n % PAGE
-                 (the paged cache uses PAGE = KV_BLOCK_SIZE; the contiguous cache passes a
-                 token-level table with PAGE = 1, the layout SGLang uses for everything)
-
-    split-KV     one program per (request, query head, context split). With few requests a single
-                 program per (request, head) would leave most of the GPU idle (1 x 16 heads = 16
-                 programs on a 170-SM GPU), so each request's context is cut into num_splits pieces
-                 that run in parallel, each producing a partial output and its log-sum-exp; a second
-                 small kernel merges them (the flash-decoding trick). Splits are chosen to fill the GPU.
-
-    online softmax   each program walks its keys in BLOCK_N tiles, keeping a running max m,
-                 running sum l and running output acc, rescaled whenever the max grows: no
-                 [heads, context] score matrix is ever materialized.
-
-    8-bit KV     FP8/INT8 caches (KV_CACHE_DTYPE) are dequantized in registers with their
-                 per-(token, head) scales, so attention reads half the bytes of bf16.
-
-    GQA          query head h reads kv head h // GROUP (OLMoE has no GQA: GROUP = 1).
-
-Decode is memory-bound (a few FLOPs per byte), so the dot products use plain multiply-and-sum
-instead of tensor cores; what matters is reading the cache once, fully coalesced.
-"""
 import torch
 import triton
 import triton.language as tl

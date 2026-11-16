@@ -1,22 +1,3 @@
-"""
-engine/core/fused_linear.py - fused projections and per-weight layout autotuning (FUSED_PROJ=1).
-
-Round 3b. bench/micro/bench_gemm.py showed that in decode (1-64 rows per step) cuBLAS reads the
-same weights at very different speeds depending on the matmul's shape and the weight's layout:
-    - narrow matmuls waste the GPU: Qwen3-4B's k_proj/v_proj (2560 -> 1024) ran at ~17% of peak
-      bandwidth at 16 rows, while one fused q+k+v matmul ran at ~70%
-    - the kernel cuBLAS picks depends on the layout: the fused gate+up matmul at 64 rows ran at
-      37% of peak with the weight stored [out, in] and 87% stored [in, out]
-So, like vLLM's QKVParallelLinear / MergedColumnParallelLinear, this:
-    1. fuses q/k/v into one weight and (dense MLPs) gate/up into one, at load time. The original
-       modules' weights become views into the fused tensor, so memory doesn't grow.
-    2. times each distinct weight shape in both layouts at a few decode batch sizes when the
-       engine starts, and keeps the faster one per weight (WEIGHT_LAYOUT=auto). The choice depends
-       on the GPU and cuBLAS version, which is why it's measured rather than hard-coded.
-Quantized layers (QuantLinear) and the experts of MoE models are left alone (the fused MoE kernel
-handles experts). A tied output layer (Qwen3-4B's lm_head IS its embedding matrix) keeps its
-layout, since transposing it would need a second 0.8 GB copy.
-"""
 import json
 import math
 import os

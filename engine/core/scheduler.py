@@ -1,28 +1,3 @@
-"""
-engine/core/scheduler.py - decides which requests run in each engine step.
-
-Every step is one forward pass. schedule() returns the "chunks" for that pass:
-(request, start, end) = feed this request's tokens at positions start..end-1.
-
-Policies:
-  sequential  one request at a time (continuous logic with a batch size of 1)
-  static      form a batch (wait up to STATIC_BATCH_WAIT_S to fill it), reserve worst-case
-              KV cache for every row (like a padded [batch, max_len] tensor), and run until
-              EVERY request in it is finished. Finished requests keep computing as padding;
-              newcomers wait for the whole batch.
-  continuous  every step: make room for running requests' next token (preempting the newest
-              if the paged cache is full), then admit waiting requests while there is room
-              in the batch, the per-step token budget and the KV cache.
-
-Chunked prefill (CHUNKED_PREFILL=1; sequential and continuous):
-  Without it, a new prompt is processed whole in one step: a long prompt makes that step long,
-  so everyone who is generating stalls (an inter-token latency spike), and a prompt bigger than
-  the per-step budget waits until nothing else is running.
-  With it, each step's MAX_BATCHED_TOKENS budget goes first to decoding requests (1 token each),
-  then to unfinished prefills, then to new prompts - each prompt only as large a slice as fits.
-  Long prompts are spread over several steps and decoding never stops. A request produces its
-  first token only once its last prompt slice has been processed.
-"""
 from collections import deque
 from engine.core.request import RUNNING, WAITING
 

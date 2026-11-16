@@ -1,17 +1,3 @@
-"""
-engine/quantization/loader.py - load a model with quantized weights.
-
-First start with a given setting ("fresh"):
-    1. load the bf16 model into CPU RAM
-    2. for each decoder layer: move it to the GPU, quantize its weights there,
-       drop the bf16 copy (so the GPU never has to hold the full bf16 model)
-    3. move the rest (embeddings, final norm, lm_head) to the GPU
-    4. save the quantized weights to QUANT_CACHE_DIR
-
-Later starts with the same setting ("cache"):
-    1. build an empty model skeleton (no memory used) with quantized layers in place
-    2. load the saved quantized weights straight onto the GPU
-"""
 import ctypes
 import gc
 import json

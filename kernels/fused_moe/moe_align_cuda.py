@@ -1,14 +1,3 @@
-"""
-kernels/fused_moe/moe_align_cuda.py - load and call the CUDA C++ moe_align kernel (csrc/moe_align.cu).
-
-The extension is compiled the first time it's needed with PyTorch's JIT extension loader
-(needs nvcc and ninja; takes about a minute once, then it's cached in ~/.cache/torch_extensions).
-If compiling fails, available() returns False and fused_moe falls back to the PyTorch moe_align.
-
-    from kernels.fused_moe.moe_align_cuda import available, moe_align_cuda
-    if available():
-        sorted_ids, expert_ids, num_padded = moe_align_cuda(topk_ids, num_experts, block_m)
-"""
 import os
 import torch
 

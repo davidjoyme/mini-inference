@@ -1,26 +1,3 @@
-"""
-bench/run_engine.py - run the engine directly (no server, no HTTP).
-
-This is the script to profile: fewer moving parts, cleaner traces. With -c it also works as
-an offline throughput benchmark: C requests are in flight at once, so the custom engine can
-batch them.
-
-Run from the project root:
-    python bench/run_engine.py                              # quick timing run (engine from config.py)
-    python bench/run_engine.py -n 5 --max-new-tokens 50
-    python bench/run_engine.py --quant int4_wo              # INT4 weights
-    python bench/run_engine.py --engine custom --scheduler continuous --kv-cache paged -n 32 -c 16
-    python bench/run_engine.py --engine custom --scheduler static -n 32 -c 16
-    python bench/run_engine.py --engine custom -n 32 -c 16 --prompt-words 1000 --prefix-caching on
-    python bench/run_engine.py --engine custom -n 32 -c 16 --kv-dtype fp8
-    python bench/run_engine.py --engine custom -n 32 -c 16 --kv-tokens 65536      # fixed KV pool (shared GPU)
-    python bench/run_engine.py --engine custom -n 32 -c 16 --prompt-words 2000 --long-every 4 \
-        --unique-prompts --chunked-prefill on --max-batched-tokens 512
-    python bench/run_engine.py --engine custom -n 64 -c 64 --moe-kernel triton   # fused MoE kernels
-    python bench/run_engine.py --engine custom -n 16 -c 16 --prompt-words 2000 --attn-backend triton  # paged attention
-    python bench/run_engine.py --profile torch              # PyTorch profiler trace
-    bash profiling/scripts/nsys.sh                          # Nsight Systems timeline
-"""
 import argparse
 import contextlib
 import json

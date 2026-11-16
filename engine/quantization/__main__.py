@@ -1,15 +1,3 @@
-"""
-Offline quantization: build the quantized checkpoint ahead of time, without starting the server.
-
-Run from the project root:
-    python -m engine.quantization --method int8_wo
-    python -m engine.quantization --method int4_wo --group-size 64
-    python -m engine.quantization --method fp8 --targets experts
-    python -m engine.quantization --list
-
-Afterwards, start the server with the same settings (e.g. QUANT=int4_wo python main.py)
-and it loads straight from the saved file.
-"""
 import argparse
 import glob
 import os

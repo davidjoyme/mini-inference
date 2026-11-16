@@ -1,18 +1,3 @@
-"""
-engine/custom_engine.py - the custom engine: scheduler + KV cache + model runner (like vLLM's LLMEngine).
-
-A background thread runs the engine loop:
-    1. scheduler.schedule()   pick this step's batch (admit / preempt as needed)
-    2. runner.forward()       one forward pass for every request in the batch
-    3. sample                 one new token per request
-    4. deliver                push tokens to each request's outbox; finish completed requests
-
-Callers (HTTP handlers, benchmarks) never touch the model: they submit a request and read
-tokens from its outbox. Implements the interface in engine/base.py, so main.py and every
-benchmark work with this engine or the baseline (engine/hf_engine.py).
-
-The building blocks live in engine/core/: scheduler, KV cache, model runner, sampler, request.
-"""
 import os
 import queue
 import threading

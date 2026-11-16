@@ -1,17 +1,3 @@
-"""
-bench/compare.py - put results from several runs side by side.
-
-Understands the JSON files written by:
-    bench/run_engine.py --out ...     (single-request speed, memory)
-    bench/test.py --out ...           (server under load)
-    bench/eval_quality.py --out ...   (perplexity, agreement with bf16)
-
-Run from the project root:
-    python bench/compare.py engine_*.json
-    python bench/compare.py load_*.json
-    python bench/compare.py quality_*.json
-    python bench/compare.py results/*.json --csv summary.csv
-"""
 import argparse
 import csv
 import glob

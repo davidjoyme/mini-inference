@@ -1,12 +1,3 @@
-"""
-tests/test_batching.py - the custom engine must give exactly the same tokens as
-transformers' model.generate(), whatever the scheduler or KV cache mode, even when many
-requests share a batch and the paged cache is so small that requests get preempted.
-
-Uses a tiny randomly initialized OLMoE in float32 (exact comparisons), on CPU, no downloads.
-Run from the project root:
-    python tests/test_batching.py
-"""
 import os
 import sys
 import tempfile

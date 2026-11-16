@@ -1,27 +1,3 @@
-"""
-bench/micro/bench_gemm.py - the model's matmuls at decode batch sizes: how close to peak bandwidth?
-
-In decode, every linear layer multiplies a few rows (one per request) by a big weight matrix, so
-its cost should be reading the weights once: time ~ weight bytes / memory bandwidth, nearly the
-same for 1 row or 16. This measures each projection of a model (default Qwen3-4B) with PyTorch's
-F.linear (cuBLAS), at 1/4/16/64 rows:
-
-    ms, GB/s, % peak    per shape; bytes = weights + inputs + outputs
-    kernel              the GPU kernel cuBLAS picked (tensor-core "cutlass"/"sm90"/... or "gemv")
-    fused               q+k+v as one matmul and gate+up as one (what vLLM does): fewer, wider matmuls
-    W^T                 the same matmul with the weight stored transposed ([in, out] instead of
-                        [out, in]): a different memory layout can make cuBLAS choose another kernel
-
-and adds up one decode step's matmuls (all layers + the output layer) for separate vs fused,
-against the time reading those weights at peak bandwidth would take.
-
-Weights are rotated through several copies totalling >= 256 MB, so each call reads from GPU memory
-rather than the 96 MB L2 cache (which would make the numbers look better than in the real model).
-
-Run from the project root on the GPU:
-    python bench/micro/bench_gemm.py                                # Qwen3-4B
-    python bench/micro/bench_gemm.py --model olmoe --out results/micro_gemm_olmoe.json
-"""
 import argparse
 import json
 import math

@@ -1,23 +1,3 @@
-"""
-kernels/fused_moe/fused_moe_triton.py - a Mixture-of-Experts layer in two Triton kernels.
-
-Why: transformers' MoE path on this GPU runs one small matmul per expert, so every layer
-launches dozens of tiny kernels and the step is limited by launch overhead, not by the GPU.
-Here every expert of a layer is handled by ONE launch per projection.
-
-How (the same idea as vLLM's fused_moe):
-  1. moe_align (GPU, no CPU sync): flatten the (token, expert) pairs, sort them by expert, and
-     pad each expert's group to a multiple of BLOCK_M. Then every BLOCK_M-row tile belongs to a
-     single expert, so a tile is an ordinary matmul with that expert's weights. All sizes are
-     fixed upper bounds (not data-dependent), which keeps the step CUDA-graph capturable.
-  2. kernel 1: for each tile, gather the tokens' hidden states and multiply by the expert's
-     gate and up weights together, apply silu(gate) * up in registers, write the result.
-  3. kernel 2: multiply that by the expert's down weights, scale by the routing weight,
-     write one row per pair; summing each token's top-k rows gives the layer output.
-
-Tiles past the real number of padded rows exit immediately (the grid is sized for the worst
-case so that its shape never depends on the routing).
-"""
 import torch
 import triton
 import triton.language as tl

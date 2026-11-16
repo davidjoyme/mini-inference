@@ -1,17 +1,3 @@
-"""
-bench/micro/bench_moe.py - one MoE layer, transformers' default path vs the fused Triton kernels.
-
-Uses OLMoE's real layer sizes (hidden 2048, 64 experts of intermediate 1024, top-8) with random
-weights, for a range of token counts (decode batch sizes and prefill sizes). For each:
-    time per layer call     CUDA-event timing, after warmup
-    kernels per call        how many GPU kernels one MoE layer launches (from the profiler)
-    effective bandwidth     expert weights actually read / time, vs the GPU's peak
-    relative error          fused output vs the default output (bf16 rounding is expected)
-
-Run from the project root on the GPU (needs CUDA):
-    python bench/micro/bench_moe.py
-    python bench/micro/bench_moe.py --tokens 1 8 64 512 --out results/micro_moe.json
-"""
 import argparse
 import json
 import os

@@ -1,33 +1,3 @@
-"""
-engine/core/cuda_graphs.py - replay decode steps as CUDA graphs (CUDA_GRAPHS=1).
-
-Why: a decode step launches hundreds of small kernels (16 layers x attention, MoE, norms...),
-and at small batch sizes the CPU takes longer to LAUNCH them than the GPU takes to RUN them, so
-the GPU sits idle between kernels. A CUDA graph records the whole step's kernels once; replaying
-it is a single launch, with no Python and no per-kernel launch cost.
-
-The catch: a graph replays exactly what was recorded - the same kernels, grid sizes and memory
-addresses. So every step must look identical to the GPU:
-    fixed buffers   input ids, positions, KV write slots, page tables and context lengths live in
-                    buffers allocated once; each step copies its values INTO them
-    batch buckets   one graph per batch size in BUCKETS; a batch of 5 runs the graph for 8, the
-                    extra rows are padding (token 0 at position 0, context length 1)
-    scratch block   padding rows write their keys/values into one KV block reserved for that and
-                    never given to a request, so they can't overwrite real data
-    fixed shapes    the paged attention kernel gets a split count fixed per bucket and a page-table
-                    width covering the model's whole context, so its grid never changes; the fused
-                    MoE kernels pick tile sizes from the token count, which is fixed per bucket
-Only pure-decode steps use graphs. Steps with prompt tokens (prefill, chunked prefill, recompute)
-have shapes that change every time and run normally - they're compute-heavy, so launch overhead
-matters little there.
-
-Requirements: CUDA GPU, KV_CACHE=paged, ATTN_BACKEND=triton (the SDPA path builds new index and
-mask tensors every step, which a graph can't follow). MOE_KERNEL=triton is recommended: the default
-experts path may synchronize with the CPU, which a graph can't capture (we fall back if it fails).
-
-On a CPU (tests), `emulate=True` runs the same padded fixed-buffer forward pass without recording a
-graph, so the bookkeeping - buckets, padding, scratch block, stale rows - is checked exactly.
-"""
 import time
 import torch
 from profiling.nvtx import nvtx_range

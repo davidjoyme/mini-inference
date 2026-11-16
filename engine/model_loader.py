@@ -1,4 +1,3 @@
-"""engine/model_loader.py - loads the model (optionally quantized) and reports where it ended up."""
 import time
 import torch
 from transformers import AutoTokenizer, pipeline

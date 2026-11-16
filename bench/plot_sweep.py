@@ -1,18 +1,3 @@
-"""
-bench/plot_sweep.py - turn a sweep's results into charts.
-
-Run from the project root (needs matplotlib: pip install matplotlib):
-    python bench/plot_sweep.py                       # latest folder in sweeps/
-    python bench/plot_sweep.py sweeps/20261020_154435
-
-Writes PNGs into <sweep folder>/plots/:
-    <metric>.png           metric vs number of users.
-                           Several engines in the sweep: one line per engine variant,
-                           one row of panels per quantization.
-                           One engine only: one line per quantization.
-                           Columns: one panel per workload (output length x prompt length).
-    memory_timeline.png    memory above idle over time during the busiest run of each line
-"""
 import csv
 import glob
 import json

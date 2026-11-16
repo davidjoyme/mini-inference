@@ -1,16 +1,3 @@
-"""
-profiling/torch_profiler.py - run code under the PyTorch profiler.
-
-    with torch_profile("my_run") as result:
-        ...code to profile...
-    result["trace_path"]   # the saved trace
-
-Prints the top operations by GPU (or CPU) time and saves a trace file you can open at
-https://ui.perfetto.dev (or chrome://tracing). profiling/analyze.py turns that trace into a
-bottleneck report. Code regions labelled with profiling.nvtx.nvtx_range show up by name.
-
-record_shapes / profile_memory add detail but make traces much bigger; off by default.
-"""
 import contextlib
 import os
 import time

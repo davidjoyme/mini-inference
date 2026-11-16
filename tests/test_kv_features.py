@@ -1,16 +1,3 @@
-"""
-tests/test_kv_features.py - KV cache quantization and prefix caching.
-
-KV quantization changes numbers slightly, so it's checked against tolerances:
-  - stored-then-read keys/values are close to the originals
-  - the model's logits with a quantized cache stay close to the unquantized ones
-  - 8-bit storage fits about twice as many tokens
-Prefix caching must not change outputs at all, so it's checked for exact equality with
-model.generate(), including when requests are preempted and when blocks get evicted.
-
-Run from the project root:
-    python tests/test_kv_features.py
-"""
 import os
 import sys
 import tempfile

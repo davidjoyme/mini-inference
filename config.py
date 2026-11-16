@@ -1,8 +1,3 @@
-"""
-config.py - all the important settings in one place.
-
-The server (main.py), the engine, the profiling tools and the benchmarks all read from here.
-"""
 import os
 
 # ---------------- Model ----------------

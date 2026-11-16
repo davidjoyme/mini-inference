@@ -1,15 +1,3 @@
-"""
-engine/quantization/modules.py - drop-in replacements for the model's layers.
-
-QuantLinear   replaces an nn.Linear (OLMoE's attention projections, optionally lm_head)
-QuantExperts  replaces OLMoE's fused experts module, whose weights are two 3D tensors:
-                gate_up_proj [num_experts, 2 * intermediate, hidden]
-                down_proj    [num_experts, hidden, intermediate]
-
-Quantized tensors are registered as buffers, so model.to(device) and state_dict()
-handle them like normal weights. Never call model.to(dtype) after quantizing: it
-would cast the FP8 weights and the scales.
-"""
 import torch
 from torch import nn
 from profiling.nvtx import nvtx_range
