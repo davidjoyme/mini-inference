@@ -1,16 +1,3 @@
-"""
-tests/test_quantization.py - correctness checks for the quantization code.
-
-Uses a tiny randomly initialized OLMoE (same layer types and expert layout as the
-real model, much smaller), so it runs on CPU in seconds with no downloads.
-
-Run from the project root:
-    python tests/test_quantization.py          # plain Python
-    python -m pytest tests/test_quantization.py   # or with pytest, if installed
-
-Re-run these whenever you change a quantization method or plug in a custom kernel:
-the kernel must give the same results as the reference `linear`.
-"""
 import copy
 import os
 import sys

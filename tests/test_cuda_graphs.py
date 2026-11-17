@@ -8,6 +8,7 @@ import tempfile  # noqa: E402
 import config  # noqa: E402
 from tests.test_batching import (LONG_PROMPTS, PROMPTS, build_tiny_model, make_engine,  # noqa: E402
                                  reference_outputs, run_concurrently)
+from transformers import PreTrainedTokenizerFast
 
 GPU = torch.cuda.is_available()
 
@@ -50,7 +51,7 @@ def test_matches_generate():
     if GPU:
         print("  (CPU-only exact comparison; see test_gpu_graphs_match_eager)")
         return
-    from transformers import PreTrainedTokenizerFast
+    
     with tempfile.TemporaryDirectory() as d:
         model = build_tiny_model(d)
         tok = PreTrainedTokenizerFast.from_pretrained(d)

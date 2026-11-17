@@ -2,7 +2,9 @@ import os
 import torch
 from torch import nn
 from profiling.nvtx import nvtx_range
-
+from kernels.fused_moe.fused_moe_triton import fused_moe
+from kernels.fused_moe.reference import moe_reference 
+from kernels.fused_moe import moe_align_cuda
 
 def _triton_usable(t):
     return t.is_cuda or os.environ.get("TRITON_INTERPRET") == "1"
@@ -19,10 +21,9 @@ class FusedExperts(nn.Module):
     def forward(self, hidden_states, top_k_index, top_k_weights):
         with nvtx_range("fused_moe"):
             if _triton_usable(hidden_states):
-                from kernels.fused_moe.fused_moe_triton import fused_moe
                 return fused_moe(hidden_states, self.gate_up_proj, self.down_proj,
                                  top_k_weights, top_k_index, align=self.align)
-            from kernels.fused_moe.reference import moe_reference   # CPU without the interpreter
+              # CPU without the interpreter
             return moe_reference(hidden_states, self.gate_up_proj, self.down_proj,
                                  top_k_weights, top_k_index)
 
@@ -58,5 +59,5 @@ def align_backend(align="auto"):
     """Which moe_align will actually run on this machine: 'cuda' or 'torch'."""
     if align == "torch" or not torch.cuda.is_available():
         return "torch"
-    from kernels.fused_moe import moe_align_cuda
+
     return "cuda" if moe_align_cuda.available() else "torch"

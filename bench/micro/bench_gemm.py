@@ -8,6 +8,7 @@ import torch  # noqa: E402
 import torch.nn.functional as F  # noqa: E402
 import config  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
+from transformers import AutoConfig
 
 L2_DEFEAT_BYTES = 256 * 1024 ** 2
 
@@ -114,7 +115,7 @@ def main():
     if not torch.cuda.is_available():
         sys.exit("Needs a CUDA GPU.")
 
-    from transformers import AutoConfig
+    
     name = config.MODELS.get(args.model, args.model)
     cfg = AutoConfig.from_pretrained(name)
     dtype = torch.bfloat16

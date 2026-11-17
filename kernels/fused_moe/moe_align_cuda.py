@@ -1,5 +1,7 @@
 import os
 import torch
+from torch.utils.cpp_extension import CUDA_HOME, load
+
 
 _SOURCE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "csrc", "moe_align.cu")
 _ext = None
@@ -11,7 +13,7 @@ def _load():
     if _ext is not None or _error is not None:
         return _ext
     try:
-        from torch.utils.cpp_extension import CUDA_HOME, load
+        
         # nvcc and the CUDA headers must come from one toolkit that matches torch.version.cuda
         print(f"Compiling the CUDA moe_align kernel (first time only, ~1 minute) with the CUDA "
               f"toolkit at {CUDA_HOME} (PyTorch built for CUDA {torch.version.cuda})...")

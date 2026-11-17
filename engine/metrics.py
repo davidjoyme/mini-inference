@@ -2,6 +2,7 @@ import os
 import threading
 import time
 import torch
+import pynvml
 
 # ---------------- NVML (GPU utilization and power) ----------------
 _nvml = None
@@ -19,7 +20,6 @@ def _nvml_init():
         if not torch.cuda.is_available():
             return _nvml_handles
         try:
-            import pynvml
             pynvml.nvmlInit()
             _nvml = pynvml
         except Exception:

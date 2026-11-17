@@ -5,6 +5,8 @@ import os
 import re
 import sys
 from collections import defaultdict
+import torch
+import config
 
 # Peak memory bandwidth (GB/s) of common GPUs, for the bandwidth estimate.
 # Override with PEAK_MEMORY_BANDWIDTH_GBS in config.py for anything not listed.
@@ -60,7 +62,7 @@ def pct(part, whole):
 # ---------------------------------------------------------------- model facts for bandwidth
 def model_profile(engine):
     """Bytes the model reads per step, split into experts / everything else (an estimate)."""
-    import torch
+
     model = engine.model
     cfg = model.config
     expert_bytes = other_bytes = 0
@@ -93,7 +95,7 @@ def model_profile(engine):
 
 def peak_bandwidth(gpu_name):
     try:
-        import config
+        
         if getattr(config, "PEAK_MEMORY_BANDWIDTH_GBS", None):
             return config.PEAK_MEMORY_BANDWIDTH_GBS
     except ImportError:

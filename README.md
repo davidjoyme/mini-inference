@@ -62,8 +62,7 @@ flowchart LR
 Each step, the scheduler picks which requests run. The model runner then processes all their new
 tokens in **one flat batch with no padding**, so weights are read once for every user. Attention
 reads each request's keys and values from the shared KV cache through its page table, and the
-sampler streams one token back per request. Details: **[docs/DESIGN.md](docs/DESIGN.md)**.
-
+sampler streams one token back per request.
 ## Quick start
 
 ```bash
@@ -99,3 +98,5 @@ tests/           correctness tests (exact match against Hugging Face generate())
 - CUDA graphs for steps that mix prompt and decode tokens ("piecewise" graphs). On the 36-layer dense model these steps take about a quarter of the time under steady load.
 - Overlapping scheduling with GPU work, and a Triton skinny-GEMM kernel for the remaining gap to peak bandwidth.
 - Quantized variants of the fused MoE kernel, so quantization saves time as well as memory.
+- Multi GPU serving feature.
+- Speculative Decoding for a bigger model.

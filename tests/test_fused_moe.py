@@ -9,6 +9,11 @@ import config  # noqa: E402
 from kernels.fused_moe.fused_moe_triton import fused_moe, moe_align  # noqa: E402
 from kernels.fused_moe.module import FusedExperts, apply_fused_moe  # noqa: E402
 from kernels.fused_moe.reference import moe_reference  # noqa: E402
+from transformers import OlmoeConfig, OlmoeForCausalLM
+from kernels.fused_moe import moe_align_cuda
+from kernels.fused_moe import moe_align_cuda
+from tests.test_batching import build_tiny_model, make_engine, reference_outputs, run_concurrently
+from transformers import PreTrainedTokenizerFast
 
 GPU = torch.cuda.is_available()
 DEVICE = "cuda" if GPU else "cpu"
@@ -67,7 +72,7 @@ def test_cuda_align_matches_torch_align():
     if not GPU:
         print("  (needs a GPU: skipped)")
         return
-    from kernels.fused_moe import moe_align_cuda
+
     assert moe_align_cuda.available(), f"CUDA moe_align did not compile: {moe_align_cuda._error}"
     torch.manual_seed(2)
     for T, k, E, bm in ((1, 8, 64, 16), (13, 3, 8, 4), (16, 8, 64, 16), (300, 8, 64, 32), (4096, 8, 64, 64)):
@@ -87,7 +92,7 @@ def test_fused_with_cuda_align_matches_reference():
     if not GPU:
         print("  (needs a GPU: skipped)")
         return
-    from kernels.fused_moe import moe_align_cuda
+    
     assert moe_align_cuda.available(), "CUDA moe_align did not compile (see the error above)"
     for T in (1, 16, 256):
         args = random_moe(T, 2048, 1024, 64, 8, seed=T)
@@ -122,7 +127,6 @@ def test_tile_configs_agree():
 
 # ---------------------------------------------------------------- inside the model
 def test_matches_transformers_experts_module():
-    from transformers import OlmoeConfig, OlmoeForCausalLM
     torch.manual_seed(0)
     cfg = OlmoeConfig(hidden_size=64, intermediate_size=32, num_hidden_layers=2, num_attention_heads=4,
                       num_key_value_heads=4, num_experts=8, num_experts_per_tok=2, vocab_size=128)
@@ -143,8 +147,6 @@ def test_engine_outputs_exact_with_fused_moe():
     if GPU:
         print("  (runs on CPU only: exact float32 comparison)")
         return
-    from tests.test_batching import build_tiny_model, make_engine, reference_outputs, run_concurrently
-    from transformers import PreTrainedTokenizerFast
     prompts = [("w5 w9 w14 w3", 6), ("w100 w200 w300 w400 w5 w6", 5), ("w42", 4)]
     with tempfile.TemporaryDirectory() as d:
         model = build_tiny_model(d)

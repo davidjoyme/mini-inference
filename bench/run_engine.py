@@ -13,6 +13,8 @@ from bench.prompts import build_prompt  # noqa: E402
 from engine import metrics  # noqa: E402
 from engine.factory import create_engine, engine_label  # noqa: E402
 from profiling.nvtx import nvtx_range  # noqa: E402
+from profiling.torch_profiler import torch_profile
+from profiling.analyze import analyze, model_profile, print_report
 
 
 def run_one(engine, prompt, max_new_tokens):
@@ -122,7 +124,7 @@ def main():
     stats_before = engine.stats()
 
     if args.profile == "torch":
-        from profiling.torch_profiler import torch_profile
+        
         profiler_ctx = torch_profile("run_engine", out_dir=args.profile_dir,
                                      record_shapes=args.profile_detail, profile_memory=args.profile_detail)
     else:
@@ -206,7 +208,7 @@ def main():
             print(f"{key:>24}: {value}")
 
     if args.profile == "torch":
-        from profiling.analyze import analyze, model_profile, print_report
+        
         trace = profile_result["trace_path"]
         info = model_profile(engine)
         report = analyze(trace, info)

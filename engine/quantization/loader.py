@@ -7,7 +7,9 @@ import torch
 from torch import nn
 from transformers import AutoConfig, AutoModelForCausalLM, GenerationConfig
 from engine.quantization.modules import QuantExperts, QuantLinear, is_fused_experts
-
+from safetensors import safe_open
+from safetensors.torch import save_file
+from safetensors.torch import load_file
 
 def _set_module(root: nn.Module, name: str, new: nn.Module):
     parent_name, _, child = name.rpartition(".")
@@ -79,7 +81,7 @@ def cache_path(cache_dir, model_name, method, targets):
 
 
 def save_cache(model, path, info):
-    from safetensors.torch import save_file
+    
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     # Tied weights (e.g. Qwen3-4B's lm_head IS its embedding matrix) are one tensor under two
     # names; safetensors refuses shared tensors, so save it once and record the other name.
@@ -116,13 +118,13 @@ def _reinit_meta_buffers(model, device):
 
 
 def load_from_cache(path, model_name, method, targets, device, dtype):
-    from safetensors.torch import load_file
+    
     cfg = AutoConfig.from_pretrained(model_name)
     with torch.device("meta"):
         model = AutoModelForCausalLM.from_config(cfg, dtype=dtype)
     stats = quantize_model(model, method, targets, "meta")   # puts empty quantized layers in place
 
-    from safetensors import safe_open
+    
     with safe_open(path, framework="pt") as f:
         aliases = json.loads((f.metadata() or {}).get("aliases", "{}"))
     state = load_file(path, device=str(device))

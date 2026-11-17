@@ -9,6 +9,8 @@ import torch.nn.functional as F  # noqa: E402
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
+import config
+from transformers import AutoConfig
 
 H, KV, D, PAGE = 16, 16, 128, 16
 
@@ -100,8 +102,7 @@ def main():
         sys.exit("Needs a CUDA GPU.")
     global H, KV, D
     if args.model:
-        import config
-        from transformers import AutoConfig
+
         cfg = AutoConfig.from_pretrained(config.MODELS.get(args.model, args.model))
         H = cfg.num_attention_heads
         KV = getattr(cfg, "num_key_value_heads", None) or H

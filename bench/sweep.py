@@ -11,13 +11,13 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 import config  # noqa: E402
+from transformers import AutoConfig
 
 
 
 def context_limit():
     """The model's context limit (capped by MAX_MODEL_LEN), for the too-long-prompt warning."""
     try:
-        from transformers import AutoConfig
         own = AutoConfig.from_pretrained(config.MODEL_NAME).max_position_embeddings
         return min(own, config.MAX_MODEL_LEN or own)
     except Exception:

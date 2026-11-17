@@ -3,8 +3,6 @@ SUPPORTED = {
     "Qwen3ForCausalLM": "Qwen3 dense (GQA, per-head q/k norm)",
     "Qwen3MoeForCausalLM": "Qwen3-MoE (GQA, per-head q/k norm, fused MoE applies)",
     "Qwen2ForCausalLM": "Qwen2 / Qwen2.5 (GQA, q/k/v biases)",
-    "LlamaForCausalLM": "Llama 2 / 3.x (GQA, rope scaling)",
-    "MistralForCausalLM": "Mistral without sliding window (e.g. v0.3)",
 }
 
 

@@ -2,6 +2,11 @@ import time
 import torch
 from transformers import AutoTokenizer, pipeline
 import config
+from transformers.utils import logging as hf_logging
+from engine.quantization import get_method
+from engine.quantization.loader import load_quantized_model
+from engine.quantization.loader import weight_memory
+from kernels.fused_moe.module import align_backend, apply_fused_moe
 
 DTYPES = {"auto": torch.bfloat16, "bfloat16": torch.bfloat16,
           "float16": torch.float16, "float32": torch.float32}
@@ -14,7 +19,6 @@ def quantization_enabled() -> bool:
 def load_model():
     """Returns (pipeline, load_info)."""
     if config.QUIET_TRANSFORMERS:
-        from transformers.utils import logging as hf_logging
         hf_logging.set_verbosity_error()
 
     print(f"Loading model: {config.MODEL_NAME} (quantization: {config.QUANTIZATION}) ...")
@@ -29,8 +33,6 @@ def load_model():
         )
         load_info = {"quantization": {"method": "none"}}
     else:
-        from engine.quantization import get_method
-        from engine.quantization.loader import load_quantized_model
 
         # Quantized models go on a single device (multi-GPU splitting isn't supported here)
         device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -45,11 +47,10 @@ def load_model():
         generator = pipeline("text-generation", model=model, tokenizer=tokenizer, device=model.device)
         load_info = {"quantization": {**method.describe(), "targets": config.QUANT_TARGETS, **stats}}
 
-    from engine.quantization.loader import weight_memory
+    
     # Fused MoE kernels (kernels/fused_moe): swap the experts modules, sharing their weights
     load_info["moe_kernel"] = "default"
     if config.MOE_KERNEL == "triton":
-        from kernels.fused_moe.module import align_backend, apply_fused_moe
         swapped = apply_fused_moe(generator.model, align=config.MOE_ALIGN)
         load_info["moe_kernel"] = "triton" if swapped else "default"
         if swapped:

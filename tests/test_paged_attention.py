@@ -1,13 +1,3 @@
-"""
-tests/test_paged_attention.py - the paged decode-attention Triton kernel against plain PyTorch.
-
-Without a GPU the kernel runs in Triton's interpreter (TRITON_INTERPRET=1) in float32, which checks
-the indexing and math exactly; with a GPU it runs for real in bfloat16, including OLMoE's shapes
-and an FP8 cache.
-
-Run from the project root:
-    python tests/test_paged_attention.py
-"""
 import os
 import sys
 import torch
@@ -19,6 +9,10 @@ import config  # noqa: E402
 from engine.core.kv_cache import KVCache  # noqa: E402
 from kernels.paged_attention.decode_triton import paged_decode_attention  # noqa: E402
 from kernels.paged_attention.reference import paged_decode_reference  # noqa: E402
+from tests.test_batching import (LONG_PROMPTS, PROMPTS, build_tiny_model, make_engine,
+                                     reference_outputs, run_concurrently)
+from transformers import PreTrainedTokenizerFast
+
 
 GPU = torch.cuda.is_available()
 DEVICE = "cuda" if GPU else "cpu"
@@ -100,9 +94,7 @@ def test_engine_outputs_exact():
     if GPU:
         print("  (runs on CPU only: exact float32 comparison)")
         return
-    from tests.test_batching import (LONG_PROMPTS, PROMPTS, build_tiny_model, make_engine,
-                                     reference_outputs, run_concurrently)
-    from transformers import PreTrainedTokenizerFast
+
     with tempfile.TemporaryDirectory() as d:
         model = build_tiny_model(d)
         tok = PreTrainedTokenizerFast.from_pretrained(d)

@@ -5,6 +5,7 @@ import torch
 from torch.profiler import ProfilerActivity, profile
 import config
 import profiling.nvtx as nvtx
+from torch._C._profiler import _ExperimentalConfig
 
 
 @contextlib.contextmanager
@@ -20,7 +21,7 @@ def torch_profile(name: str, out_dir: str = config.PROFILE_OUTPUT_DIR, row_limit
     # The custom engine does its work in a background thread; by default the profiler only
     # records the thread that started it, so ask it to record every thread.
     try:
-        from torch._C._profiler import _ExperimentalConfig
+        
         kwargs["experimental_config"] = _ExperimentalConfig(profile_all_threads=True)
     except (ImportError, TypeError):
         print("Note: this PyTorch can't profile all threads; the engine loop may be missing "

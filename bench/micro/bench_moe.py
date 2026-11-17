@@ -7,6 +7,8 @@ import torch  # noqa: E402
 from transformers import OlmoeConfig, OlmoeForCausalLM  # noqa: E402
 from kernels.fused_moe.module import FusedExperts  # noqa: E402
 from profiling.analyze import peak_bandwidth  # noqa: E402
+import time
+from kernels.fused_moe.module import align_backend
 
 
 def time_ms(fn, warmup=5, iters=20):
@@ -56,7 +58,6 @@ def kernels_per_call(fn):
 def cpu_launch_us(fn, iters=50):
     """Host time to issue one call (kernels are queued, not waited for). When this is larger than
     the GPU time, the GPU idles between kernels - the 'launch-bound' regime of small decode batches."""
-    import time
     fn()
     torch.cuda.synchronize()
     t = time.perf_counter()
@@ -88,7 +89,6 @@ def main():
     default_experts = moe.experts
     fused_torch = FusedExperts(default_experts, align="torch")     # round 1: ~35-op PyTorch moe_align
     fused_experts = FusedExperts(default_experts, align=args.align)  # round 2a: one CUDA kernel
-    from kernels.fused_moe.module import align_backend
     align_name = align_backend(args.align)
     impl = getattr(model.config, "_experts_implementation", "?")
     H, I, E, k = 2048, 1024, 64, 8

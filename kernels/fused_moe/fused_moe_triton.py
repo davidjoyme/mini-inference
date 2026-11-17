@@ -1,6 +1,7 @@
 import torch
 import triton
 import triton.language as tl
+from kernels.fused_moe import moe_align_cuda
 
 
 # ---------------------------------------------------------------- 1. group pairs by expert
@@ -110,7 +111,6 @@ def _align_fn(topk_ids, align):
     """align: 'cuda' (one CUDA C++ kernel, csrc/moe_align.cu), 'torch' (PyTorch ops above),
     or 'auto' (CUDA when it compiled, else PyTorch)."""
     if align in ("cuda", "auto") and topk_ids.is_cuda:
-        from kernels.fused_moe import moe_align_cuda
         if moe_align_cuda.available():
             return moe_align_cuda.moe_align_cuda
         if align == "cuda":

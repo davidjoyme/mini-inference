@@ -1,17 +1,4 @@
-"""
-tests/test_models.py - the custom engine on other architectures (engine/models.py).
 
-Builds tiny random versions of Qwen3 (dense, GQA, per-head q/k norm, tied embeddings, head size
-!= hidden / heads), Qwen3-MoE (MoE in OLMoE's expert layout), Qwen2 (q/k/v biases) and Llama
-(GQA, Llama-3 rope scaling), and checks that the engine reproduces model.generate() token for token
-with every feature that should carry over: both KV caches, the paged attention kernel, CUDA graphs
-(emulated on CPU), prefix caching + chunked prefill, the fused MoE kernel, and quantized loading
-including the on-disk cache. Unsupported models must be rejected with a clear error.
-
-Without a GPU, Triton kernels run in the interpreter (float32, exact comparison).
-Run from the project root:
-    python tests/test_models.py
-"""
 import os
 import sys
 import torch
@@ -25,6 +12,9 @@ from transformers import (LlamaConfig, LlamaForCausalLM, Olmo2Config, Olmo2ForCa
                           Qwen3ForCausalLM, Qwen3MoeConfig, Qwen3MoeForCausalLM)
 import config  # noqa: E402
 from tests.test_batching import PROMPTS, make_engine, reference_outputs, run_concurrently  # noqa: E402
+from engine.models import describe
+
+
 
 GPU = torch.cuda.is_available()
 VOCAB = 512
@@ -130,7 +120,7 @@ def test_architectures_exact():
 def test_detection():
     expected = {"qwen3": ("per_head", False, 32), "qwen3_moe": ("per_head", True, 32),
                 "qwen2": ("none", False, 16), "llama": ("none", False, 16)}
-    from engine.models import describe
+    
     for arch, (cls, cfg) in ARCHS.items():
         info = describe(cls(cfg), 256)
         assert (info["qk_norm"], info["moe"], info["head_dim"]) == expected[arch], (arch, info)

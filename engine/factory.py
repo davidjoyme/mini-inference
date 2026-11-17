@@ -1,12 +1,11 @@
 import config
-
+from engine.hf_engine import HFEngine
+from engine.custom_engine import CustomEngine
 
 def create_engine():
     if config.ENGINE == "hf":
-        from engine.hf_engine import HFEngine
         return HFEngine()
     if config.ENGINE == "custom":
-        from engine.custom_engine import CustomEngine
         return CustomEngine()
     raise ValueError(f"Unknown ENGINE '{config.ENGINE}' (use 'hf' or 'custom')")
 

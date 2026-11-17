@@ -13,6 +13,7 @@ from engine.models import describe
 from engine.base import Engine
 from engine.model_loader import load_model
 from profiling.nvtx import nvtx_range
+from engine.core.cuda_graphs import DecodeGraphs
 
 
 class CustomEngine(Engine):
@@ -77,7 +78,7 @@ class CustomEngine(Engine):
     # ------------------------------------------------------------------ setup
     def _setup_cuda_graphs(self, max_model_len):
         """CUDA_GRAPHS=1: record decode steps as CUDA graphs (engine/core/cuda_graphs.py)."""
-        from engine.core.cuda_graphs import DecodeGraphs
+        
         missing = [why for bad, why in (
             (config.KV_CACHE != "paged", "KV_CACHE=paged"),
             (self.runner.attn_backend != "triton", "ATTN_BACKEND=triton")) if bad]
