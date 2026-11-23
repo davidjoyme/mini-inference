@@ -1,4 +1,4 @@
-# mini-inference
+# Mini-Inference
 
 An LLM inference engine built from scratch, in the style of vLLM and SGLang, to implement the core
 serving techniques and **measure what each one is worth**. It serves a Mixture-of-Experts model
